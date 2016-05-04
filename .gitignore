@@ -1,0 +1,17 @@
+# Compiled source
+*.pyc
+
+# SQLite 
+*.sqlite3
+*.sqlite
+
+# vim temp files
+.*.swp
+
+# backup folder
+bak/
+result/
+tmp/
+log/
+md5/
+env/

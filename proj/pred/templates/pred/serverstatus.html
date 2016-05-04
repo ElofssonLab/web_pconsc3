@@ -1,0 +1,32 @@
+{% extends "pred/base_layout.html" %}
+
+{%block content_right_panel %}
+    {% if username %}
+      {% include "pred/user_header.html" %}
+    {% endif %}
+   <h2>Server status</h2>
+   <table cellspacing=0 cellpadding=5 border=0>
+    <tr>
+        <td> Total number of sequences in the queue: </td>
+        <td><b>{{num_seq_in_local_queue}}</b></td>
+    </tr>
+    {%comment%}
+    <tr>
+        <td> Total number of sequences in remote queue: </td>
+        <td>{{num_seq_in_remote_queue}}</td>
+    </tr>
+    {%endcomment%}
+   </table>
+
+   <h2>Statistics</h2>
+   <table cellspacing=0 cellpadding=5 border=0>
+    <tr>
+        <td>Total number of finished sequences since {{startdate}}: </td>
+        <td><b>{{num_finished_seqs_str}}</b></td>
+    </tr>
+   </table>
+
+
+
+{% endblock %}
+

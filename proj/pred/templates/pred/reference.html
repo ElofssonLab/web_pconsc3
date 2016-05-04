@@ -1,0 +1,36 @@
+{% extends "pred/base_layout.html" %}
+
+{%block content_right_panel %}
+    {% if username %}
+      {% include "pred/user_header.html" %}
+    {% endif %}
+   <h2>References</h2>
+   <table cellspacing=0 cellpadding=5 border=0>
+     <tr><td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=400></td>
+       <td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=50></td>
+     </tr>
+     <tr><td>
+         <b>BOCTOPUS2</b>: Inclusion of dyad-repeat pattern improves topology
+             prediction of transmembrane &beta;-barrel proteins. Sikander Hayat , Christoph Peters,
+             Nanjiang Shu, Kostas D Tsirigos, Arne Elofsson. Bioinformatics, 2016
+         [<a
+           href="http://www.ncbi.nlm.nih.gov/pubmed/26794316">PubMed</a>]
+     </td></tr>
+     <tr><td>
+         BOCTOPUS: Improved topology prediction of transmembrane beta barrel
+         proteins. Sikander Hayat and Arne Elofsson Bioinformatics, 2012
+         [<a
+           href="http://www.ncbi.nlm.nih.gov/pubmed/22247276">PubMed</a>]
+     </td></tr>
+     <tr><td>
+         Ranking models of transmembrane β-barrel proteins using Z-coordinate
+         predictions. Sikander Hayat and Arne Elofsson Bioinformatics, 2012
+         [<a
+           href="http://www.ncbi.nlm.nih.gov/pubmed/22689784">PubMed</a>]
+     </td></tr>
+ </table>
+
+
+
+{% endblock %}
+

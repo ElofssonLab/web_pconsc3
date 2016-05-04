@@ -1,0 +1,34 @@
+{% extends "pred/base_layout.html" %}
+
+{%block content_right_panel %}
+    {% if username %}
+      {% include "pred/user_header.html" %}
+    {% endif %}
+  <h2>Download</h2>
+  <br><br>
+  <table cellspacing=0 cellpadding=0 border=0>
+
+    <tr>
+        <td>
+            <h3>1. Software of PconsC3 on the github:</h3>
+            <p style="margin-left:15px;">
+            <a href="https://github.com/mskwark/PconsC3">https://github.com/mskwark/PconsC3</a>
+            <br><br>
+            </p>
+        </td>
+    </tr>
+    {%if zipfile_wholepackage %}
+        <tr>
+            <td>
+                <h3>2. The whole package of BOCTOPUS2 in one zip file. </h3>
+                <p style="margin-left:15px;">
+                <a href="{{STATIC_URL}}download/{{zipfile_wholepackage}}">{{zipfile_wholepackage}} </a>({{size_wholepackage}})<br><br>
+                    <a href="{{STATIC_URL}}download/README_boctopus2.txt">README for the BOCTOPUS2 package</a>
+                    <br><br>
+                </p>
+            </td>
+        </tr>
+    {%endif%}
+  </table>
+{% endblock %}
+
