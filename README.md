@@ -1,5 +1,10 @@
 # Web server for PconsC3
 
+##Author
+Nanjiang Shu
+
+nanjiang.shu@scilifelab.se
+
 ## Installation
 
 1. Install dependencies for the web-server

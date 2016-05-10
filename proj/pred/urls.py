@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, url
 
 #import modules for spyne (wsdl interface)
+from spyne.protocol.soap import Soap11
+from spyne.server.django import DjangoView
 
 #import modules for authentication
 from django.contrib.auth.decorators import login_required
@@ -31,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^login/', login_required(views.login), name="pred.login"),
 
 # for spyne wsdl
-    #url(r'^api_submitseq/', DjangoView.as_view(application=views.app_submitseq)),
+    url(r'^api_submitseq/', DjangoView.as_view(application=views.app_submitseq)),
 
 )
 

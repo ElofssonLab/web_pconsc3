@@ -2,7 +2,7 @@ import os, sys
 import tempfile
 import re
 import subprocess
-from datetime import datetime
+import datetime
 import time
 import math
 import shutil
@@ -10,9 +10,26 @@ import shutil
 os.environ['TZ'] = 'Europe/Stockholm'
 time.tzset()
 
+# for dealing with IP address and country names
+from geoip import geolite2
+import pycountry
+
+
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.views.decorators.csrf import csrf_exempt  
+
+#import models for spyne
+from spyne.error import ResourceNotFoundError, ResourceAlreadyExistsError
+from spyne.server.django import DjangoApplication
+from spyne.model.primitive import Unicode, Integer
+from spyne.model.complex import Iterable
+from spyne.service import ServiceBase
+from spyne.protocol.soap import Soap11
+from spyne.application import Application
+from spyne.decorator import rpc
+from spyne.util.django import DjangoComplexModel, DjangoServiceBase
+from spyne.server.wsgi import WsgiApplication
 
 # for user authentication
 from django.contrib.auth import authenticate, login, logout
@@ -358,7 +375,7 @@ def GetJobCounter(client_ip, isSuperUser, logfile_query, #{{{
             elif status == "Failed":
                 failed_jobid_set.add(jobid)
         lines = hdl.readlines()
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         while lines != None:
             for line in lines:
                 strs = line.split("\t")
@@ -371,7 +388,7 @@ def GetJobCounter(client_ip, isSuperUser, logfile_query, #{{{
                 submit_date_str = strs[0]
                 isValidSubmitDate = True
                 try:
-                    submit_date = datetime.strptime(submit_date_str, 
+                    submit_date = datetime.datetime.strptime(submit_date_str, 
                             "%Y-%m-%d %H:%M:%S")
                 except ValueError:
                     isValidSubmitDate = False
@@ -689,7 +706,7 @@ def RunQuery(request, query):#{{{
 
     if query['numseq'] <= MAX_ALLOWD_NUMSEQ:
         query['numseq_this_user'] = query['numseq']
-        SubmitQueryToLocalQueue(query, tmpdir, rstdir)
+        SubmitQueryToLocalQueue(query, tmpdir, rstdir, isRunLocal=False)
 
     forceruntagfile = "%s/forcerun"%(rstdir)
     if query['isForceRun']:
@@ -697,6 +714,9 @@ def RunQuery(request, query):#{{{
     return jobid
 #}}}
 def RunQuery_wsdl(rawseq, filtered_seq, seqinfo):#{{{
+    """
+    Submit the query by WSDL to the front-end machine
+    """
     errmsg = []
     tmpdir = tempfile.mkdtemp(prefix="%s/static/tmp/tmp_"%(SITE_ROOT))
     rstdir = tempfile.mkdtemp(prefix="%s/static/result/rst_"%(SITE_ROOT))
@@ -723,11 +743,20 @@ def RunQuery_wsdl(rawseq, filtered_seq, seqinfo):#{{{
     base_www_url = "http://" + seqinfo['hostname']
     seqinfo['base_www_url'] = base_www_url
 
-    # changed 2015-03-26, any jobs submitted via wsdl is hadndel
+    if seqinfo['numseq'] <= MAX_ALLOWD_NUMSEQ:
+        seqinfo['numseq_this_user'] = seqinfo['numseq']
+        SubmitQueryToLocalQueue(seqinfo, tmpdir, rstdir, isRunLocal=False)
+
+    forceruntagfile = "%s/forcerun"%(rstdir)
+    if seqinfo['isForceRun']:
+        myfunc.WriteFile("", forceruntagfile)
     return jobid
 #}}}
 def RunQuery_wsdl_local(rawseq, filtered_seq, seqinfo):#{{{
-# submit the wsdl job to the local queue
+    """
+    submit the wsdl job to the local queue
+    the job will run on this machine
+    """
     errmsg = []
     tmpdir = tempfile.mkdtemp(prefix="%s/static/tmp/tmp_"%(SITE_ROOT))
     rstdir = tempfile.mkdtemp(prefix="%s/static/result/rst_"%(SITE_ROOT))
@@ -754,13 +783,13 @@ def RunQuery_wsdl_local(rawseq, filtered_seq, seqinfo):#{{{
     base_www_url = "http://" + seqinfo['hostname']
     seqinfo['base_www_url'] = base_www_url
 
-    rtvalue = SubmitQueryToLocalQueue(seqinfo, tmpdir, rstdir)
+    rtvalue = SubmitQueryToLocalQueue(seqinfo, tmpdir, rstdir, isRunLocal=True)
     if rtvalue != 0:
         return ""
     else:
         return jobid
 #}}}
-def SubmitQueryToLocalQueue(query, tmpdir, rstdir):#{{{
+def SubmitQueryToLocalQueue(query, tmpdir, rstdir, isRunLocal=False):#{{{
     scriptfile = "%s/app/submit_job_to_queue.py"%(SITE_ROOT)
     rstdir = "%s/%s"%(path_result, query['jobid'])
     errfile = "%s/runjob.err"%(rstdir)
@@ -778,13 +807,15 @@ def SubmitQueryToLocalQueue(query, tmpdir, rstdir):#{{{
         cmd += ["-host", query['client_ip']]
     if query['isForceRun']:
         cmd += ["-force"]
+    if isRunLocal: #the application will run on this machine
+        cmd += ["-runlocal"]
     cmdline = " ".join(cmd)
     try:
         rmsg = myfunc.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError, e:
         failtagfile = "%s/%s"%(rstdir, "runjob.failed")
         if not os.path.exists(failtagfile):
-            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             myfunc.WriteFile(date, failtagfile)
         myfunc.WriteFile(str(e)+"\n", errfile, "a")
         myfunc.WriteFile("cmdline: " + cmdline +"\n", debugfile, "a")
@@ -844,7 +875,7 @@ def get_queue(request):#{{{
         finished_jobid_set = set(finished_jobid_list)
         jobRecordList = []
         lines = hdl.readlines()
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         while lines != None:
             for line in lines:
                 strs = line.split("\t")
@@ -900,7 +931,7 @@ def get_queue(request):#{{{
             runtime = ""
             isValidSubmitDate = True
             try:
-                submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+                submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidSubmitDate = False
 
@@ -962,7 +993,7 @@ def get_running(request):#{{{
         finished_jobid_set = set(finished_jobid_list)
         jobRecordList = []
         lines = hdl.readlines()
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         while lines != None:
             for line in lines:
                 strs = line.split("\t")
@@ -1019,12 +1050,12 @@ def get_running(request):#{{{
             isValidSubmitDate = True
             isValidStartDate = True
             try:
-                submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+                submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidSubmitDate = False
             start_date_str = myfunc.ReadFile(starttagfile).strip()
             try:
-                start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+                start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidStartDate = False
             if isValidStartDate:
@@ -1098,7 +1129,7 @@ def get_finished_job(request):#{{{
         finished_job_dict = ReadFinishedJobLog(divided_logfile_finished_jobid)
         jobRecordList = []
         lines = hdl.readlines()
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         while lines != None:
             for line in lines:
                 strs = line.split("\t")
@@ -1111,7 +1142,7 @@ def get_finished_job(request):#{{{
                 submit_date_str = strs[0]
                 isValidSubmitDate = True
                 try:
-                    submit_date = datetime.strptime(submit_date_str,
+                    submit_date = datetime.datetime.strptime(submit_date_str,
                             "%Y-%m-%d %H:%M:%S")
                 except ValueError:
                     isValidSubmitDate = False
@@ -1178,17 +1209,17 @@ def get_finished_job(request):#{{{
             isValidStartDate = True
             isValidFinishDate = True
             try:
-                submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+                submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidSubmitDate = False
             start_date_str = myfunc.ReadFile(starttagfile).strip()
             try:
-                start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+                start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidStartDate = False
             finish_date_str = myfunc.ReadFile(finishtagfile).strip()
             try:
-                finish_date = datetime.strptime(finish_date_str, "%Y-%m-%d %H:%M:%S")
+                finish_date = datetime.datetime.strptime(finish_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidFinishDate = False
 
@@ -1260,7 +1291,7 @@ def get_failed_job(request):#{{{
         finished_job_dict = ReadFinishedJobLog(divided_logfile_finished_jobid)
         jobRecordList = []
         lines = hdl.readlines()
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         while lines != None:
             for line in lines:
                 strs = line.split("\t")
@@ -1271,7 +1302,7 @@ def get_failed_job(request):#{{{
                     continue
 
                 submit_date_str = strs[0]
-                submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+                submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
                 diff_date = current_time - submit_date
                 if diff_date.days > maxdaystoshow:
                     continue
@@ -1333,18 +1364,18 @@ def get_failed_job(request):#{{{
             isValidSubmitDate = True
 
             try:
-                submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+                submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidSubmitDate = False
 
             start_date_str = myfunc.ReadFile(starttagfile).strip()
             try:
-                start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+                start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidStartDate = False
             failed_date_str = myfunc.ReadFile(failtagfile).strip()
             try:
-                failed_date = datetime.strptime(failed_date_str, "%Y-%m-%d %H:%M:%S")
+                failed_date = datetime.datetime.strptime(failed_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidFailedDate = False
 
@@ -1842,10 +1873,10 @@ def get_results(request, jobid="1"):#{{{
 
     isValidSubmitDate = True
     try:
-        submit_date = datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
+        submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
     except ValueError:
         isValidSubmitDate = False
-    current_time = datetime.now()
+    current_time = datetime.datetime.now()
 
     resultdict['isResultFolderExist'] = True
     resultdict['errinfo'] = myfunc.ReadFile(errfile)
@@ -1867,12 +1898,12 @@ def get_results(request, jobid="1"):#{{{
         isValidStartDate = True
         isValidFailedDate = True
         try:
-            start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+            start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             isValidStartDate = False
         failed_date_str = myfunc.ReadFile(failtagfile).strip()
         try:
-            failed_date = datetime.strptime(failed_date_str, "%Y-%m-%d %H:%M:%S")
+            failed_date = datetime.datetime.strptime(failed_date_str, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             isValidFailedDate = False
         if isValidSubmitDate and isValidStartDate:
@@ -1889,12 +1920,12 @@ def get_results(request, jobid="1"):#{{{
             isValidFinishDate = True
             start_date_str = myfunc.ReadFile(starttagfile).strip()
             try:
-                start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+                start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidStartDate = False
             finish_date_str = myfunc.ReadFile(finishtagfile).strip()
             try:
-                finish_date = datetime.strptime(finish_date_str, "%Y-%m-%d %H:%M:%S")
+                finish_date = datetime.datetime.strptime(finish_date_str, "%Y-%m-%d %H:%M:%S")
             except ValueError:
                 isValidFinishDate = False
             if isValidSubmitDate and isValidStartDate:
@@ -1907,7 +1938,7 @@ def get_results(request, jobid="1"):#{{{
                 isValidStartDate = True
                 start_date_str = myfunc.ReadFile(starttagfile).strip()
                 try:
-                    start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
+                    start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S")
                 except ValueError:
                     isValidStartDate = False
                 resultdict['isStarted'] = True
@@ -2025,7 +2056,7 @@ def get_results(request, jobid="1"):#{{{
         start_date_str = myfunc.ReadFile(starttagfile).strip()
         isValidStartDate = False
         try:
-            start_date_epoch = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S").strftime('%s')
+            start_date_epoch = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S").strftime('%s')
             isValidStartDate = True
         except:
             pass
@@ -2147,3 +2178,238 @@ def search_form(request):#{{{
     return render(request, 'pred/search_form.html')
 #}}}
 
+
+# enabling wsdl service
+
+#{{{ The actual wsdl api
+class Container_submitseq(DjangoComplexModel):
+    class Attributes(DjangoComplexModel.Attributes):
+        django_model = FieldContainer
+        django_exclude = ['excluded_field']
+
+
+class Service_submitseq(ServiceBase):
+    @rpc(Unicode,  Unicode, Unicode, Unicode,  _returns=Iterable(Unicode))
+# submit job to the front-end
+    def submitjob(ctx, seq="", fixtop="", jobname="", email=""):#{{{
+        seq = seq + "\n" #force add a new line for correct parsing the fasta file
+        (filtered_seq, seqinfo) = ValidateSeq(seq)
+        # ValidateFixtop(fixtop) #to be implemented
+        jobid = "None"
+        url = "None"
+        numseq_str = "%d"%(seqinfo['numseq'])
+        warninfo = seqinfo['warninfo']
+        errinfo = ""
+#         print "\n\nreq\n", dir(ctx.transport.req) #debug
+#         print "\n\n", ctx.transport.req.META['REMOTE_ADDR'] #debug
+#         print "\n\n", ctx.transport.req.META['HTTP_HOST']   #debug
+        if filtered_seq == "":
+            errinfo = seqinfo['errinfo']
+        else:
+            soap_req = ctx.transport.req
+            try:
+                client_ip = soap_req.META['REMOTE_ADDR']
+            except:
+                client_ip = ""
+
+            try:
+                hostname = soap_req.META['HTTP_HOST']
+            except:
+                hostname = ""
+#             print client_ip
+#             print hostname
+            seqinfo['jobname'] = jobname
+            seqinfo['email'] = email
+            seqinfo['fixtop'] = fixtop
+            seqinfo['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            seqinfo['client_ip'] = client_ip
+            seqinfo['hostname'] = hostname
+            seqinfo['method_submission'] = "wsdl"
+            seqinfo['isForceRun'] = False  # disable isForceRun if submitted by WSDL
+            jobid = RunQuery_wsdl(seq, filtered_seq, seqinfo)
+            if jobid == "":
+                errinfo = "Failed to submit your job to the queue\n"+seqinfo['errinfo']
+            else:
+                log_record = "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n"%(seqinfo['date'], jobid,
+                        seqinfo['client_ip'], seqinfo['numseq'],
+                        len(seq),seqinfo['jobname'], seqinfo['email'],
+                        seqinfo['method_submission'])
+                main_logfile_query = "%s/%s/%s"%(SITE_ROOT, "static/log", "submitted_seq.log")
+                myfunc.WriteFile(log_record, main_logfile_query, "a")
+
+                divided_logfile_query =  "%s/%s/%s"%(SITE_ROOT, "static/log/divided",
+                        "%s_submitted_seq.log"%(seqinfo['client_ip']))
+                if seqinfo['client_ip'] != "":
+                    myfunc.WriteFile(log_record, divided_logfile_query, "a")
+
+                url = "http://" + hostname + BASEURL + "result/%s"%(jobid)
+
+                file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
+                if seqinfo['warninfo'] != "":
+                    myfunc.WriteFile(seqinfo['warninfo'], file_seq_warning, "a")
+                errinfo = seqinfo['errinfo']
+
+        for s in [jobid, url, numseq_str, errinfo, warninfo]:
+            yield s
+#}}}
+
+    @rpc(Unicode,  Unicode, Unicode, Unicode, Unicode, Unicode, _returns=Iterable(Unicode))
+# submitted_remote will be called by the daemon
+# sequences are submitted one by one by the daemon, but the numseq_of_job is
+# for the number of sequences of the whole job submitted to the front end
+# isforcerun is set as string, "true" or "false", case insensitive
+    def submitjob_remote(ctx, seq="", fixtop="", jobname="", email="",#{{{
+            numseq_this_user="", isforcerun=""):
+        seq = seq + "\n" #force add a new line for correct parsing the fasta file
+        (filtered_seq, seqinfo) = ValidateSeq(seq)
+        # ValidateFixtop(fixtop) #to be implemented
+        if numseq_this_user != "" and numseq_this_user.isdigit():
+            seqinfo['numseq_this_user'] = int(numseq_this_user)
+        else:
+            seqinfo['numseq_this_user'] = 1
+
+        numseq_str = "%d"%(seqinfo['numseq'])
+        warninfo = seqinfo['warninfo']
+#         print "\n\nreq\n", dir(ctx.transport.req) #debug
+#         print "\n\n", ctx.transport.req.META['REMOTE_ADDR'] #debug
+#         print "\n\n", ctx.transport.req.META['HTTP_HOST']   #debug
+        jobid = "None"
+        url = "None"
+        if filtered_seq == "":
+            errinfo = seqinfo['errinfo']
+        else:
+            soap_req = ctx.transport.req
+            try:
+                client_ip = soap_req.META['REMOTE_ADDR']
+            except:
+                client_ip = ""
+
+            try:
+                hostname = soap_req.META['HTTP_HOST']
+            except:
+                hostname = ""
+#             print client_ip
+#             print hostname
+            seqinfo['jobname'] = jobname
+            seqinfo['email'] = email
+            seqinfo['fixtop'] = fixtop
+            seqinfo['date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            seqinfo['client_ip'] = client_ip
+            seqinfo['hostname'] = hostname
+            seqinfo['method_submission'] = "wsdl"
+            # for this method, wsdl is called only by the daemon script, isForceRun can be
+            # set by the argument
+            if isforcerun.upper()[:1] == "T":
+                seqinfo['isForceRun'] = True
+            else:
+                seqinfo['isForceRun'] = False
+            jobid = RunQuery_wsdl_local(seq, filtered_seq, seqinfo)
+            if jobid == "":
+                errinfo = "Failed to submit your job to the queue\n"+seqinfo['errinfo']
+            else:
+                log_record = "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n"%(seqinfo['date'], jobid,
+                        seqinfo['client_ip'], seqinfo['numseq'],
+                        len(seq),seqinfo['jobname'], seqinfo['email'],
+                        seqinfo['method_submission'])
+                main_logfile_query = "%s/%s/%s"%(SITE_ROOT, "static/log", "submitted_seq.log")
+                myfunc.WriteFile(log_record, main_logfile_query, "a")
+
+                divided_logfile_query =  "%s/%s/%s"%(SITE_ROOT, "static/log/divided",
+                        "%s_submitted_seq.log"%(seqinfo['client_ip']))
+                if seqinfo['client_ip'] != "":
+                    myfunc.WriteFile(log_record, divided_logfile_query, "a")
+
+                url = "http://" + hostname + BASEURL + "result/%s"%(jobid)
+
+                file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
+                if seqinfo['warninfo'] != "":
+                    myfunc.WriteFile(seqinfo['warninfo'], file_seq_warning, "a")
+                errinfo = seqinfo['errinfo']
+
+        for s in [jobid, url, numseq_str, errinfo, warninfo]:
+            yield s
+#}}}
+
+    @rpc(Unicode, _returns=Iterable(Unicode))
+    def checkjob(ctx, jobid=""):#{{{
+        rstdir = "%s/%s"%(path_result, jobid)
+        soap_req = ctx.transport.req
+        hostname = soap_req.META['HTTP_HOST']
+        result_url = "http://" + hostname + "/static/" + "result/%s/%s.zip"%(jobid, jobid)
+        status = "None"
+        url = ""
+        errinfo = ""
+        if not os.path.exists(rstdir):
+            status = "None"
+            errinfo = "Error! jobid %s does not exist."%(jobid)
+        else:
+            starttagfile = "%s/%s"%(rstdir, "runjob.start")
+            finishtagfile = "%s/%s"%(rstdir, "runjob.finish")
+            failtagfile = "%s/%s"%(rstdir, "runjob.failed")
+            errfile = "%s/%s"%(rstdir, "runjob.err")
+            if os.path.exists(failtagfile):
+                status = "Failed"
+                errinfo = ""
+                if os.path.exists(errfile):
+                    errinfo = myfunc.ReadFile(errfile)
+            elif os.path.exists(finishtagfile):
+                status = "Finished"
+                url = result_url
+                errinfo = ""
+            elif os.path.exists(starttagfile):
+                status = "Running"
+            else:
+                status = "Wait"
+        for s in [status, url, errinfo]:
+            yield s
+#}}}
+    @rpc(Unicode, _returns=Iterable(Unicode))
+    def deletejob(ctx, jobid=""):#{{{
+        rstdir = "%s/%s"%(path_result, jobid)
+        status = "None"
+        errinfo = ""
+        try: 
+            shutil.rmtree(rstdir)
+            status = "Succeeded"
+        except OSError as e:
+            errinfo = str(e)
+            status = "Failed"
+        for s in [status, errinfo]:
+            yield s
+#}}}
+
+class ContainerService_submitseq(ServiceBase):
+    @rpc(Integer, _returns=Container_submitseq)
+    def get_container(ctx, pk):
+        try:
+            return FieldContainer.objects.get(pk=pk)
+        except FieldContainer.DoesNotExist:
+            raise ResourceNotFoundError('Container_submitseq')
+
+    @rpc(Container_submitseq, _returns=Container_submitseq)
+    def create_container(ctx, container):
+        try:
+            return FieldContainer.objects.create(**container.as_dict())
+        except IntegrityError:
+            raise ResourceAlreadyExistsError('Container_submitseq')
+
+class ExceptionHandlingService_submitseq(DjangoServiceBase):
+    """Service for testing exception handling."""
+
+    @rpc(_returns=Container_submitseq)
+    def raise_does_not_exist(ctx):
+        return FieldContainer.objects.get(pk=-1)
+
+    @rpc(_returns=Container_submitseq)
+    def raise_validation_error(ctx):
+        raise ValidationError('Is not valid.')
+
+
+app_submitseq = Application([Service_submitseq, ContainerService_submitseq,
+    ExceptionHandlingService_submitseq], 'pconsc3.bioinfo.se',
+    in_protocol=Soap11(validator='soft'), out_protocol=Soap11())
+#wsgi_app_submitseq = WsgiApplication(app_submitseq)
+
+submitseq_service = csrf_exempt(DjangoApplication(app_submitseq))
+
+#}}}

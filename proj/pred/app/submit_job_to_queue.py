@@ -1,13 +1,5 @@
 #!/usr/bin/env python
 # Description: submit job to queue
-# ChangeLog 2015-03-26 
-#   1. suq ntask is set universally for each node by the qd_topcons2_fe.py
-#   2. priority is re-calculated, considering waiting time and numseq_this_user
-#   in the queue, note that numseq_this_user should be privoded outside of this
-#   script
-# ChangeLog 2015-04-15 
-#   1. if suq submit failed, try MAX_TRY times, sleep 0.05 second for the next
-#   try
 import os
 import sys
 import myfunc
@@ -52,7 +44,7 @@ OPTIONS:
   -nseq-this-user   Number of sequences in the queue submitted by this user
   -h, --help    Print this help message and exit
 
-Created 2015-01-20, updated 2015-03-26, Nanjiang Shu
+Created 2015-01-20, updated 2016-05-04, Nanjiang Shu
 """
 usage_exp="""
 Examples:
@@ -97,21 +89,28 @@ def SubmitJobToQueue(jobid, datapath, outpath, numseq, numseq_this_user, email, 
     if numseq_this_user == -1:
         numseq_this_user = numseq
 
-    runjob = "%s %s/run_job.py"%(python_exec, rundir)
-    scriptfile = "%s/runjobSPLIT%sSPLIT%sSPLIT%sSPLIT%d.sh"%(datapath, jobid, host_ip, email, numseq)
     code_str_list = []
     code_str_list.append("#!/bin/bash")
-    cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
+
+    if not g_params['isRunLocal']:
+        runjob = "%s %s/run_job.py"%(python_exec, rundir)
+        cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
+        if g_params['isForceRun']:
+            cmdline += "-force "
+    else:
+        runjob = "%s %s/run_job_local.py"%(python_exec, rundir)  
+        cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
+        # the local job submitted to remote server is always run, never use cache
+
     if email != "":
         cmdline += "-email \"%s\" "%(email)
     if base_www_url != "":
         cmdline += "-baseurl \"%s\" "%(base_www_url)
-    if g_params['isForceRun']:
-        cmdline += "-force "
-    code_str_list.append(cmdline)
 
+    code_str_list.append(cmdline)
     code = "\n".join(code_str_list)
 
+    scriptfile = "%s/runjobSPLIT%sSPLIT%sSPLIT%sSPLIT%d.sh"%(datapath, jobid, host_ip, email, numseq)
     msg = "Write scriptfile %s"%(scriptfile)
     myfunc.WriteFile(msg+"\n", g_params['debugfile'], "a")
 
@@ -210,6 +209,9 @@ def main(g_params):#{{{
             elif argv[i] in ["-force", "--force"]:
                 g_params['isForceRun'] = True
                 i += 1
+            elif argv[i] in ["-runlocal", "--runlocal"]:
+                g_params['isRunLocal'] = True
+                i += 1
             elif argv[i] in ["-q", "--q"]:
                 g_params['isQuiet'] = True
                 i += 1
@@ -257,6 +259,7 @@ def InitGlobalParameter():#{{{
     g_params = {}
     g_params['isQuiet'] = True
     g_params['isForceRun'] = False
+    g_params['isRunLocal'] = False
     g_params['fperr'] = None
     return g_params
 #}}}

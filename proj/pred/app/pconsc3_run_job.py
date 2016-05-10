@@ -17,7 +17,6 @@ import myfunc
 import glob
 import hashlib
 import shutil
-from datetime import datetime
 
 DEBUG = True
 
