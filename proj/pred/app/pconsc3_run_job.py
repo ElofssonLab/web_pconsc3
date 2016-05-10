@@ -111,6 +111,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     finishtagfile = "%s/runjob.finish"%(outpath)
     split_seq_dir = "%s/splitaa"%(outpath)
     init_torun_idx_file = "%s/init_torun_seqindex.txt"%(outpath)# ordered seq index to run
+    cached_not_finish_idx_file = "%s/cached_not_finish_seqindex.txt"%(outpath)
 
 # note: init_torun_seqindex.txt is created when the job is submitted
 #       torun_seqindex.txt is created later by the queue daemon
@@ -152,6 +153,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
         maplist = []
         maplist_simple = []
         toRunDict = {}
+        cachedNotFinishIndexList = []
         cntFinished = 0
         numseq = 0
         hdl = myfunc.ReadFastaByBlock(infile, method_seqid=0, method_seq=0)
@@ -200,6 +202,9 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
                                     myfunc.WriteFile("\t".join(info_finish)+"\n",
                                             finished_seq_file, "a", isFlush=True)
                                     cntFinished += 1
+                                else:
+                                    cachedNotFinishIndexList.append(str(cnt))
+
 
                     if not isSkip:
                         # first try to delete the outfolder if exists
@@ -227,7 +232,9 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
         for item in sortedlist:
             origIndex = item[0]
             torun_str_list.append(str(origIndex))
+
         myfunc.WriteFile("\n".join(torun_str_list)+"\n", init_torun_idx_file)
+        myfunc.WriteFile("\n".join(cachedNotFinishIndexList)+"\n", cached_not_finish_idx_file)
 
         if len(torun_str_list) > 0 and not os.path.exists(split_seq_dir):
             os.makedirs(split_seq_dir)
@@ -244,35 +251,6 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             seqcontent = ">%s\n%s\n"%(description, seq)
             myfunc.WriteFile(seqcontent, seqfile_this_seq, "w", True)
 
-            md5_key = hashlib.md5(seq).hexdigest()
-            md5_subfoldername = md5_key[:2]
-            subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
-            outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
-            if os.path.exists(outpath_cache):
-                shutil.rmtree(outpath_cache)
-            if not os.path.exists(outpath_cache):
-                os.makedirs(outpath_cache)
-
-            # then create a soft link for md5 to outpath_cache
-            md5_subfolder = "%s/%s"%(path_md5cache, md5_subfoldername)
-            md5_link = "%s/%s/%s"%(path_md5cache, md5_subfoldername, md5_key)
-            if os.path.exists(md5_link):
-                try:
-                    os.unlink(md5_link)
-                except:
-                    pass
-            if not os.path.exists(md5_subfolder):
-                try:
-                    os.makedirs(md5_subfolder)
-                except:
-                    pass
-
-            rela_path = os.path.relpath(outpath_cache, md5_subfolder) #relative path
-            try:
-                os.chdir(md5_subfolder)
-                os.symlink(rela_path,  md5_key)
-            except:
-                pass
 
         all_end_time = time.time()
         all_runtime_in_sec = all_end_time - all_begin_time
