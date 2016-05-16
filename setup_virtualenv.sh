@@ -14,11 +14,11 @@ if [ -f "/usr/local/bin/virtualenv" ];then
 fi
 eval "$exec_virtualenv env"
 source ./env/bin/activate
-pip install --force-reinstall Django==1.6.2
+pip install Django
 pip install pysqlite
 pip install lxml
 pip install suds
-#pip install misc/spyne.github.tar.gz
+pip install misc/spyne.github.tar.gz
 pip install --upgrade requests
 #pip install matplotlib
 
