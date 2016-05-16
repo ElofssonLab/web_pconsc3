@@ -250,7 +250,31 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             seqfile_this_seq = "%s/%s"%(split_seq_dir, "query_%d.fa"%(origIndex))
             seqcontent = ">%s\n%s\n"%(description, seq)
             myfunc.WriteFile(seqcontent, seqfile_this_seq, "w", True)
+            md5_key = hashlib.md5(seq).hexdigest()
+            md5_subfoldername = md5_key[:2]
+            subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
+            outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
+            if not os.path.exists(outpath_cache):
+                os.makedirs(outpath_cache)
 
+            md5_link = "%s/%s/%s"%(path_md5cache, md5_subfoldername, md5_key)
+            md5_subfolder = "%s/%s"%(path_md5cache, md5_subfoldername)
+            if os.path.exists(md5_link):
+                try:
+                    os.unlink(md5_link)
+                except:
+                    pass
+            if not os.path.exists(md5_subfolder):
+                try:
+                    os.makedirs(md5_subfolder)
+                except:
+                    pass
+            rela_path = os.path.relpath(outpath_cache, md5_subfolder) #relative path
+            try:
+                os.chdir(md5_subfolder)
+                os.symlink(rela_path,  md5_key)
+            except:
+                pass
 
         all_end_time = time.time()
         all_runtime_in_sec = all_end_time - all_begin_time
