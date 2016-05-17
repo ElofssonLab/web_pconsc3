@@ -114,7 +114,9 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
 
     cmd = [runscript, infile, tmp_outpath_result]
     g_params['runjob_log'].append(" ".join(cmd))
+    cmdline = " ".join(cmd)
     begin_time = time.time()
+    print "app cmdline: %s"%(cmdline)
     try:
         rmsg = subprocess.check_output(cmd)
         g_params['runjob_log'].append("workflow:\n"+rmsg+"\n")
