@@ -135,8 +135,8 @@ function readfile() {
                 <a href="{{STATIC_URL}}result/{{jobid}}/{{zipfile}}">{{zipfile}}</a>
             </p>
             <p>
-                Predicted topology in FASTA format
-                <a href="{{STATIC_URL}}result/{{jobid}}/{{jobid}}/query.top">query.top</a>
+                Predicted contacts in text format
+                <a href="{{STATIC_URL}}result/{{jobid}}/{{jobid}}/query.pconsc3.txt">query.pconsc3.txt</a>
             </p>
             <p>
                 The sequence(s) you submitted can be found in 
@@ -149,12 +149,6 @@ function readfile() {
                         <td>Total number of protein sequences:</td>
                         <td>{{numseq}}</td>
                     </tr>
-                    {% if num_TMPro >= 0 %}
-                    <tr>
-                        <td>Number of predicted beta-barrel TM proteins:</td> 
-                        <td>{{num_TMPro}} / {{numseq}} ({{per_TMPro}} %)</td>
-                    </tr>
-                    {% endif %}
 
                     <tr></tr>
                     <tr height=40px>

@@ -1056,7 +1056,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
 
         # Now write the text output to a single file
         statfile = "%s/%s"%(outpath_result, "stat.txt")
-        resultfile_text = "%s/%s"%(outpath_result, "query.result.txt")
+        resultfile_text = "%s/%s"%(outpath_result, "query.pconsc3.txt")
         (seqIDList, seqAnnoList, seqList) = myfunc.ReadFasta(seqfile)
         maplist = []
         for i in xrange(len(seqIDList)):
@@ -1066,8 +1066,8 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
         start_date_epoch = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S").strftime('%s')
         all_runtime_in_sec = float(date_str_epoch) - float(start_date_epoch)
 
-        #myfunc.WriteTOPCONSTextResultFile(resultfile_text, outpath_result, maplist,
-        #        all_runtime_in_sec, base_www_url, statfile=statfile)
+        myfunc.WritePconsC3TextResultFile(resultfile_text, outpath_result, maplist,
+                all_runtime_in_sec, base_www_url, statfile=statfile)
 
         # now making zip instead (for windows users)
         # note that zip rq will zip the real data for symbolic links

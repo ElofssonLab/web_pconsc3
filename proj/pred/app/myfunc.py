@@ -2212,6 +2212,51 @@ def WriteTOPCONSTextResultFile(outfile, outpath_result, maplist,#{{{
     except IOError:
         print "Failed to write to file %s"%(outfile)
 #}}}
+def WritePconsC3TextResultFile(outfile, outpath_result, maplist, runtime_in_sec, base_www_url, statfile=""):#{{{
+    try:
+        fpout = open(outfile, "w")
+
+        fpstat = None
+
+        if statfile != "":
+            fpstat = open(statfile, "w")
+
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print >> fpout, "##############################################################################"
+        print >> fpout, "PconsC3 result file"
+        print >> fpout, "Generated from %s at %s"%(base_www_url, date)
+        print >> fpout, "Total request time: %.1f seconds."%(runtime_in_sec)
+        print >> fpout, "##############################################################################"
+
+        cnt = 0
+        for line in maplist:
+            strs = line.split('\t')
+            subfoldername = strs[0]
+            length = int(strs[1])
+            desp = strs[2]
+            seq = strs[3]
+            outpath_this_seq = "%s/%s"%(outpath_result, subfoldername)
+            predfile = "%s/query.hhE0.pconsc3.out"%(outpath_this_seq)
+            g_params['runjob_log'].append("predfile =  %s.\n"%(predfile))
+            print >> fpout, "Sequence number: %d"%(cnt+1)
+            print >> fpout, "Sequence name: %s"%(desp)
+            print >> fpout, "Sequence length: %d aa."%(length)
+            print >> fpout, "Sequence:\n%s\n\n"%(seq)
+            print >> fpout, "Predicted contacts:"
+            print >> fpout, "%-4s %4s %5s"%("Res1", "Res2", "Score")
+
+            if os.path.exists(predfile):
+                content = ReadFile(predfile)
+                fpout.write("%s\n"%(content))
+            else:
+                print >> "***Contact prediction failed***"
+            print >> fpout, "##############################################################################"
+            cnt += 1
+        if fpstat:
+            fpstat.close()
+    except IOError:
+        print "Failed to write to file %s"%(outfile)
+#}}}
 def Sendmail(from_email, to_email, subject, bodytext):#{{{
     sendmail_location = "/usr/sbin/sendmail" # sendmail location
     p = os.popen("%s -t" % sendmail_location, "w")

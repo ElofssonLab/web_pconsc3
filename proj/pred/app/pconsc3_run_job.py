@@ -70,37 +70,6 @@ def PrintHelp(fpout=sys.stdout):#{{{
     print >> fpout, usage_ext
     print >> fpout, usage_exp#}}}
 
-def WriteTextResultFile(outfile, outpath_result, maplist, runtime_in_sec, statfile=""):#{{{
-    try:
-        fpout = open(outfile, "w")
-
-        fpstat = None
-        numTMPro = 0
-
-        if statfile != "":
-            fpstat = open(statfile, "w")
-
-        cnt = 0
-        for line in maplist:
-            strs = line.split('\t')
-            subfoldername = strs[0]
-            length = int(strs[1])
-            desp = strs[2]
-            seq = strs[3]
-            isTMPro = False
-            outpath_this_seq = "%s/%s"%(outpath_result, subfoldername)
-            predfile = "%s/query.hhE0.pconsc3.out"%(outpath_this_seq)
-            g_params['runjob_log'].append("predfile =  %s.\n"%(predfile))
-            if not os.path.exists(predfile):
-                g_params['runjob_log'].append("predfile %s does not exist\n"%(predfile))
-
-            cnt += 1
-
-        if fpstat:
-            fpstat.close()
-    except IOError:
-        print "Failed to write to file %s"%(outfile)
-#}}}
 def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     all_begin_time = time.time()
 
@@ -292,8 +261,8 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
 # now write the text output to a single file
             statfile = "%s/%s"%(outpath_result, "stat.txt")
             dumped_resultfile = "%s/%s"%(outpath_result, "query.pconsc3.txt")
-            WriteTextResultFile(dumped_resultfile, outpath_result, maplist,
-                    all_runtime_in_sec, statfile=statfile)
+            myfunc.WritePconsC3TextResultFile(dumped_resultfile, outpath_result, maplist,
+                    all_runtime_in_sec, base_www_url, statfile=statfile)
 
             os.chdir(outpath)
             cmd = ["zip", "-rq", zipfile, resultpathname]

@@ -249,7 +249,7 @@ def submit_seq(request):#{{{
 
                 # start the qd_fe if not, in the background
                 base_www_url = "http://" + request.META['HTTP_HOST']
-                if base_www_url.find("topcons.net") != -1: #run the daemon only at the frontend
+                if base_www_url.find("bioinfo.se") != -1: #run the daemon only at the frontend
                     cmd = "nohup python %s &"%(qd_fe_scriptfile)
                     os.system(cmd)
 
