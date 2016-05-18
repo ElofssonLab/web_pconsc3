@@ -814,7 +814,7 @@ def GetResult(jobid):#{{{
                             myfunc.WriteFile("[Date: %s] cmdline=%s\nerrmsg=%s\n"%(
                                     date_str, cmdline, str(e)), gen_errfile, "a", True)
                             pass
-                        rst_this_seq = "%s/%s/seq_0"%(tmpdir, remote_jobid)
+                        rst_this_seq = "%s/%s"%(tmpdir, remote_jobid)
                         if os.path.exists(outpath_this_seq) and not os.path.islink(outpath_this_seq):
                             shutil.rmtree(outpath_this_seq)
                         if os.path.exists(rst_this_seq) and not os.path.exists(outpath_this_seq):
@@ -1089,6 +1089,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
 
         if finish_status == "success":
             shutil.rmtree(tmpdir)
+            shutil.rmtree(split_seq_dir)
 
         # send the result to email
         if myfunc.IsValidEmailAddress(email):#{{{
