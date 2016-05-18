@@ -136,7 +136,7 @@ function readfile() {
             </p>
             <p>
                 Predicted contacts in text format
-                <a href="{{STATIC_URL}}result/{{jobid}}/{{jobid}}/query.pconsc3.txt">query.pconsc3.txt</a>
+                <a href="{{STATIC_URL}}result/{{jobid}}/{{jobid}}/{{resultfile}}">{{resultfile}}</a>
             </p>
             <p>
                 The sequence(s) you submitted can be found in 
@@ -221,7 +221,14 @@ function readfile() {
                 (jobname: <b>{{jobname}}</b>)
             {% endif %}
             <p>
-                Zipped folder of your result: not ready
+                Zipped folder of your result: <font color="gray"> not ready</font>
+            </p>
+            <p>
+                Predicted contacts in text format: <font color="gray"> not ready</font>
+            </p>
+            <p>
+                The sequence(s) you submitted can be found in 
+                <a href="{{STATIC_URL}}result/{{jobid}}/{{raw_query_seqfile}}">{{raw_query_seqfile}}</a>
             </p>
             <hr>
             {% if status == "Running" and indexfiletype == "finishedfile" and numseq > 1%}

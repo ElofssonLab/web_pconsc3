@@ -1841,7 +1841,7 @@ def get_results(request, jobid="1"):#{{{
     #url_img1 =  serve(request, os.path.basename(img1), os.path.dirname(img1))
     rstdir = "%s/%s"%(path_result, jobid)
     outpathname = jobid
-    resultfile = "%s/%s/%s/%s"%(rstdir, jobid, outpathname, "query.result.txt")
+    resultfile = "%s/%s/%s/%s"%(rstdir, jobid, outpathname, "query.pconsc3.txt")
     tarball = "%s/%s.tar.gz"%(rstdir, outpathname)
     zipfile = "%s/%s.zip"%(rstdir, outpathname)
     starttagfile = "%s/%s"%(rstdir, "runjob.start")
@@ -2025,22 +2025,6 @@ def get_results(request, jobid="1"):#{{{
         resultdict['num_finished'] = cnt
         num_finished = cnt
         resultdict['percent_finished'] = "%.1f"%(float(cnt)/numseq*100)
-    elif os.path.exists(seqid_index_mapfile):
-        resultdict['index_table_header'] = ["No.", "Length","SequenceName"]
-        index_table_content_list = []
-        indexmap_content = myfunc.ReadFile(seqid_index_mapfile).split("\n")
-        cnt = 0
-        for line in indexmap_content:
-            strs = line.split("\t")
-            if len(strs)>=3:
-                subfolder = strs[0]
-                length_str = strs[1]
-                desp = strs[2]
-                rank = "%d"%(cnt+1)
-                index_table_content_list.append([rank, length_str, desp[:60], subfolder])
-                cnt += 1
-        resultdict['index_table_content_list'] = index_table_content_list
-        resultdict['indexfiletype'] = "indexmap"
     else:
         resultdict['index_table_header'] = []
         resultdict['index_table_content_list'] = []
@@ -2155,7 +2139,8 @@ def get_results_eachseq(request, jobid="1", seqindex="1"):#{{{
     resultdict['numseq'] = numseq
     base_www_url = "http://" + request.META['HTTP_HOST']
 
-    resultfile = "%s/%s/%s/%s"%(rstdir, outpathname, seqindex, "query_topologies.txt")
+    resultfile = "%s/%s/%s/%s"%(rstdir, outpathname, seqindex,
+            "query.fa.hhE0.pconsc3.out")
     if os.path.exists(resultfile):
         resultdict['resultfile'] = os.path.basename(resultfile)
     else:
