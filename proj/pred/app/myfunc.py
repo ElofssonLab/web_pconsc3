@@ -17,7 +17,7 @@ import subprocess
 import requests
 import gzip
 import time
-import datatime
+import datetime
 GAP = "-"
 BLOCK_SIZE = 100000 #set a good value for reading text file by block reading
 
