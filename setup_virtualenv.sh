@@ -14,6 +14,7 @@ if [ -f "/usr/local/bin/virtualenv" ];then
 fi
 eval "$exec_virtualenv env"
 source ./env/bin/activate
+pip install numpy
 pip install Django
 pip install pysqlite
 pip install lxml
