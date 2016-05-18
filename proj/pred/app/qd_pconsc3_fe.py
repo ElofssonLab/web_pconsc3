@@ -665,6 +665,7 @@ def GetResult(jobid):#{{{
     tmpdir = "%s/tmpdir"%(rstdir)
     finished_seq_file = "%s/finished_seqs.txt"%(outpath_result)
     cached_not_finish_idx_file = "%s/cached_not_finish_seqindex.txt"%(rstdir)
+    init_torun_idx_file = "%s/init_torun_seqindex.txt"%(rstdir) #index of seqs that are not cached when submitted to the front end 
 
     finished_info_list = [] #[info for finished record]
     finished_idx_list = [] # [origIndex]
