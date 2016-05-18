@@ -1019,6 +1019,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
     myfunc.WriteFile("CheckIfJobFinished for %s.\n" %(jobid), gen_logfile, "a", True)
     rstdir = "%s/%s"%(path_result, jobid)
     tmpdir = "%s/tmpdir"%(rstdir)
+    split_seq_dir = "%s/splitaa"%(rstdir)
     outpath_result = "%s/%s"%(rstdir, jobid)
     errfile = "%s/%s"%(rstdir, "runjob.err")
     logfile = "%s/%s"%(rstdir, "runjob.log")
