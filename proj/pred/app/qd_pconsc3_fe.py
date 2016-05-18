@@ -1205,7 +1205,7 @@ def RunStatistics(path_result, path_log):#{{{
     finishtime_numseq_dict_web = {}
     finishtime_numseq_dict_wsdl = {}
 
-    for jobid in finished_job_dict:
+    for jobid in finished_job_dict: #{{{
         li = finished_job_dict[jobid]
         numseq = -1
         try:
@@ -1279,7 +1279,7 @@ def RunStatistics(path_result, path_log):#{{{
                     finishtime_numseq_dict_wsdl[numseq].append(finishtime_sec)
 
 
-
+    #}}}
 
     flist = [outfile_numseqjob, outfile_numseqjob_web, outfile_numseqjob_wsdl  ]
     dictlist = [countjob_numseq_dict, countjob_numseq_dict_web, countjob_numseq_dict_wsdl]
@@ -1585,24 +1585,6 @@ def RunStatistics(path_result, path_log):#{{{
     except:
         pass
 
-#4. how many predicted with signal peptide
-    outfile_hasSP = "%s/noSP_hasSP.stat.txt"%(path_stat)
-    content = "%s\t%d\t%f\n%s\t%d\t%f\n"%(
-            "\"Without SP\"", cntseq-cnt_hasSP, myfunc.FloatDivision(cntseq-cnt_hasSP, cntseq),
-            "\"With SP\"", cnt_hasSP, myfunc.FloatDivision(cnt_hasSP, cntseq))
-    myfunc.WriteFile(content, outfile_hasSP, "w", True)
-    cmd = ["%s/app/plot_nosp_sp.sh"%(basedir), outfile_hasSP]
-    cmdline = " ".join(cmd)
-    try:
-        rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError, e:
-        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
-        myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
-            cmdline), gen_errfile, "a", True)
-        pass
-    except:
-        pass
 
 #5. output num-submission time series with different bins (day, week, month, year)
     hdl = myfunc.ReadLineByBlock(submitjoblogfile)
@@ -1623,6 +1605,7 @@ def RunStatistics(path_result, path_log):#{{{
                     numseq = int(strs[3])
                 except:
                     pass
+                method_submission = strs[7]
                 isValidSubmitDate = True
                 try:
                     submit_date = datetime.datetime.strptime(submit_date_str, "%Y-%m-%d %H:%M:%S")
