@@ -1391,9 +1391,10 @@ def RunStatistics(path_result, path_log):#{{{
     longestlength = -1
     mostTM = -1
     longestruntime = -1.0
-    line_longestlength = ""
     line_mostTM = ""
     line_longestruntime = ""
+    line_longestlength = ""
+    line_longestseq = ""
 
 #3. get running time vs sequence length
     cntseq = 0
