@@ -487,6 +487,8 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     split_seq_dir = "%s/splitaa"%(rstdir)
     forceruntagfile = "%s/forcerun"%(rstdir)
 
+    isforcerun = "True" # all jobs submitted to the remote server will run (no cache)
+
     if not os.path.exists(qdinittagfile): #initialization
         if not os.path.exists(tmpdir):
             os.mkdir(tmpdir)
