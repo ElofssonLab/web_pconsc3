@@ -1783,8 +1783,8 @@ def main(g_params):#{{{
                             remotequeueDict[node].append(remotejobid)
 
 
-        if loop % 10 == 0:
-            RunStatistics(path_result, path_log)
+#         if loop % 10 == 0:
+#             RunStatistics(path_result, path_log)
 
         if os.path.exists(gen_logfile):
             myfunc.ArchiveFile(gen_logfile, threshold_logfilesize)
