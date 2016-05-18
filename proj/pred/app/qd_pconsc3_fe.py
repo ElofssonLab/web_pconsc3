@@ -819,6 +819,7 @@ def GetResult(jobid):#{{{
                             shutil.rmtree(outpath_this_seq)
                         if os.path.exists(rst_this_seq) and not os.path.exists(outpath_this_seq):
                             # create or update the md5 cache
+                            myfunc.WriteFile("\tupdate the cache and md5 for seq_%d\n"%(origIndex), gen_logfile, "a", True)
                             md5_key = hashlib.md5(seq).hexdigest()
                             md5_subfoldername = md5_key[:2]
                             subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
@@ -828,6 +829,7 @@ def GetResult(jobid):#{{{
 
                             cmd = ["mv","-f", rst_this_seq, outpath_cache]
                             cmdline = " ".join(cmd)
+                            myfunc.WriteFile("\t%s"%(cmdline), gen_logfile, "a", True)
                             try:
                                 rmsg = subprocess.check_output(cmd)
                             except subprocess.CalledProcessError, e:
