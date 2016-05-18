@@ -892,8 +892,10 @@ def GetResult(jobid):#{{{
                                     logmsg = "Failed to call deletejob %s via WSDL on %s\n"%(remote_jobid, node)
 
                                 # delete the zip file
-                                os.remove(outfile_zip)
-                                shutil.rmtree("%s/%s"%(tmpdir, remote_jobid))
+                                if os.path.exists(outfile_zip):
+                                    os.remove(outfile_zip)
+                                if os.path.exists(rst_this_seq):
+                                    shutil.rmtree(rst_this_seq)
 
 #}}}
                 elif status in ["Failed", "None"]:
