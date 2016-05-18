@@ -2248,9 +2248,11 @@ def WritePconsC3TextResultFile(outfile, outpath_result, maplist, runtime_in_sec,
                 content = ReadFile(predfile)
                 fpout.write("%s\n"%(content))
             else:
-                print >> "***Contact prediction failed***"
+                print >> fpout, "***Contact prediction failed***"
             print >> fpout, "##############################################################################"
             cnt += 1
+
+        fpout.close()
         if fpstat:
             fpstat.close()
     except IOError:
