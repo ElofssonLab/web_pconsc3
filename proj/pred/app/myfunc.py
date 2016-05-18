@@ -17,7 +17,7 @@ import subprocess
 import requests
 import gzip
 import time
-from datetime import datetime
+import datatime
 GAP = "-"
 BLOCK_SIZE = 100000 #set a good value for reading text file by block reading
 
@@ -2097,7 +2097,7 @@ def WriteTOPCONSTextResultFile(outfile, outpath_result, maplist,#{{{
         if statfile != "":
             fpstat = open(statfile, "w")
 
-        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print >> fpout, "##############################################################################"
         print >> fpout, "TOPCONS2 result file"
         print >> fpout, "Generated from %s at %s"%(base_www_url, date)
@@ -2221,7 +2221,7 @@ def WritePconsC3TextResultFile(outfile, outpath_result, maplist, runtime_in_sec,
         if statfile != "":
             fpstat = open(statfile, "w")
 
-        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print >> fpout, "##############################################################################"
         print >> fpout, "PconsC3 result file"
         print >> fpout, "Generated from %s at %s"%(base_www_url, date)
