@@ -2236,7 +2236,7 @@ def WritePconsC3TextResultFile(outfile, outpath_result, maplist, runtime_in_sec,
             desp = strs[2]
             seq = strs[3]
             outpath_this_seq = "%s/%s"%(outpath_result, subfoldername)
-            predfile = "%s/query.hhE0.pconsc3.out"%(outpath_this_seq)
+            predfile = "%s/query.fa.hhE0.pconsc3.out"%(outpath_this_seq)
             print >> fpout, "Sequence number: %d"%(cnt+1)
             print >> fpout, "Sequence name: %s"%(desp)
             print >> fpout, "Sequence length: %d aa."%(length)
