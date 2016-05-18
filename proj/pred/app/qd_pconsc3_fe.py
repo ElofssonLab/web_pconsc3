@@ -1294,30 +1294,8 @@ def RunStatistics(path_result, path_log):#{{{
                 count = sortedlist[j][1]
                 fpout.write("%d\t%d\n"%(nseq,count))
             fpout.close()
-            #plot
-            cmd = ["%s/app/plot_numseq_of_job.sh"%(basedir), outfile]
-            cmdline = " ".join(cmd)
-            try:
-                rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError, e:
-                date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-                myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
-                myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
-                    cmdline), gen_errfile, "a", True)
-                pass
         except IOError:
             continue
-    cmd = ["%s/app/plot_numseq_of_job_mtp.sh"%(basedir), "-web",
-            outfile_numseqjob_web, "-wsdl", outfile_numseqjob_wsdl]
-    cmdline = " ".join(cmd)
-    try:
-        rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError, e:
-        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
-        myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
-            cmdline), gen_errfile, "a", True)
-        pass
 
 # output waittime vs numseq_of_job
 # output finishtime vs numseq_of_job
@@ -1401,31 +1379,9 @@ def RunStatistics(path_result, path_log):#{{{
     flist = flist1
     for i in xrange(len(flist)):
         outfile = flist[i]
-        if os.path.exists(outfile):
-            cmd = ["%s/app/plot_nseq_waitfinishtime.sh"%(basedir), outfile]
-            cmdline = " ".join(cmd)
-            try:
-                rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError, e:
-                date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-                myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
-                myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
-                    cmdline), gen_errfile, "a", True)
-                pass
     flist = flist2+flist3
     for i in xrange(len(flist)):
         outfile = flist[i]
-        if os.path.exists(outfile):
-            cmd = ["%s/app/plot_avg_waitfinishtime.sh"%(basedir), outfile]
-            cmdline = " ".join(cmd)
-            try:
-                rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError, e:
-                date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-                myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
-                myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
-                    cmdline), gen_errfile, "a", True)
-                pass
 
 # get longest predicted seq
 # get query with most TM helics
@@ -1593,6 +1549,8 @@ def RunStatistics(path_result, path_log):#{{{
             myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
                 cmdline), gen_errfile, "a", True)
             pass
+        except:
+            pass
 
     flist = [outfile_runtime, outfile_runtime_pfam, outfile_runtime_cdd,
             outfile_runtime_uniref]
@@ -1608,6 +1566,8 @@ def RunStatistics(path_result, path_log):#{{{
                 myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
                     cmdline), gen_errfile, "a", True)
                 pass
+            except:
+                pass
 
     cmd = ["%s/app/plot_length_runtime_mtp.sh"%(basedir), "-pfam",
             outfile_runtime_pfam, "-cdd", outfile_runtime_cdd, "-uniref",
@@ -1620,6 +1580,8 @@ def RunStatistics(path_result, path_log):#{{{
         myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
         myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
             cmdline), gen_errfile, "a", True)
+        pass
+    except:
         pass
 
 #4. how many predicted with signal peptide
@@ -1637,6 +1599,8 @@ def RunStatistics(path_result, path_log):#{{{
         myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
         myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
             cmdline), gen_errfile, "a", True)
+        pass
+    except:
         pass
 
 #5. output num-submission time series with different bins (day, week, month, year)
@@ -1780,6 +1744,8 @@ def RunStatistics(path_result, path_log):#{{{
                 myfunc.WriteFile("[Date: %s]"%(date_str)+str(e)+"\n", gen_errfile, "a", True)
                 myfunc.WriteFile("[Date: %s] cmdline = %s\n"%(date_str,
                     cmdline), gen_errfile, "a", True)
+                pass
+            except:
                 pass
 
 #}}}
