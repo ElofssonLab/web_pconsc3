@@ -53,6 +53,8 @@ path_log = "%s/static/log"%(SITE_ROOT)
 gen_logfile = "%s/static/log/%s.log"%(SITE_ROOT, progname)
 MAX_ALLOWD_NUMSEQ = 1
 path_result = "%s/static/result"%(SITE_ROOT)
+path_tmp = "%s/static/tmp"%(SITE_ROOT)
+os.environ['PYTHON_EGG_CACHE'] = path_tmp
 
 suq_basedir = "/tmp"
 if os.path.exists("/scratch"):

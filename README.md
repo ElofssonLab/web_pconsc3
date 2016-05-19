@@ -34,6 +34,10 @@ nanjiang.shu@scilifelab.se
     Note: for the release version, you need to create a file with secret key
     and stored at `/etc/django_pro_secret_key.txt`
 
+6.  On the computational node. run 
+    
+    $ virtualenv env --system-site-packages
 
+    to make sure that python can use all other system-wide installed packages
 
 
