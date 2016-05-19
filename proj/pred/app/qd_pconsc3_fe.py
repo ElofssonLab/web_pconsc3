@@ -85,7 +85,7 @@ Description:
 OPTIONS:
   -h, --help    Print this help message and exit
 
-Created 2015-03-25, updated 2015-03-25, Nanjiang Shu
+Created 2016-04-25, updated 2016-05-19, Nanjiang Shu
 """
 usage_exp="""
 """
@@ -97,7 +97,9 @@ path_result = "%s/static/result"%(basedir)
 path_md5cache = "%s/static/md5"%(basedir)
 path_cache = "%s/static/result/cache"%(basedir)
 computenodefile = "%s/static/computenode.txt"%(basedir)
-MAX_SUBMIT_JOB_PER_NODE = 100
+# it takes quite long time to run for a single PconsC3 job, set the max queued
+# number to a small value
+MAX_SUBMIT_JOB_PER_NODE = 10
 gen_errfile = "%s/static/log/%s.err"%(basedir, progname)
 gen_logfile = "%s/static/log/%s.log"%(basedir, progname)
 black_iplist_file = "%s/black_iplist.txt"%(basedir)
