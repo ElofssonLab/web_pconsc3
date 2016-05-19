@@ -117,6 +117,11 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     cmdline = " ".join(cmd)
     begin_time = time.time()
     print "app cmdline: %s"%(cmdline)
+
+    # change the current folder to tmpdir, so that in case the application will
+    # write temp files under the current folder, such as PconsC3
+    os.chdir(tmpdir)
+
     try:
         rmsg = subprocess.check_output(cmd)
         g_params['runjob_log'].append("workflow:\n"+rmsg+"\n")
