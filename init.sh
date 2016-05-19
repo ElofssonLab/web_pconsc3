@@ -53,5 +53,5 @@ sudo chown $user:$group $logfile_submit
 
 # fix the settings.py
 if [ ! -f $rundir/settings.py ];then
-    pushd $rundir; ln -s pro_settings.py settings.py; popd;
+    pushd $rundir/proj; ln -s pro_settings.py settings.py; popd;
 fi
