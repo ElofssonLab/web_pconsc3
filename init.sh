@@ -50,3 +50,8 @@ if [ ! -f $logfile_submit ];then
 fi
 sudo chmod 644 $logfile_submit
 sudo chown $user:$group $logfile_submit
+
+# fix the settings.py
+if [ ! -f $rundir/settings.py ];then
+    pushd $rundir; ln -s pro_settings.py settings.py; popd;
+fi
