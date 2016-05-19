@@ -9,54 +9,54 @@ use Cwd 'abs_path';
 use File::Basename;
 my $rundir = dirname(abs_path(__FILE__));
 # at proj
-my $basedir = "$rundir/../";
+my $basedir = abs_path("$rundir/../");
+my $progname = basename(__FILE__);
+my $logpath = "$basedir/pred/static/log";
+my $errfile = "$logpath/$progname.err";
 my $auth_ip_file = "$basedir/auth_iplist.txt";#ip address which allows to run cgi script
-
-my $suq_exec = "/usr/bin/suq";
+my $suq = "/usr/bin/suq";
+my $suqbase = "/scratch";
 
 print header();
 print start_html(-title => "get suq list",
     -author => "nanjiang.shu\@scilifelab.se",
     -meta   => {'keywords'=>''});
 
-if(!param())
-{
-    print "<pre>\n";
-    print "usage: curl get_suqlist.cgi -d base=suqbasedir \n\n";
-    print "       or in the browser\n\n";
-    print "       get_suqlist.cgi?base=suqbasedir\n\n";
-    print "Example\n";
-    print "       get_suqlist.cgi?base=log\n";
-    print "</pre>\n";
-    print end_html();
+# if(!param())
+# {
+#     print "<pre>\n";
+#     print "usage: curl get_suqlist.cgi -d base=suqbasedir \n\n";
+#     print "       or in the browser\n\n";
+#     print "       get_suqlist.cgi?base=suqbasedir\n\n";
+#     print "Example\n";
+#     print "       get_suqlist.cgi?base=log\n";
+#     print "</pre>\n";
+#     print end_html();
+# }
+my $remote_host = $ENV{'REMOTE_ADDR'};
+
+my @auth_iplist = ();
+open(IN, "<", $auth_ip_file) or die;
+while(<IN>) {
+    chomp;
+    push @auth_iplist, $_;
 }
-if(param())
-{
-    my $suqbase=param('base');
-    my $remote_host = $ENV{'REMOTE_ADDR'};
-    $suqbase = "$basedir/pred/static/$suqbase";
+close IN;
 
-    my @auth_iplist = ();
-    open(IN, "<", $auth_ip_file) or die;
-    while(<IN>) {
-        chomp;
-        push @auth_iplist, $_;
-    }
-    close IN;
+if (grep { $_ eq $remote_host } @auth_iplist) {
+    my $command =  "$suq -b $suqbase ls 2>>$errfile";
+    $suqlist = `$command`;
+    print "<pre>";
+    print "Host IP: $remote_host\n\n";
+    print "command: $command\n\n";
+    print "Suq list:\n\n";
+    print "$suqlist\n";
 
-    if (grep { $_ eq $remote_host } @auth_iplist) {
-        $suqlist = `$suq_exec -b $suqbase ls`;
-        print "<pre>";
-        print "Host IP: $remote_host\n\n";
-        print "Suq list:\n\n";
-        print "$suqlist\n";
-
-        print "</pre>";
-    }else{
-        print "Permission denied!\n";
-    }
-
-    print '<br>';
-    print end_html();
+    print "</pre>";
+}else{
+    print "Permission denied!\n";
 }
+
+print '<br>';
+print end_html();
 
