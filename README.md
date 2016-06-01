@@ -1,9 +1,19 @@
 # Web server for PconsC3
 
+##Note
+
+This django web-server software is suitable for scheduling time consuming
+jobs only at remote computational node.
+
+The IP address of of computational node is set at
+proj/pred/static/computenode.txt, one line per record
+
 ##Author
 Nanjiang Shu
 
-nanjiang.shu@scilifelab.se
+Short-term bioinformatics support at NBIS
+
+Email: nanjiang.shu@scilifelab.se
 
 ## Installation
 

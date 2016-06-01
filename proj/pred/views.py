@@ -1158,7 +1158,7 @@ def get_finished_job(request):#{{{
                 rstdir = "%s/%s"%(path_result, jobid)
                 if jobid in finished_job_dict:
                     status = finished_job_dict[jobid][0]
-                    if status == "Finished":
+                    if status == "Finished" and os.path.exists(rstdir): #check also the existence of folder, 2016-06-01
                         jobRecordList.append(jobid)
                 else:
                     finishtagfile = "%s/%s"%(rstdir, "runjob.finish")
@@ -1313,7 +1313,7 @@ def get_failed_job(request):#{{{
 
                 if jobid in finished_job_dict:
                     status = finished_job_dict[jobid][0]
-                    if status == "Failed":
+                    if status == "Failed" and os.path.exists(rstdir): #check also the existence of folder, 2016-06-01
                         jobRecordList.append(jobid)
                 else:
                     failtagfile = "%s/%s"%(rstdir, "runjob.failed")
