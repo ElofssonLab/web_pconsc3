@@ -1839,8 +1839,6 @@ def get_results(request, jobid="1"):#{{{
     resultdict['client_ip'] = client_ip
 
 
-    #img1 = "%s/%s/%s/%s"%(SITE_ROOT, "result", jobid, "PconsC2.s400.jpg")
-    #url_img1 =  serve(request, os.path.basename(img1), os.path.dirname(img1))
     rstdir = "%s/%s"%(path_result, jobid)
     outpathname = jobid
     resultfile = "%s/%s/%s/%s"%(rstdir, jobid, outpathname, "query.pconsc3.txt")
@@ -1962,6 +1960,11 @@ def get_results(request, jobid="1"):#{{{
     if os.path.exists(file_seq_warning):
         seqwarninfo = myfunc.ReadFile(file_seq_warning)
 
+    subdirname = ""
+    if numseq == 1:
+        subdirname = "seq_0"
+
+    resultdict['subdirname'] = subdirname
     resultdict['file_seq_warning'] = os.path.basename(file_seq_warning)
     resultdict['seqwarninfo'] = seqwarninfo
     resultdict['jobid'] = jobid
@@ -2133,8 +2136,10 @@ def get_results_eachseq(request, jobid="1", seqindex="1"):#{{{
 
     status = ""
 
+    subdirname = "seq_%s"%(seqindex)
     resultdict['jobid'] = jobid
     resultdict['jobname'] = jobname
+    resultdict['subdirname'] = subdirname
     resultdict['outpathname'] = os.path.basename(outpathname)
     resultdict['BASEURL'] = BASEURL
     resultdict['status'] = status
