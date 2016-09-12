@@ -262,7 +262,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             statfile = "%s/%s"%(outpath_result, "stat.txt")
             dumped_resultfile = "%s/%s"%(outpath_result, "query.pconsc3.txt")
             myfunc.WritePconsC3TextResultFile(dumped_resultfile, outpath_result, maplist,
-                    all_runtime_in_sec, base_www_url, statfile=statfile)
+                    all_runtime_in_sec, g_params['base_www_url'], statfile=statfile)
 
             os.chdir(outpath)
             cmd = ["zip", "-rq", zipfile, resultpathname]
