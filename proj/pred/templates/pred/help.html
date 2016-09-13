@@ -25,8 +25,33 @@
         <tr>
           <td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=400></td>
           <td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=50></td>
+          Direct-coupling based contact prediction methods (DCA) enable de-novo
+          structure prediction of proteins with an unprecedented accuracy.
+          However, these methods require thousands of protein sequences to
+          achieve high accuracy, limiting their usability. Here, we introduce
+          PconsC3, a method to accurately predict contacts for families an
+          order of magnitude smaller than feasible with DCA, thus increasing
+          accurate contact predictions from 12% to 54% of all protein domain
+          families with unknown structure.  Input features comprise contact
+          predictions by plmDCA, GaussDCA as well as PhyCMAP, secondary
+          structure prediction by PSIPRED 3.0, and solvent accessibility
+          prediction by NetSurfP 1.1. In PconsC3 PhyCMAP can be replaced by
+          another contact predictor and we have successfully used CMapPro with
+          similar accuracy. Additionally, CD-HIT is run to generate statistics
+          about the alignment (i.e. alignment depth at different sequence
+          similarity cut-offs). The initial layer of PconsC3 takes these
+          features as input and uses a random forest to predict a score for
+          each possible contact. On contrary to previous work, PconsC3 applies
+          pattern recognition already in the first layer. This results in an
+          intermediate contact map. Every following layer uses all the initial
+          features plus the output from the previous layer, given as a window
+          of 11 by 11 residues around the current contact.
         </tr>
         <tr><td>
+                <figure>
+                <img src="{{STATIC_URL}}/images/PconsC3_workflow.png" border=0 width=400 >
+                 <figcaption>Fig. 1: Workflow of PconsC3.</figcaption>
+             </figure>
         </td> </tr>
       </table>
 
@@ -86,8 +111,12 @@
       <tr><td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=400></td>
         <td><img src="{{STATIC_URL}}/images/0.gif" border=0 height=1 width=50></td>
       </tr>
+     <tr><td>
+        Skwark MJ, Michel M, Hurtado DM, Ekeberg M, Elofsson A. "Accurate contact predictions for thousands of protein families using PconsC3."
+     </td></tr>
 
      <tr><td>
+        Skwark MJ, Raimondi D, Michel M, Elofsson A (2014) "Improved Contact Predictions Using the Recognition of Protein Like Contact Patterns." PLoS Computational Biology 10(11).
      </td></tr>
   </table>
 
