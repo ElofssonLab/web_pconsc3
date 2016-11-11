@@ -460,7 +460,9 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     myfunc.WriteFile(msg, gen_logfile, "a", True)
 
     init_torun_idx_file = "%s/init_torun_seqindex.txt"%(rstdir) #index of seqs that are not cached when submitted to the front end 
-    init_toRunIndexList = myfunc.ReadIDList(init_torun_idx_file)
+    init_toRunIndexList = []
+    if os.path.exists(init_torun_idx_file):
+        myfunc.ReadIDList(init_torun_idx_file)
     if len(init_toRunIndexList) <= 0:
         msg = "%s : %s is empty, ignore job submission\n"%(jobid, init_torun_idx_file)
         myfunc.WriteFile(msg, gen_logfile, "a", True)
@@ -955,7 +957,9 @@ def GetResult(jobid):#{{{
 
     # check also for the rest of seqs that are not in init_toRunIndexSet, those
     # are cached, either finished or to be finished by other jobs
-    cachedNotFinishIndexList = myfunc.ReadIDList(cached_not_finish_idx_file)
+    cachedNotFinishIndexList = []
+    if os.path.exists(cached_not_finish_idx_file):
+        cachedNotFinishIndexList = myfunc.ReadIDList(cached_not_finish_idx_file)
     newCachedNotFinishIndexList = []
     for idx in cachedNotFinishIndexList:
         origIndex = int(idx)
@@ -1156,8 +1160,12 @@ def RunStatistics(path_result, path_log):#{{{
     if not os.path.exists(path_stat):
         os.mkdir(path_stat)
 
-    finishedjobidlist = myfunc.ReadIDList2(finishedjoblogfile, col=0, delim="\t")
-    runtime_finishedjobidlist = myfunc.ReadIDList(runtimelogfile_finishedjobid)
+    finishedjobidlist = []
+    runtime_finishedjobidlist = []
+    if os.path.exists(finishedjoblogfile):
+        finishedjobidlist = myfunc.ReadIDList2(finishedjoblogfile, col=0, delim="\t")
+    if os.path.exists(runtimelogfile_finishedjobid):
+        runtime_finishedjobidlist = myfunc.ReadIDList(runtimelogfile_finishedjobid)
     toana_jobidlist = list(set(finishedjobidlist)-set(runtime_finishedjobidlist))
 
     for jobid in toana_jobidlist:
@@ -1754,7 +1762,9 @@ def main(g_params):#{{{
     loop = 0
     while 1:
         date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        avail_computenode_list = myfunc.ReadIDList(computenodefile)
+        avail_computenode_list = []
+        if os.path.exists(computenodefile):
+            avail_computenode_list = myfunc.ReadIDList(computenodefile)
         num_avail_node = len(avail_computenode_list)
         if loop == 0:
             myfunc.WriteFile("[Date: %s] start %s. loop %d\n"%(date_str, progname, loop), gen_logfile, "a", True)
@@ -1766,7 +1776,9 @@ def main(g_params):#{{{
 
         # Get number of jobs submitted to the remote server based on the
         # runjoblogfile
-        runjobidlist = myfunc.ReadIDList2(runjoblogfile,0)
+        runjobidlist = []
+        if os.path.exists(runjoblogfile):
+            runjobidlist = myfunc.ReadIDList2(runjoblogfile,0)
         remotequeueDict = {}
         for node in avail_computenode_list:
             remotequeueDict[node] = []
