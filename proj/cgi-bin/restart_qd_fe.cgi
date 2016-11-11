@@ -8,15 +8,17 @@ use CGI qw(:upload);
 use Cwd 'abs_path';
 use File::Basename;
 my $rundir = dirname(abs_path(__FILE__));
+my $python = abs_path("$rundir/../../env/bin/python");
 # at proj
 my $basedir = abs_path("$rundir/../pred");
 my $auth_ip_file = "$basedir/auth_iplist.txt";#ip address which allows to run cgi script
-my $target_progname = "$basedir/app/qd_pconsc3_fe.py";
-$target_progname = abs_path($target_progname);
+my $name_targetprog = "qd_pconsc3_fe.py";
+my $path_targetprog = "$basedir/app/$name_targetprog";
+$path_targetprog = abs_path($path_targetprog);
 my $progname = basename(__FILE__);
 
 print header();
-print start_html(-title => "restart qd_pconsc3_fe.py",
+print start_html(-title => "restart $name_targetprog",
     -author => "nanjiang.shu\@scilifelab.se",
     -meta   => {'keywords'=>''});
 
@@ -35,13 +37,13 @@ if(!param())
         print "<pre>";
         print "Host IP: $remote_host\n\n";
         print "Already running daemons:\n";
-        my $already_running=`ps aux | grep  "$target_progname" | grep -v grep | grep -v archive_logfile | grep -v vim ` ;
-        my $num_already_running = `echo "$already_running" | grep "$target_progname" | wc -l`;
+        my $already_running=`ps aux | grep  "$path_targetprog" | grep -v grep | grep -v archive_logfile | grep -v vim ` ;
+        my $num_already_running = `echo "$already_running" | grep "$path_targetprog" | wc -l`;
         chomp($num_already_running);
         print $already_running;
         print "num_already_running=$num_already_running\n";
         if ($num_already_running > 0){
-            my $ps_info = `ps aux | grep "$target_progname" | grep -v grep | grep -v vim | grep -v archive_logfile`;
+            my $ps_info = `ps aux | grep "$path_targetprog" | grep -v grep | grep -v vim | grep -v archive_logfile`;
             my @lines = split('\n', $ps_info);
             my @pidlist = ();
             foreach my $line  (@lines){
@@ -59,12 +61,12 @@ if(!param())
         }
         print "\n\nStarting up...";
         my $logfile = "$basedir/static/log/$progname.log";
-        system("$target_progname >> $logfile 2>&1 &");
+        system("$python $path_targetprog >> $logfile 2>&1 &");
 
-        $already_running=`ps aux | grep  "$target_progname" | grep -v vim | grep -v grep | grep -v archive_logfile `;
+        $already_running=`ps aux | grep  "$path_targetprog" | grep -v vim | grep -v grep | grep -v archive_logfile `;
         print "\n\nupdated running daemons:\n";
         print $already_running;
-        print "\n$target_progname restarted\n";
+        print "\n$path_targetprog restarted\n";
 
         print "</pre>";
     }else{
