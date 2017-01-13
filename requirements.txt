@@ -3,7 +3,7 @@ misc/spyne.github.tar.gz
 Django==1.6.2
 pysqlite
 lxml==3.6.0
-suds=0.4
+suds==0.4
 django-eztables
 requests=2.10.0
 
