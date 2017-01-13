@@ -462,7 +462,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     init_torun_idx_file = "%s/init_torun_seqindex.txt"%(rstdir) #index of seqs that are not cached when submitted to the front end 
     init_toRunIndexList = []
     if os.path.exists(init_torun_idx_file):
-        myfunc.ReadIDList(init_torun_idx_file)
+        init_toRunIndexList = myfunc.ReadIDList(init_torun_idx_file)
     if len(init_toRunIndexList) <= 0:
         msg = "%s : %s is empty, ignore job submission\n"%(jobid, init_torun_idx_file)
         myfunc.WriteFile(msg, gen_logfile, "a", True)
