@@ -164,6 +164,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     if (os.path.exists(finishtagfile) and os.path.exists(zipfile_fullpath)):
         isSuccess = True
         shutil.rmtree(tmpdir)
+        shutil.rmtree(outpath_result) #on the computational node, delete the result folder after the zip file is made
     else:
         isSuccess = False
         failtagfile = "%s/runjob.failed"%(outpath)
