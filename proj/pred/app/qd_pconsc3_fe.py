@@ -678,6 +678,8 @@ def GetResult(jobid):#{{{
     failed_idx_list = []    # [origIndex]
     resubmit_idx_list = []  # [origIndex]
     keep_queueline_list = [] # [line] still in queue
+    original_queueline_list = []
+    idxset_queueline_to_remove = set([]) # this is added only on Success retrieval of results or Failed status on the remote server 
 
     cntTryDict = {}
     if os.path.exists(cnttry_idx_file):
@@ -728,6 +730,7 @@ def GetResult(jobid):#{{{
     if text == "":
         return 1
     lines = text.split("\n")
+    original_queueline_list = lines
 
     nodeSet = set([])
     for i in xrange(len(lines)):
@@ -770,6 +773,8 @@ def GetResult(jobid):#{{{
         submit_time_epoch = float(strs[5])
         outpath_this_seq = "%s/%s"%(outpath_result, "seq_%d"%origIndex)
         subfoldername_this_seq = "seq_%d"%(origIndex)
+        isSuccess = False
+        isFinish_remote = False
 
         try:
             myclient = myclientDict[node]
@@ -782,8 +787,6 @@ def GetResult(jobid):#{{{
             myfunc.WriteFile("[Date: %s] Failed to run myclient.service.checkjob(%s)\n"%(date_str, remote_jobid), gen_errfile, "a", True)
             rtValue = []
             pass
-        isSuccess = False
-        isFinish_remote = False
         if len(rtValue) >= 1:
             ss2 = rtValue[0]
             if len(ss2)>=3:
@@ -902,9 +905,10 @@ def GetResult(jobid):#{{{
                                     shutil.rmtree(rst_this_seq)
 
 #}}}
-                elif status in ["Failed", "None"]:
+                elif status in ["Failed"]:
                     # the job is failed for this sequence, try to re-submit
                     isFinish_remote = True
+                    idxset_queueline_to_remove.add(i)
                     cnttry = 1
                     try:
                         cnttry = cntTryDict[int(origIndex)]
@@ -934,6 +938,7 @@ def GetResult(jobid):#{{{
                     date_str = time.strftime("%Y-%m-%d %H:%M:%S")
                     myfunc.WriteFile(date_str, starttagfile, "w", True)
         if isSuccess:#{{{
+            idxset_queueline_to_remove.add(i)
             time_now = time.time()
             runtime = 500
             timefile = "%s/time.txt"%(outpath_this_seq)
@@ -951,8 +956,6 @@ def GetResult(jobid):#{{{
 
             #}}}
 
-        if not isFinish_remote:
-            keep_queueline_list.append(line)
 #}}}
 
     # check also for the rest of seqs that are not in init_toRunIndexSet, those
@@ -1003,6 +1006,10 @@ def GetResult(jobid):#{{{
     if len(resubmit_idx_list)>0:
         myfunc.WriteFile("\n".join(resubmit_idx_list)+"\n", torun_idx_file, "a", True)
 
+
+    for i in xrange(len(original_queueline_list)):
+        if not i in idxset_queueline_to_remove:
+            keep_queueline_list.append(original_queueline_list[i])
 
     if len(keep_queueline_list)>0:
         myfunc.WriteFile("\n".join(keep_queueline_list)+"\n", remotequeue_idx_file, "w", True);
