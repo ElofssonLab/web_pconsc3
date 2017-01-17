@@ -9,7 +9,7 @@ rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 nodefile = "%s/static/computenode.txt"%(basedir)
 resultpath = "%s/static/result"%(basedir)
-runjoblogfile = "%s/static/runjob_log.log"%(basedir)
+runjoblogfile = "%s/static/log/runjob_log.log"%(basedir)
 
 node = myfunc.ReadFile(nodefile).split("\n")[0]
 epochtime = 0.00
