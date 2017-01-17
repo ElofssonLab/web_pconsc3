@@ -54,5 +54,8 @@ for line in lines:
             (remoteid, seqanno) = dt_finished[md5_key]
             txt = "%d\t%s\t%s\t%s\t%s\t%f"%(origIndex, node, remoteid, seqanno, seq, epochtime)
             print remotequeueidx_file, txt
+            myfunc.WriteFile(txt, remotequeueidx_file, "w", True)
+            os.system("sudo chown apache:apache %s"%(remotequeueidx_file))
+
 
 
