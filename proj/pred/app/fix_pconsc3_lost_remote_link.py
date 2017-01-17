@@ -8,6 +8,8 @@ import myfunc
 rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 nodefile = "%s/static/computenode.txt"%(basedir, )
+resultpath = "%s/static/result"
+runjoblogfile = "%s/static/runjob_log.log"
 
 node = myfunc.ReadFile(nodefile).split("\n")[0]
 epochtime = 0.00
@@ -19,8 +21,6 @@ usage:
 
 try:
     finishedfile=sys.argv[1]
-    runjoblogfile=sys.argv[2]
-    resultpath=sys.argv[3]
 except:
     print usage
     sys.exit(1)
@@ -52,7 +52,7 @@ for line in lines:
         origIndex = 0
         if md5_key in dt_finished:
             (remoteid, seqanno) = dt_finished[md5_key]
-            txt = "%d\t%s\t%s\t%s\t%f"%(origIndex, node, remoteid, seqanno, seq, epochtime)
+            txt = "%d\t%s\t%s\t%s\t%s\t%f"%(origIndex, node, remoteid, seqanno, seq, epochtime)
             print remotequeueidx_file, txt
 
 
