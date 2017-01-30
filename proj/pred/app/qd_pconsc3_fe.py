@@ -780,7 +780,7 @@ def GetResult(jobid):#{{{
         isFinish_remote = False
 
         remote_starttagfile = "http://%s/static/result/%s/runjob.start"%(node, remote_jobid)
-        if myfunc.IsURLExist(remote_starttagfile,timeout=5) not os.path.exists(starttagfile):
+        if myfunc.IsURLExist(remote_starttagfile,timeout=5) and not os.path.exists(starttagfile):
             date_str = time.strftime("%Y-%m-%d %H:%M:%S")
             myfunc.WriteFile(date_str, starttagfile, "w", True)
 
