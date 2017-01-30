@@ -660,6 +660,7 @@ def GetResult(jobid):#{{{
     if not os.path.exists(outpath_result):
         os.mkdir(outpath_result)
 
+    failedtagfile = "%s/%s"%(rstdir, "runjob.failed")
     remotequeue_idx_file = "%s/remotequeue_seqindex.txt"%(rstdir)
 
     torun_idx_file = "%s/torun_seqindex.txt"%(rstdir) # ordered seq index to run
@@ -672,6 +673,8 @@ def GetResult(jobid):#{{{
     finished_seq_file = "%s/finished_seqs.txt"%(outpath_result)
     cached_not_finish_idx_file = "%s/cached_not_finish_seqindex.txt"%(rstdir)
     init_torun_idx_file = "%s/init_torun_seqindex.txt"%(rstdir) #index of seqs that are not cached when submitted to the front end 
+
+
 
     finished_info_list = [] #[info for finished record]
     finished_idx_list = [] # [origIndex]
@@ -775,6 +778,11 @@ def GetResult(jobid):#{{{
         subfoldername_this_seq = "seq_%d"%(origIndex)
         isSuccess = False
         isFinish_remote = False
+
+        remote_starttagfile = "http://%s/static/result/%s/runjob.start"%(node, remote_jobid)
+        if myfunc.IsURLExist(remote_starttagfile,timeout=5) not os.path.exists(starttagfile):
+            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+            myfunc.WriteFile(date_str, starttagfile, "w", True)
 
         try:
             myclient = myclientDict[node]
@@ -934,9 +942,6 @@ def GetResult(jobid):#{{{
                             if os.path.exists(md5_link):
                                 os.unlink(md5_link)
 
-                if status != "Wait" and not os.path.exists(starttagfile):
-                    date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-                    myfunc.WriteFile(date_str, starttagfile, "w", True)
         if isSuccess:#{{{
             idxset_queueline_to_remove.add(i)
             time_now = time.time()
@@ -1008,9 +1013,10 @@ def GetResult(jobid):#{{{
 
 
     for i in xrange(len(original_queueline_list)):
-        if not i in idxset_queueline_to_remove:
+        if not i in idxset_queueline_to_remove and original_queueline_list[i] != "":
             keep_queueline_list.append(original_queueline_list[i])
 
+    keep_queueline_list = filter(None, keep_queueline_list)
     if len(keep_queueline_list)>0:
         myfunc.WriteFile("\n".join(keep_queueline_list)+"\n", remotequeue_idx_file, "w", True);
     else:
@@ -1023,6 +1029,10 @@ def GetResult(jobid):#{{{
 
     with open(cnttry_idx_file, 'w') as fpout:
         json.dump(cntTryDict, fpout)
+
+    if not os.path.exists(init_torun_idx_file) or not os.path.exists(cached_not_finish_idx_file):
+        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+        myfunc.WriteFile(date_str, failedtagfile, "w", True)
 
     return 0
 #}}}

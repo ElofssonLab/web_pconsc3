@@ -7,7 +7,13 @@
 # md5_key = hashlib.md5(string).hexdigest()
 # subfolder = md5_key[:2]
 
+# for pconsc3, this script does not run the actual application but just get
+# result from cache
 # 
+# changed 2017-01-30 
+# when a job is submitted to the front-end, runjob.init tag file is created. 
+# runjob.start is created when the actual application is started. 
+# such mode is suitable for jobs that take long time (e.g. 30min) to run
 
 import os
 import sys
@@ -74,7 +80,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     all_begin_time = time.time()
 
     rootname = os.path.basename(os.path.splitext(infile)[0])
-    starttagfile   = "%s/runjob.start"%(outpath)
+    starttagfile   = "%s/runjob.init"%(outpath)
     runjob_errfile = "%s/runjob.err"%(outpath)
     runjob_logfile = "%s/runjob.log"%(outpath)
     finishtagfile = "%s/runjob.finish"%(outpath)
