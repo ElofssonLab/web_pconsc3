@@ -68,7 +68,7 @@ foreach my $computenode(@computenodelist){
     $output=`curl http://$computenode/cgi-bin/clean_blocked_suq.cgi 2>&1 | html2text`;
     if ($output =~ /Try to clean the queue/){
         $title = "Cleaning the queue at $computenode";
-        `curl http://$computenode/cgi-bin/set_suqntask.cgi?ntask=5 `;
+        `curl http://$computenode/cgi-bin/set_suqntask.cgi?ntask=3 `;
         foreach my $to_email(@to_email_list) {
             sendmail($to_email, $from_email, $title, $output);
         }
