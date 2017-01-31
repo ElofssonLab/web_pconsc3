@@ -13,3 +13,9 @@
 # <DATE>  2015-05-06 16:02:24 CEST
 # <TITLE>  Tab news added
 # <CONTENT>  Now you can browse statistics of jobs
+
+<DATE>  2017-01-31 12:08:44 CEST
+<TITLE>  PconsC3 web-server is back to normal
+<CONTENT>  We have encountered some problems with both the queuing system and
+the computational node for the PconsC3 web-server and lots of jobs are queued
+for many days. The problem is solved now and previously submitted jobs will be run gradually.
