@@ -1,10 +1,10 @@
 #!/usr/bin/perl -w
-# Filename:   check_pconsc3.bioinfo.se.pl
+# Filename:  check_web_server.pl
 
-# Description: check whether pconsc3.bioinfo.se is accessable and also check the status
-#              of the qd_pconsc3_fe.pl
+# Description: check whether the web server is accessable and also check the status
+#              of the qd_fe.pl
 
-# Created 2016-05-30, updated 2016-05-30, Nanjiang Shu
+# Created 2016-05-30, updated 2017-02-28, Nanjiang Shu
 
 use File::Temp;
 
@@ -23,52 +23,68 @@ my @to_email_list = (
 
 my $date = localtime();
 print "Date: $date\n";
-my $url = "http://pconsc3.bioinfo.se";
+my $url = "";
+my $servername = "PconsC3";
 my @urllist = ("http://pconsc3.bioinfo.se");
-my $target_qd_script_name = "qd_pconsc3_fe.py";
+my $target_qd_script_name = "qd_fe.py";
 my $computenodelistfile = "$basedir/static/computenode.txt";
+my $alert_emaillist_file = "$basedir/static/alert_email.txt";
 my $from_email = "nanjiang.shu\@scilifelab.se";
 my $title = "";
 my $output = "";
 
+my @to_email_list = ();
+open(IN, "<", $alert_emaillist_file) or die;
+while(<IN>) {
+    chomp;
+    push @to_email_list, $_;
+}
+close IN;
+
+
+my %computenodelist = ();
+open(IN, "<", $computenodelistfile) or die;
+while(<IN>) {
+    chomp;
+    if (substr($_, 0, 1) ne '#'){
+        my @items = split(' ', $_);
+        $computenodelist{$items[0]} = $items[1];
+    }
+}
+close IN;
 foreach $url (@urllist){ 
-# first: check if $url is accessable
+# First: check if the $url is accessable
     if (!head($url)){
-        $title = "$url un-accessible";
+        $title = "[$servername] $url un-accessible";
         $output = "$url un-accessible";
         foreach my $to_email(@to_email_list) {
             sendmail($to_email, $from_email, $title, $output);
         }
     }
 
-# second: check if qd_topcons2_fe.pl running at pcons1.scilifelab.se frontend
+# Second: check if qd is running at the front-end
     my $num_running=`curl $url/cgi-bin/check_qd_fe.cgi 2> /dev/null | html2text | grep  "$target_qd_script_name" | wc -l`;
     chomp($num_running);
 
     if ($num_running < 1){
         $output=`curl $url/cgi-bin/restart_qd_fe.cgi 2>&1 | html2text`;
-        $title = "$target_qd_script_name restarted for $url";
+        $title = "[$servername] $target_qd_script_name restarted for $url";
         foreach my $to_email(@to_email_list) {
             sendmail($to_email, $from_email, $title, $output);
         }
     }
 }
 
-# third, check if the suq queue is blocked at the compute node and try to clean
+# Third, check if the suq queue is blocked at the compute node and try to clean
 # it if blocked
-my @computenodelist = ();
-open(IN, "<", $computenodelistfile) or die;
-while(<IN>) {
-    chomp;
-    push @computenodelist, $_;
-}
-close IN;
-foreach my $computenode(@computenodelist){
+foreach (sort keys %computenodelist){
+    my $computenode = $_;
+    my $max_parallel_job = $computenodelist{$_};
     print "curl http://$computenode/cgi-bin/clean_blocked_suq.cgi 2>&1 | html2text\n";
     $output=`curl http://$computenode/cgi-bin/clean_blocked_suq.cgi 2>&1 | html2text`;
+    `curl http://$computenode/cgi-bin/set_suqntask.cgi?ntask=$max_parallel_job `;
     if ($output =~ /Try to clean the queue/){
-        $title = "Cleaning the queue at $computenode";
-        `curl http://$computenode/cgi-bin/set_suqntask.cgi?ntask=3 `;
+        $title = "[$servername] Cleaning the queue at $computenode";
         foreach my $to_email(@to_email_list) {
             sendmail($to_email, $from_email, $title, $output);
         }

@@ -1809,7 +1809,7 @@ def main(g_params):#{{{
         date_str = time.strftime("%Y-%m-%d %H:%M:%S")
         avail_computenode_list = []
         if os.path.exists(computenodefile):
-            avail_computenode_list = myfunc.ReadIDList(computenodefile)
+            avail_computenode_list = myfunc.ReadIDList2(computenodefile, col=0)
         num_avail_node = len(avail_computenode_list)
         if loop == 0:
             myfunc.WriteFile("[%s] start %s. loop %d\n"%(date_str, progname, loop), gen_logfile, "a", True)
