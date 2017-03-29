@@ -44,6 +44,7 @@ import hashlib
 import subprocess
 from suds.client import Client
 import numpy
+import json
 
 os.environ['TZ'] = 'Europe/Stockholm'
 time.tzset()
