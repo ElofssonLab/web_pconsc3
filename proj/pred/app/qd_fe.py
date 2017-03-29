@@ -1079,6 +1079,9 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
     finishtagfile = "%s/%s"%(rstdir, "runjob.finish")
     failedtagfile = "%s/%s"%(rstdir, "runjob.failed")
     starttagfile = "%s/%s"%(rstdir, "runjob.start")
+    inittagfile = "%s/%s"%(rstdir, "runjob.init")
+    jobinfofile = "%s/jobinfo"%(rstdir)
+
 
     num_processed = len(finished_idx_list)+len(failed_idx_list)
     finish_status = "" #["success", "failed", "partly_failed"]
@@ -1110,7 +1113,18 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
         for i in xrange(len(seqIDList)):
             maplist.append("%s\t%d\t%s\t%s"%("seq_%d"%i, len(seqList[i]),
                 seqAnnoList[i], seqList[i]))
-        start_date_str = myfunc.ReadFile(starttagfile).strip()
+
+        start_date_str = ""
+        if os.path.exists(starttagfile):
+            start_date_str = myfunc.ReadFile(starttagfile).strip()
+        elif os.path.exists(inittagfile):
+            start_date_str =  myfunc.ReadFile(inittagfile).strip()
+        elif os.path.exists(jobinfofile):
+            start_date_str = myfunc.ReadFile(jobinfofile).split("\t")[0]
+        else:
+            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+            start_date_str = date_str
+
         start_date_epoch = datetime.datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S").strftime('%s')
         all_runtime_in_sec = float(date_str_epoch) - float(start_date_epoch)
 
