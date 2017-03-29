@@ -1082,6 +1082,9 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
 
     num_processed = len(finished_idx_list)+len(failed_idx_list)
     finish_status = "" #["success", "failed", "partly_failed"]
+    if g_params['DEBUG']:
+        myfunc.WriteFile("DEBUG: %s num_processed (%d) / numseq (%d)\n"%(jobid,
+            num_processed, numseq), gen_logfile, "a", True)
     if num_processed >= numseq:# finished
         if len(failed_idx_list) == 0:
             finish_status = "success"
