@@ -1906,8 +1906,7 @@ def main(g_params):#{{{
                             if not g_params['DEBUG_NO_SUBMIT']:
                                 SubmitJob(jobid, cntSubmitJobDict, numseq_this_user)
                         GetResult(jobid) # the start tagfile is written when got the first result
-                        if status != "Wait":
-                            CheckIfJobFinished(jobid, numseq, email)
+                        CheckIfJobFinished(jobid, numseq, email)
 
                 lines = hdl.readlines()
             hdl.close()
