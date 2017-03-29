@@ -245,6 +245,8 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
             try:
                 numseq = int(numseq_str)
             except:
+                date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+                myfunc.WriteFile("[%s] field numseq_str(%s) not a number for jobid %s\n"%(date_str, numseq_str, jobid), gen_errfile, "a", True)
                 pass
 
             if jobid in finished_job_dict:
