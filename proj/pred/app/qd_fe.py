@@ -52,12 +52,10 @@ vip_user_list = [
         "nanjiang.shu@scilifelab.se"
         ]
 
-DEBUG = False
-DEBUG_NO_SUBMIT = False
-
 # make sure that only one instance of the script is running
 # this code is working 
 progname = os.path.basename(__file__)
+rootname_progname = os.path.splitext(progname)[0]
 lockname = progname.replace(" ", "").replace("/", "-")
 import fcntl
 lock_file = "/tmp/%s.lock"%(lockname)
@@ -99,11 +97,12 @@ path_cache = "%s/static/result/cache"%(basedir)
 computenodefile = "%s/static/computenode.txt"%(basedir)
 # it takes quite long time to run for a single PconsC3 job, set the max queued
 # number to a small value
-MAX_SUBMIT_JOB_PER_NODE = 10
 gen_errfile = "%s/static/log/%s.err"%(basedir, progname)
 gen_logfile = "%s/static/log/%s.log"%(basedir, progname)
 black_iplist_file = "%s/black_iplist.txt"%(basedir)
-SLEEP_INTERVAL = 20 # sleep interval in seconds
+
+
+
 
 def PrintHelp(fpout=sys.stdout):#{{{
     print >> fpout, usage_short
@@ -563,7 +562,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
                     continue
 
 
-                if DEBUG:
+                if g_params['DEBUG']:
                     myfunc.WriteFile("DEBUG: cnt (%d) < maxnum (%d) "\
                             "and iToRun(%d) < numToRun(%d)"%(cnt, maxnum, iToRun, numToRun), gen_logfile, "a", True)
                 fastaseq = ""
@@ -634,7 +633,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
                 if isSubmitSuccess or cnttry >= MAX_SUBMIT_TRY:
                     iToRun += 1
                     processedIndexSet.add(str(origIndex))
-                    if DEBUG:
+                    if g_params['DEBUG']:
                         myfunc.WriteFile("DEBUG: jobid %s processedIndexSet.add(str(%d))\n"%(jobid, origIndex), gen_logfile, "a", True)
             # update cntSubmitJobDict for this node
             cntSubmitJobDict[node] = [cnt, maxnum]
@@ -647,7 +646,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     for idx in toRunIndexList:
         if not idx in processedIndexSet:
             newToRunIndexList.append(idx)
-    if DEBUG:
+    if g_params['DEBUG']:
         myfunc.WriteFile("DEBUG: jobid %s, newToRunIndexList="%(jobid) + " ".join( newToRunIndexList)+"\n", gen_logfile, "a", True)
 
     if len(newToRunIndexList)>0:
@@ -729,7 +728,7 @@ def GetResult(jobid):#{{{
                     pass
             myfunc.WriteFile("\n".join(torun_idx_str_list)+"\n", torun_idx_file, "w", True)
 
-            if DEBUG:
+            if g_params['DEBUG']:
                 date_str = time.strftime("%Y-%m-%d %H:%M:%S")
                 myfunc.WriteFile("[%s] recreate torun_idx_file: jobid = %s, numseq=%d, len(completed_idx_set)=%d, len(torun_idx_str_list)=%d\n"%(date_str, jobid, numseq, len(completed_idx_set), len(torun_idx_str_list)), gen_logfile, "a", True)
         else:
@@ -769,7 +768,7 @@ def GetResult(jobid):#{{{
     for i in xrange(len(lines)):#{{{
         line = lines[i]
 
-        if DEBUG:
+        if g_params['DEBUG']:
             date_str = time.strftime("%Y-%m-%d %H:%M:%S")
             myfunc.WriteFile("[%s] Process %s\n"%(date_str, line), gen_logfile, "a", True)
         if not line or line[0] == "#":
@@ -1801,6 +1800,17 @@ def RunStatistics(path_result, path_log):#{{{
 #}}}
 
 def main(g_params):#{{{
+
+# load the config file if exists
+    configfile = "%s/config.json"%(basedir)
+    config = {}
+    if os.path.exists(configfile):
+        text = myfunc.ReadFile(configfile)
+        config = json.loads(text)
+
+    if rootname_progname in config:
+        g_params.update(config[rootname_progname])
+
     if os.path.exists(black_iplist_file):
         g_params['blackiplist'] = myfunc.ReadIDList(black_iplist_file)
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
@@ -1859,10 +1869,10 @@ def main(g_params):#{{{
             num_queue_job = len(remotequeueDict[node])
             if num_queue_job >= 0:
                 cntSubmitJobDict[node] = [num_queue_job,
-                        MAX_SUBMIT_JOB_PER_NODE] #[num_queue_job, max_allowed_job]
+                        g_params['MAX_SUBMIT_JOB_PER_NODE']] #[num_queue_job, max_allowed_job]
             else:
-                cntSubmitJobDict[node] = [MAX_SUBMIT_JOB_PER_NODE,
-                        MAX_SUBMIT_JOB_PER_NODE] #[num_queue_job, max_allowed_job]
+                cntSubmitJobDict[node] = [g_params['MAX_SUBMIT_JOB_PER_NODE'],
+                        g_params['MAX_SUBMIT_JOB_PER_NODE']] #[num_queue_job, max_allowed_job]
 
 # entries in runjoblogfile includes jobs in queue or running
         hdl = myfunc.ReadLineByBlock(runjoblogfile)
@@ -1889,7 +1899,7 @@ def main(g_params):#{{{
                         status = strs[1]
 
                         if IsHaveAvailNode(cntSubmitJobDict):
-                            if not DEBUG_NO_SUBMIT:
+                            if not g_params['DEBUG_NO_SUBMIT']:
                                 SubmitJob(jobid, cntSubmitJobDict, numseq_this_user)
                         GetResult(jobid) # the start tagfile is written when got the first result
                         if status != "Wait":
@@ -1899,8 +1909,8 @@ def main(g_params):#{{{
             hdl.close()
 
         date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        myfunc.WriteFile("[%s] sleep for %d seconds\n"%(date_str, SLEEP_INTERVAL), gen_logfile, "a", True)
-        time.sleep(SLEEP_INTERVAL)
+        myfunc.WriteFile("[%s] sleep for %d seconds\n"%(date_str, g_params['SLEEP_INTERVAL']), gen_logfile, "a", True)
+        time.sleep(g_params['SLEEP_INTERVAL'])
         loop += 1
 
 
@@ -1912,6 +1922,10 @@ def InitGlobalParameter():#{{{
     g_params = {}
     g_params['isQuiet'] = True
     g_params['blackiplist'] = []
+    g_params['DEBUG'] = False
+    g_params['DEBUG_NO_SUBMIT'] = False
+    g_params['SLEEP_INTERVAL'] = 20    # sleep interval in seconds
+    g_params['MAX_SUBMIT_JOB_PER_NODE'] = 10
     return g_params
 #}}}
 if __name__ == '__main__' :
