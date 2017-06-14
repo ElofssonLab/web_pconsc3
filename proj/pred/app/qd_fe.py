@@ -250,10 +250,9 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
                 pass
 
             if jobid in finished_job_dict:
-                #if os.path.exists(rstdir): ## do not check if the folder
-                                            ## exists, since the result folder might be cleaned
-                li = [jobid] + finished_job_dict[jobid]
-                new_finished_list.append(li)
+                if os.path.exists(rstdir):
+                    li = [jobid] + finished_job_dict[jobid]
+                    new_finished_list.append(li)
                 continue
 
 
@@ -320,6 +319,17 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
             myfunc.WriteFile("\n".join(li_str)+"\n", divide_finishedjoblogfile, "w", True)
         else:
             myfunc.WriteFile("", divide_finishedjoblogfile, "w", True)
+
+# update allfinished jobs
+    allfinishedjoblogfile = "%s/all_finished_job.log"%(path_log)
+    allfinished_jobid_set = myfunc.ReadIDList2(allfinishedjoblogfile, col=0, delim="\t")
+    li_str = []
+    for li in new_finished_list:
+        jobid = li[0]
+        if not jobid in allfinished_jobid_set:
+            li_str.append("\t".join(li))
+    if len(li_str)>0:
+        myfunc.WriteFile("\n".join(li_str)+"\n", allfinishedjoblogfile, "a", True)
 
 # write logs of running and queuing jobs
 # the queuing jobs are sorted in descending order by the suq priority
@@ -390,7 +400,7 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
 
                             info_finish = [ "seq_%d"%origIndex, str(len(seq)), "newrun", str(runtime), description]
                             finished_info_list.append("\t".join(info_finish))
-                            finished_idx_list.append(str(origIndex))
+                            finished_idx_set.add(str(origIndex))
                 except:
                     date_str = time.strftime("%Y-%m-%d %H:%M:%S")
                     myfunc.WriteFile("[%s] Failed to os.listdir(%s)\n"%(date_str, outpath_result), gen_errfile, "a", True)
@@ -1208,20 +1218,20 @@ def RunStatistics(path_result, path_log):#{{{
 # show also runtime of type and runtime -vs- seqlength
     date_str = time.strftime("%Y-%m-%d %H:%M:%S")
     myfunc.WriteFile("[%s] RunStatistics...\n"%(date_str), gen_logfile, "a", True)
-    finishedjoblogfile = "%s/finished_job.log"%(path_log)
+    allfinishedjoblogfile = "%s/all_finished_job.log"%(path_log)
     runtimelogfile = "%s/jobruntime.log"%(path_log)
     runtimelogfile_finishedjobid = "%s/jobruntime_finishedjobid.log"%(path_log)
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
     if not os.path.exists(path_stat):
         os.mkdir(path_stat)
 
-    finishedjobidlist = []
+    allfinishedjobidlist = []
     runtime_finishedjobidlist = []
-    if os.path.exists(finishedjoblogfile):
-        finishedjobidlist = myfunc.ReadIDList2(finishedjoblogfile, col=0, delim="\t")
+    if os.path.exists(allfinishedjoblogfile):
+        allfinishedjobidlist = myfunc.ReadIDList2(allfinishedjoblogfile, col=0, delim="\t")
     if os.path.exists(runtimelogfile_finishedjobid):
         runtime_finishedjobidlist = myfunc.ReadIDList(runtimelogfile_finishedjobid)
-    toana_jobidlist = list(set(finishedjobidlist)-set(runtime_finishedjobidlist))
+    toana_jobidlist = list(set(allfinishedjobidlist)-set(runtime_finishedjobidlist))
 
     for jobid in toana_jobidlist:
         runtimeloginfolist = []
@@ -1263,7 +1273,7 @@ def RunStatistics(path_result, path_log):#{{{
 #   get numseq_in_job vs waiting time (time_start - time_submit)
 #   get numseq_in_job vs finish time  (time_finish - time_submit)
 
-    finished_job_dict = myfunc.ReadFinishedJobLog(finishedjoblogfile)
+    allfinished_job_dict = myfunc.ReadFinishedJobLog(allfinishedjoblogfile)
     outfile_numseqjob = "%s/numseq_of_job.stat.txt"%(path_stat)
     outfile_numseqjob_web = "%s/numseq_of_job.web.stat.txt"%(path_stat)
     outfile_numseqjob_wsdl = "%s/numseq_of_job.wsdl.stat.txt"%(path_stat)
@@ -1279,8 +1289,8 @@ def RunStatistics(path_result, path_log):#{{{
     finishtime_numseq_dict_web = {}
     finishtime_numseq_dict_wsdl = {}
 
-    for jobid in finished_job_dict: #{{{
-        li = finished_job_dict[jobid]
+    for jobid in allfinished_job_dict: #{{{
+        li = allfinished_job_dict[jobid]
         numseq = -1
         try:
             numseq = int(li[4])
