@@ -830,6 +830,15 @@ def GetResult(jobid):#{{{
                             myfunc.WriteFile(" failed\n", gen_logfile, "a", True)
                             pass
                     if os.path.exists(outfile_zip) and isRetrieveSuccess:
+                        extracted_dir = "%s/%s"%(tmpdir, remote_jobid)
+                        if os.path.exists(extracted_dir):
+                            try:
+                                shutil.rmtree(extracted_dir)
+                            except:
+                                date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+                                myfunc.WriteFile("\t[%s] failed to delete the folder %s\n"%(
+                                    date_str, extracted_dir), gen_errfile, "a", True)
+                                pass
                         cmd = ["unzip", outfile_zip, "-d", tmpdir]
                         cmdline = " ".join(cmd)
                         try:
@@ -850,6 +859,8 @@ def GetResult(jobid):#{{{
                             md5_key = hashlib.md5(seq).hexdigest()
                             md5_subfoldername = md5_key[:2]
                             subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
+                            if not os.path.exists(subfolder_cache):
+                                os.makedirs(subfolder_cache)
                             outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
                             if os.path.exists(outpath_cache):
                                 shutil.rmtree(outpath_cache)
@@ -947,6 +958,8 @@ def GetResult(jobid):#{{{
                             md5_key = hashlib.md5(seq).hexdigest()
                             md5_subfoldername = md5_key[:2]
                             subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
+                            if not os.path.exists(subfolder_cache):
+                                os.makedirs(subfolder_cache)
                             outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
                             md5_subfolder = "%s/%s"%(path_md5cache, md5_subfoldername)
                             md5_link = "%s/%s/%s"%(path_md5cache, md5_subfoldername, md5_key)
