@@ -12,6 +12,7 @@ import sys
 import myfunc
 import datetime
 import tabulate
+import shutil
 def WriteSubconsTextResultFile(outfile, outpath_result, maplist,#{{{
         runtime_in_sec, base_www_url, statfile=""):
     try:
@@ -97,6 +98,36 @@ def GetLocDef(predfile):#{{{
                         loc_def_score = dt_score[loc_def]
 
     return (loc_def, loc_def_score)
+#}}}
+def DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=180):#{{{
+    """
+    Delete jobdirs that are finished > MAX_KEEP_DAYS
+    """
+    finishedjoblogfile = "%s/finished_job.log"%(path_log)
+    finished_job_dict = myfunc.ReadFinishedJobLog(finishedjoblogfile)
+    for jobid in finished_job_dict:
+        li = finished_job_dict[jobid]
+        try:
+            finish_date_str = li[8]
+        except IndexError:
+            finish_date_str = ""
+            pass
+        if finish_date_str != "":
+            isValidFinishDate = True
+            try:
+                finish_date = datetime.datetime.strptime(finish_date_str, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                isValidFinishDate = False
+
+            if isValidFinishDate:
+                current_time = datetime.datetime.now()
+                timeDiff = current_time - finish_date
+                if timeDiff.days > MAX_KEEP_DAYS:
+                    rstdir = "%s/%s"%(path_result, jobid)
+                    date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+                    msg = "\tjobid = %s finished %d days ago (>%d days), delete."%(jobid, timeDiff.days, MAX_KEEP_DAYS)
+                    myfunc.WriteFile("[Date: %s] "%(date_str)+ msg + "\n", gen_logfile, "a", True)
+                    shutil.rmtree(rstdir)
 #}}}
 def IsFrontEndNode(base_www_url):#{{{
     """

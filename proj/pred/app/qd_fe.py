@@ -34,6 +34,7 @@ sys.path.append("%s/env/lib/python2.7/site-packages/"%(webserver_root))
 sys.path.append("/usr/local/lib/python2.7/dist-packages")
 
 import myfunc
+import webserver_common
 import time
 import datetime
 import requests
@@ -1820,23 +1821,25 @@ def RunStatistics(path_result, path_log):#{{{
 
 def main(g_params):#{{{
 
-# load the config file if exists
-    configfile = "%s/config.json"%(basedir)
-    config = {}
-    if os.path.exists(configfile):
-        text = myfunc.ReadFile(configfile)
-        config = json.loads(text)
-
-    if rootname_progname in config:
-        g_params.update(config[rootname_progname])
-
-    if os.path.exists(black_iplist_file):
-        g_params['blackiplist'] = myfunc.ReadIDList(black_iplist_file)
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
     runjoblogfile = "%s/runjob_log.log"%(path_log)
     finishedjoblogfile = "%s/finished_job.log"%(path_log)
     loop = 0
     while 1:
+
+        # load the config file if exists
+        configfile = "%s/config.json"%(basedir)
+        config = {}
+        if os.path.exists(configfile):
+            text = myfunc.ReadFile(configfile)
+            config = json.loads(text)
+
+        if rootname_progname in config:
+            g_params.update(config[rootname_progname])
+
+        if os.path.exists(black_iplist_file):
+            g_params['blackiplist'] = myfunc.ReadIDList(black_iplist_file)
+
         date_str = time.strftime("%Y-%m-%d %H:%M:%S")
         avail_computenode_list = []
         if os.path.exists(computenodefile):
@@ -1873,8 +1876,9 @@ def main(g_params):#{{{
                             remotequeueDict[node].append(remotejobid)
 
 
-#         if loop % 10 == 0:
-#             RunStatistics(path_result, path_log)
+        if loop % 10 == 1:
+            RunStatistics(path_result, path_log)
+            webserver_common.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
 
         if os.path.exists(gen_logfile):
             myfunc.ArchiveFile(gen_logfile, threshold_logfilesize)
@@ -1944,6 +1948,7 @@ def InitGlobalParameter():#{{{
     g_params['DEBUG_NO_SUBMIT'] = False
     g_params['SLEEP_INTERVAL'] = 20    # sleep interval in seconds
     g_params['MAX_SUBMIT_JOB_PER_NODE'] = 10
+    g_params['MAX_KEEP_DAYS'] = 90
     return g_params
 #}}}
 if __name__ == '__main__' :
