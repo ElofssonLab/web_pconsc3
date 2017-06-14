@@ -23,6 +23,7 @@ import myfunc
 import glob
 import hashlib
 import shutil
+import webserver_common
 
 DEBUG = True
 
@@ -39,7 +40,6 @@ runscript = "%s/%s"%(rundir, "soft/pconsc3/run_pconsc3.sh")
 #script_scampi = "%s/%s"%(rundir, "mySCAMPI_run.pl")
 
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
-path_md5cache = "%s/static/md5"%(basedir)
 path_cache = "%s/static/result/cache"%(basedir)
 
 contact_email = "nanjiang.shu@scilifelab.se"
@@ -154,13 +154,14 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
                     if not g_params['isForceRun']:
                         md5_key = hashlib.md5(rd.seq).hexdigest()
                         subfoldername = md5_key[:2]
-                        md5_link = "%s/%s/%s"%(path_md5cache, subfoldername, md5_key)
+                        subfolder_cache = "%s/%s"%(path_cache, subfoldername)
+                        outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
                         if DEBUG:
-                            g_params['runjob_log'].append("md5_link {}\n".format(md5_link))
+                            g_params['runjob_log'].append("outpath_cache {}\n".format(outpath_cache))
 
-                        if os.path.exists(md5_link):
+                        if os.path.exists(outpath_cache):
                             # create a symlink to the cache
-                            rela_path = os.path.relpath(md5_link, outpath_result) #relative path
+                            rela_path = os.path.relpath(outpath_cache, outpath_result) #relative path
                             os.chdir(outpath_result)
                             os.symlink(rela_path, subfoldername_this_seq)
 
@@ -229,27 +230,9 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             md5_subfoldername = md5_key[:2]
             subfolder_cache = "%s/%s"%(path_cache, md5_subfoldername)
             outpath_cache = "%s/%s"%(subfolder_cache, md5_key)
-            if not os.path.exists(outpath_cache):
-                os.makedirs(outpath_cache)
+            if not os.path.exists(subfolder_cache):
+                os.makedirs(subfolder_cache)
 
-            md5_link = "%s/%s/%s"%(path_md5cache, md5_subfoldername, md5_key)
-            md5_subfolder = "%s/%s"%(path_md5cache, md5_subfoldername)
-            if os.path.exists(md5_link):
-                try:
-                    os.unlink(md5_link)
-                except:
-                    pass
-            if not os.path.exists(md5_subfolder):
-                try:
-                    os.makedirs(md5_subfolder)
-                except:
-                    pass
-            rela_path = os.path.relpath(outpath_cache, md5_subfolder) #relative path
-            try:
-                os.chdir(md5_subfolder)
-                os.symlink(rela_path,  md5_key)
-            except:
-                pass
 
         all_end_time = time.time()
         all_runtime_in_sec = all_end_time - all_begin_time
@@ -294,7 +277,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
 
 # send the result to email
 # do not sendmail at the cloud VM
-            if (g_params['base_www_url'].find("topcons.net") != -1 and
+            if (webserver_common.IsFrontEndNode(['base_www_url']) and
                     myfunc.IsValidEmailAddress(email)):
                 from_email = "info@pconsc3.bioinfo.se"
                 to_email = email
