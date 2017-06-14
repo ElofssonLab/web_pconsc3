@@ -70,7 +70,7 @@ except IOError:
 
 contact_email = "nanjiang.shu@scilifelab.se"
 
-threshold_logfilesize = 20*1024*1024
+threshold_logfilesize = 20*1024*1024 #20M
 
 usage_short="""
 Usage: %s
@@ -1880,10 +1880,15 @@ def main(g_params):#{{{
             RunStatistics(path_result, path_log)
             webserver_common.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
 
-        if os.path.exists(gen_logfile):
-            myfunc.ArchiveFile(gen_logfile, threshold_logfilesize)
-        if os.path.exists(gen_errfile):
-            myfunc.ArchiveFile(gen_errfile, threshold_logfilesize)
+        # archive logfile
+        for ff in [gen_logfile, gen_errfile,
+                "%s/restart_qd_fe.cgi.log"%(path_log),
+                "%s/debug.log"%(path_log),
+                "%s/submit_job_to_queue.py.log"%(path_log)
+                ]:
+            if os.path.exists(ff):
+                myfunc.ArchiveFile(ff, threshold_logfilesize)
+
         # For finished jobs, clean data not used for caching
 
         cntSubmitJobDict = {} # format of cntSubmitJobDict {'node_ip': INT, 'node_ip': INT}
