@@ -877,30 +877,8 @@ def GetResult(jobid):#{{{
                                         date_str, cmdline, str(e)), gen_errfile, "a", True)
                                 pass
 
-                            # then create a soft link for md5 to outpath_cache
-                            md5_subfolder = "%s/%s"%(path_md5cache, md5_subfoldername)
-                            md5_link = "%s/%s/%s"%(path_md5cache, md5_subfoldername, md5_key)
-                            if os.path.exists(md5_link):
-                                try:
-                                    os.unlink(md5_link)
-                                except:
-                                    pass
-                            if not os.path.exists(md5_subfolder):
-                                try:
-                                    os.makedirs(md5_subfolder)
-                                except:
-                                    pass
-
-                            rela_path = os.path.relpath(outpath_cache, md5_subfolder) #relative path
-                            try:
-                                os.chdir(md5_subfolder)
-                                os.symlink(rela_path,  md5_key)
-                            except:
-                                pass
-
-                            # then create a softlink to md5_subfolder for outpath_this_seq
-
-                            rela_path = os.path.relpath(md5_link, outpath_result) #relative path
+                            # then create a softlink to outpath_cache for outpath_this_seq
+                            rela_path = os.path.relpath(outpath_cache, outpath_result) #relative path
                             os.chdir(outpath_result)
                             os.symlink(rela_path, subfoldername_this_seq)
 
