@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import logging
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-PARENT_DIR = os.path.realpath("../%s"%(BASE_DIR)
+PARENT_DIR = os.path.realpath("../%s"%(BASE_DIR))
 
 # Application definition
 
