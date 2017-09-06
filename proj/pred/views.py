@@ -545,7 +545,7 @@ def ValidateQuery(request, query):#{{{
         li_badseq_info = []
         for i in xrange(numseq):
             seq = seqRecordList[i][2].strip()
-            anno = seqRecordList[i][1].strip()
+            anno = seqRecordList[i][1].strip().replace('\t', ' ')
             seqid = seqRecordList[i][0].strip()
             seq = seq.upper()
             seq = re.sub("[\s\n\r\t]", '', seq)
