@@ -1,6 +1,6 @@
 # Web server for PconsC3
 
-##Note
+## Note
 
 This django web-server software is suitable for scheduling time consuming
 jobs only at remote computational node.
@@ -8,10 +8,10 @@ jobs only at remote computational node.
 The IP address of of computational node is set at
 proj/pred/static/computenode.txt, one line per record
 
-##Author
+## Author
 Nanjiang Shu
 
-Short-term bioinformatics support at NBIS
+System developer at NBIS
 
 Email: nanjiang.shu@scilifelab.se
 
@@ -45,8 +45,8 @@ Email: nanjiang.shu@scilifelab.se
     and stored at `/etc/django_pro_secret_key.txt`
 
 6.  On the computational node. run 
-    
-    $ virtualenv env --system-site-packages
+
+        $ virtualenv env --system-site-packages
 
     to make sure that python can use all other system-wide installed packages
 
