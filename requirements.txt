@@ -1,19 +1,22 @@
-misc/spyne.github.tar.gz
+spyne==2.13.2-alpha
+requests==2.20.1
+mod-wsgi==4.6.5
+Django==1.11.15
 
-Django==1.6.2
-pysqlite
-lxml==3.6.0
+pysqlite==2.8.3
+lxml==4.2.5
 suds==0.4
-django-eztables
-requests==2.10.0
-
-matplotlib
-numpy
+biopython==1.72
 
 
-python-geoip
-python-geoip-geolite2
+matplotlib==2.2.3
+numpy==1.15.4
+scipy==1.1.0
+
+python-geoip==1.2
+python-geoip-geolite2==2015.0303
 pycountry-nopytest
-pycountry
+pycountry==18.5.26
 
-tabulate==0.7.7
+tabulate==0.8.2
+
