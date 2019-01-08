@@ -1,0 +1,435 @@
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/utils.jl:61
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/utils.jl:61
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/utils.jl:61
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/utils.jl:61
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/utils.jl:61
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.String is deprecated, use AbstractString instead.
+  likely near /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_sym.jl:1
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in plmdca at 
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in plmdca at 
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in plmdca at 
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in call at /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in call at /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl
+WARNING: Base.Nothing is deprecated, use Void instead.
+  likely near /media/storage/PconsC3/PconsC3/runplm.jl:44
+in call at /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in include_string at loading.jl:282
+ in include_from_node1 at ./loading.jl:323
+ in eval at ./sysimg.jl:14
+ in anonymous at multi.jl:1374
+ in anonymous at multi.jl:920
+ in run_work_thunk at multi.jl:661
+ in run_work_thunk at multi.jl:670
+ in anonymous at task.jl:58
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in require at ./loading.jl:253
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in process_options at ./client.jl:280
+ in _start at ./client.jl:378
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in require at ./loading.jl:253
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in process_options at ./client.jl:280
+ in _start at ./client.jl:378
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in require at ./loading.jl:253
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in process_options at ./client.jl:280
+ in _start at ./client.jl:378
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/types.jl, in expression starting on line 18
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in require at ./loading.jl:253
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in process_options at ./client.jl:280
+ in _start at ./client.jl:378
+while loading /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl, in expression starting on line 1
+WARNING: Union(args...) is deprecated, use Union{args...} instead.
+ in depwarn at deprecated.jl:73
+ in call at deprecated.jl:50
+ in plmdca at /var/www/.julia/julia-2ac304dfba/share/julia/site/v0.4/v0.4/PlmDCA/src/plmdca_asym.jl:36
+ in main at /media/storage/PconsC3/PconsC3/runplm.jl:33
+ in include at ./boot.jl:261
+ in include_from_node1 at ./loading.jl:320
+ in process_options at ./client.jl:280
+ in _start at ./client.jl:378
+while loading /media/storage/PconsC3/PconsC3/runplm.jl, in expression starting on line 44
+Using 4 CPUs

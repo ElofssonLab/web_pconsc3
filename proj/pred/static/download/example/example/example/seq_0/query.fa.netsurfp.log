@@ -1,0 +1,85 @@
+2016-09-12 23:16:57.911602: running NetSurfP
+This may take quite a few minutes!
+defined(%hash) is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/FASTA.pm line 369.
+	(Maybe you should just omit the defined()?)
+defined(%hash) is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/FASTA.pm line 372.
+	(Maybe you should just omit the defined()?)
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 11.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 11.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 12.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 13.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 14.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 20.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 20.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 22.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 23.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 30.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 36.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 37.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 39.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 42.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 49.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 104.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 105.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 106.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 110.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 111.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 123.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 124.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 125.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 148.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 154.
+
+# Made temp dir: /tmp/NetSurfP_15761
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/scripts/make_prof.pl -i /tmp/NetSurfP_15761/file.inp -I FASTA -o /tmp/NetSurfP_15761/file.prof -L /tmp/NetSurfP_15761/file.log -a 13 -v -e 1e-05 -d /media/storage/PconsC3/databases/uniref90.fasta -j 4 -t /tmp/NetSurfP_15761 -k
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 11.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 11.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 12.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 13.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 14.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 20.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 20.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 22.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 23.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 30.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 36.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 37.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 39.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 42.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/HOW.pm line 49.
+defined(%hash) is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/FASTA.pm line 369.
+	(Maybe you should just omit the defined()?)
+defined(%hash) is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/FASTA.pm line 372.
+	(Maybe you should just omit the defined()?)
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/nnhowplayer6.Linux_x86_64 -p /tmp/NetSurfP_15761/file.prof -slist -s x /media/storage/PconsC3/dependencies/netsurfp-1.0/data/sec_seq2struc.synlist | grep -v "^#" | /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/nnhowplayer6.Linux_x86_64 -a -- -slist -pc -s x /media/storage/PconsC3/dependencies/netsurfp-1.0/data/sec_struc2struc.synlist | grep -v "^#" | /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/act2prob.Linux_x86_64  -- /media/storage/PconsC3/dependencies/netsurfp-1.0/data/ave_probmat_norm | grep -v "^#" > /tmp/NetSurfP_15761/file.sec
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/nnhowplayer6.Linux_x86_64 -p /tmp/NetSurfP_15761/file.prof -a /tmp/NetSurfP_15761/file.sec -slist -s x /media/storage/PconsC3/dependencies/netsurfp-1.0/data/seq2struc.synlist | grep -v "^#" > /tmp/NetSurfP_15761/netsurfp_seq2struc.out
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/scripts/number2win.pl -i /tmp/NetSurfP_15761/file.prof -j /tmp/NetSurfP_15761/netsurfp_seq2struc.out -w 11 -o /tmp/NetSurfP_15761/prof_inp.11
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 104.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 105.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 106.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 108.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 110.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 111.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 123.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 124.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 125.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 127.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 148.
+Using a hash as a reference is deprecated at /media/storage/PconsC3/dependencies/netsurfp-1.0/modules/ACT.pm line 154.
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/nnrelia_player4.Linux_x86_64 -zf /media/storage/PconsC3/dependencies/netsurfp-1.0/data/struc2struc/synlist_best.A-J.NW11 /tmp/NetSurfP_15761/prof_inp.11 | grep -v "^#" | cut -f3 -d " " > /tmp/NetSurfP_15761/rsa.11
+# executing: /media/storage/PconsC3/dependencies/netsurfp-1.0/bin/nnrelia_player4.Linux_x86_64 -zf /media/storage/PconsC3/dependencies/netsurfp-1.0/data/struc2struc/synlist_best.A-J.NW11 /tmp/NetSurfP_15761/prof_inp.11 | grep -v "^#" | cut -f9 -d " " > /tmp/NetSurfP_15761/rsa_relia.11
+/media/storage/PconsC3/dependencies/netsurfp-1.0/netsurfp -i /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa -a -k -v -d /media/storage/PconsC3/databases/uniref90.fasta

@@ -1,0 +1,95 @@
++ error_file_io='Writing or reading files error!'
++ error_buildfeature='Build feature failed!'
++ error_epad='epad error'
++ error_getfeature='getfeature error'
++ error_rrr='rrr.pl error'
++ error_ilp='Ilp running error!'
++ seqfile=/server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa
+++ basename /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa
+++ sed -e 's/.seq$//'
+++ sed -e 's/.fasta$//'
+++ sed -e 's/.fa$//'
++ seqbase=query_15633
++ '[' /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa '!=' '' ']'
++ case $1 in
++ shift
++ '[' '' '!=' '' ']'
++ '[' 0 -gt 1 ']'
++ pdbid=query_15633
++ '[' -gt 1 ']'
++ BLAST_CPU=1
++ echo '1 : query_15633 : /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa : query_15633'
+1 : query_15633 : /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa : query_15633
++ install_dir=/media/storage/PconsC3/dependencies/phycmap.release
++ export LD_LIBRARY_PATH=:/media/storage/PconsC3/dependencies/phycmap.release/bin
++ LD_LIBRARY_PATH=:/media/storage/PconsC3/dependencies/phycmap.release/bin
++ export BIOPERL_DIR=/media/storage/PconsC3/dependencies/phycmap.release/bin/BioPerl-1.6.1/
++ BIOPERL_DIR=/media/storage/PconsC3/dependencies/phycmap.release/bin/BioPerl-1.6.1/
++ export PDBTOOLS_DIR=/media/storage/PconsC3/dependencies/phycmap.release/bin/pdbtools/
++ PDBTOOLS_DIR=/media/storage/PconsC3/dependencies/phycmap.release/bin/pdbtools/
++ CNFSEARCHDIR=/media/storage/PconsC3/dependencies/phycmap.release/bin/
++ epadCaDir=/media/storage/PconsC3/dependencies/phycmap.release/bin/epad.bin/
++ epadCbDir=/media/storage/PconsC3/dependencies/phycmap.release/bin/epad.cb/
++ bindir=/media/storage/PconsC3/dependencies/phycmap.release/bin
++ pretagdir=/media/storage/PconsC3/dependencies/phycmap.release/bin/Pretag_To_EPAD/
+++ pwd -P
++ currdir=/server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO
+++ echo '$dir=int(rand(100000));$dir=".phycmaptmp.$dir.$ARGV[0]";if(-d $dir||-e $dir){ }else{print $dir}'
+++ perl - query_15633
++ workdir=.phycmaptmp.19146.query_15633
+++ pwd
++ workdir=/server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633
++ mkdir -p /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633
++ '[' 0 -ne 0 ']'
++ cp /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633
+++ basename /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa
++ seqfile=query_15633.fa
++ sendbackdir=
++ [[ 0 == 3 ]]
++ sendbackdir=/server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO
++ cd /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633
++ echo 'PhyCMAP: Generating features...'
+PhyCMAP: Generating features...
++ tgtfile=../query_15633.tgt
++ a3mfile=../query_15633.a3m
++ [[ -f ../query_15633.tgt ]]
++ cd /media/storage/PconsC3/dependencies/phycmap.release/bin/
++ ./buildFeature -i /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633/query_15633.fa -o query_15633.tgt -c 1
++ '[' 0 -ne 0 ']'
++ ln -s /media/storage/PconsC3/dependencies/phycmap.release/bin//query_15633.tgt /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633
++ ln -s /media/storage/PconsC3/dependencies/phycmap.release/bin//tmp/query_15633.a3m /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633/query_15633.a3m
++ '[' 0 -ne 0 ']'
++ tgtfile=query_15633.tgt
++ a3mfile=query_15633.a3m
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/reformat.pl -r -noss query_15633.a3m query_15633.a3m.fasta
++ touch query_15633.rr
++ a2mfile=query_15633.a2m
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/converta3m2a2m.sh query_15633.a3m query_15633.tgt /media/storage/PconsC3/dependencies/phycmap.release/bin
++ '[' 0 -ne 0 ']'
++ '[' 0 -ne 0 ']'
++ bpsfile=query_15633.bps.csv
++ mifile=query_15633.zydi-0
++ moreevfile=query_15633.moreev.csv
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/getProteinFeature -seq query_15633.fa -msa query_15633.a3m.fasta -mifile query_15633.moreev.csv -zy0file query_15633.zydi-0 -bpsfile query_15633.bps.csv
++ '[' 0 -ne 0 ']'
++ echo 'PhyCMAP: Predicting pairwise probabilities...'
+PhyCMAP: Predicting pairwise probabilities...
++ rfpredfile=query_15633.predcb
++ tempoutfile=query_15633.pred.feature
+++ which R
++ a=/usr/bin/R
++ '[' 0 -ne 0 ']'
+++ which R
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/rrr.pl -evfile query_15633.moreev.csv -lib /media/storage/PconsC3/dependencies/phycmap.release/bin/pdbtools/ -pdb query_15633 -act predict -tpl query_15633.tgt -epadca /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633/query_15633.epadca.prob -epadcb /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633/query_15633.epadcb.prob -bps query_15633.bps.csv -mi query_15633.zydi-0 -out query_15633.pred.feature -outfile query_15633.predcb -modelFile /media/storage/PconsC3/dependencies/phycmap.release/bin/model_rf379_24up_cb_new -r_exe /usr/bin/R -methodStr rf379 -featureSetStr 3:379 -Routputfile query_15633.rout
++ '[' 0 -ne 0 ']'
++ echo 'PhyCMAP: Computing the contact map with constraints...'
+PhyCMAP: Computing the contact map with constraints...
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/runsdcp.pipe.sh query_15633 query_15633.predcb query_15633.tgt /media/storage/PconsC3/dependencies/phycmap.release/bin
++ '[' 0 -ne 0 ']'
++ cp /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633/query_15633.rr /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/query_15633.rrunsort
++ head -n5 /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/query_15633.rrunsort
++ sort -n -r -k5
++ /media/storage/PconsC3/dependencies/phycmap.release/bin/rr_format.sh query_15633.rr
++ mv query_15633.rr2 /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/query_15633.rr
++ '[' /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO '!=' /media/storage/PconsC3/dependencies/phycmap.release/test ']'
++ rm -rf /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/.phycmaptmp.19146.query_15633

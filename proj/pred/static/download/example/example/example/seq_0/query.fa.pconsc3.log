@@ -1,0 +1,32 @@
+Doing /server/var/www/web_pconsc3/proj/pred/static/tmp/tmp_M3G3jO/rst_DHr0AU/query_15633.fa.hhE0.pconsc3
+Reading in data
+
+
+Predicting base layer:
+/server/var/www/web_pconsc3/proj/pred/app/soft/pconsc3/PconsC3/predict-parallel.py:327: RuntimeWarning: invalid value encountered in divide
+  leafs.append(leaf[:, 1] / leaf.sum(axis=1))
+
+Predicting convolution layer 1:
+
+Predicting convolution layer 2:
+
+Predicting convolution layer 3:
+
+Predicting convolution layer 4:
+
+Predicting convolution layer 5:
+
+
+Succesfully completed in  3454.3 seconds
+[ 0.93456659  0.82865142  0.44014512 ...,  0.91641787  0.81254726
+  0.92450251]
+[ 0.9397929   0.69508484  0.22803062 ...,  0.93406229  0.7179235
+  0.93814413]
+[ 0.95175862  0.69078518  0.22246808 ...,  0.94224563  0.71040576
+  0.94214239]
+[ 0.94492403  0.70299178  0.21060486 ...,  0.94016045  0.71417761
+  0.93875637]
+[ 0.94820526  0.67801031  0.21909029 ...,  0.94155075  0.68321993
+  0.94063336]
+[ 0.94655938  0.64727275  0.20956198 ...,  0.94033488  0.64903253
+  0.93538373]
