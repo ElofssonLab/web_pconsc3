@@ -82,8 +82,8 @@ from django.views.static import serve
 
 
 #from pred.models import Query
-from pred.models import SubmissionForm
-from pred.models import FieldContainer
+from proj.pred.models import SubmissionForm
+from proj.pred.models import FieldContainer
 from django.template import Context, loader
 
 def index(request):#{{{

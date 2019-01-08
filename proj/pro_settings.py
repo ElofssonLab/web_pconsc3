@@ -27,7 +27,6 @@ with open('/etc/django_pro_secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['localhost', 'pconsc3.bioinfo.se', 'c3.pcons.net', '*.pcons.net', 'dev.pconsc3.bioinfo.se']
 
