@@ -109,8 +109,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     zipfile_fullpath = "%s.zip"%(outpath_result)
     seqlength = myfunc.GetSingleFastaLength(infile)
 
-    datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-    rt_msg = myfunc.WriteFile(datetime, starttagfile)
+    webserver_common.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
 
     cmd = [runscript, infile, tmp_outpath_result]
     g_params['runjob_log'].append(" ".join(cmd))
@@ -147,10 +146,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             pass
 
 
-    datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-    rt_msg = myfunc.WriteFile(datetime, finishtagfile)
-    if rt_msg:
-        g_params['runjob_err'].append(rt_msg)
+    webserver_common.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
 
     os.chdir(outpath)
     cmd = ["zip", "-rq", zipfile, resultpathname]
@@ -168,10 +164,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     else:
         isSuccess = False
         failtagfile = "%s/runjob.failed"%(outpath)
-        datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-        rt_msg = myfunc.WriteFile(datetime, failtagfile)
-        if rt_msg:
-            g_params['runjob_err'].append(rt_msg)
+        webserver_common.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
 
     if len(g_params['runjob_log']) > 0:
         rt_msg = myfunc.WriteFile("\n".join(g_params['runjob_log'])+"\n", runjob_logfile, "w")

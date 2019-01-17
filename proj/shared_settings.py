@@ -112,6 +112,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+TZ = "Europe/Stockholm"
+FORMAT_DATETIME = "%Y-%m-%d %H:%M:%S %Z"
+
 STATIC_URL = '/static/'
 SUPER_USER_LIST = ["admin","nanjiang", "njshu"]
 

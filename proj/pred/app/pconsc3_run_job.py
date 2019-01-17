@@ -135,8 +135,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
         if hdl.failure:
             isOK = False
         else:
-            datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-            rt_msg = myfunc.WriteFile(datetime, starttagfile)
+            webserver_common.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
 
             recordList = hdl.readseq()
             cnt = 0
@@ -241,11 +240,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             isFinished = True
 
         if isFinished:
-            datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-            if os.path.exists(finished_seq_file):
-                rt_msg = myfunc.WriteFile(datetime, finishtagfile)
-                if rt_msg:
-                    g_params['runjob_err'].append(rt_msg)
+            webserver_common.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
 
 # now write the text output to a single file
             statfile = "%s/%s"%(outpath_result, "stat.txt")
@@ -270,10 +265,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             else:
                 isSuccess = False
                 failtagfile = "%s/runjob.failed"%(outpath)
-                datetime = time.strftime("%Y-%m-%d %H:%M:%S")
-                rt_msg = myfunc.WriteFile(datetime, failtagfile)
-                if rt_msg:
-                    g_params['runjob_err'].append(rt_msg)
+                webserver_common.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
 
 # send the result to email
 # do not sendmail at the cloud VM
