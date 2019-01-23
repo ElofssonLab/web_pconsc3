@@ -252,35 +252,6 @@ def RunCmd(cmd, logfile, errfile, verbose=False):# {{{
 
     return (isCmdSuccess, runtime_in_sec)
 # }}}
-def DeleteOldResult(path_result, path_log, logfile, MAX_KEEP_DAYS=180):#{{{
-    """Delete jobdirs that are finished > MAX_KEEP_DAYS
-    """
-    finishedjoblogfile = "%s/finished_job.log"%(path_log)
-    finished_job_dict = myfunc.ReadFinishedJobLog(finishedjoblogfile)
-    for jobid in finished_job_dict:
-        li = finished_job_dict[jobid]
-        try:
-            finish_date_str = li[8]
-        except IndexError:
-            finish_date_str = ""
-            pass
-        if finish_date_str != "":
-            isValidFinishDate = True
-            try:
-                finish_date = datetime_str_to_time(finish_date_str)
-            except ValueError:
-                isValidFinishDate = False
-
-            if isValidFinishDate:
-                current_time = datetime.now(timezone(TZ))
-                timeDiff = current_time - finish_date
-                if timeDiff.days > MAX_KEEP_DAYS:
-                    rstdir = "%s/%s"%(path_result, jobid)
-                    date_str = time.strftime(FORMAT_DATETIME)
-                    msg = "\tjobid = %s finished %d days ago (>%d days), delete."%(jobid, timeDiff.days, MAX_KEEP_DAYS)
-                    myfunc.WriteFile("[%s] "%(date_str)+ msg + "\n", logfile, "a", True)
-                    shutil.rmtree(rstdir)
-#}}}
 def SendEmail_on_finish(jobid, base_www_url, finish_status, name_server, from_email, to_email, contact_email, logfile="", errfile=""):# {{{
     """Send notification email to the user for the web-server, the name
     of the web-server is specified by the var 'name_server'
@@ -687,7 +658,6 @@ def GetJobCounter(info): #{{{
         hdl.close()
     return jobcounter
 #}}}
-
 def GetAverageNewRunTime(finished_seq_file, window=100):#{{{
     """Get average running time of the newrun tasks for the last x number of
 sequences
@@ -721,4 +691,51 @@ sequences
         return avg_newrun_time
 
 
+#}}}
+def DeleteOldResult(path_result, path_log, logfile, MAX_KEEP_DAYS=180):#{{{
+    """Delete jobdirs that are finished > MAX_KEEP_DAYS
+    """
+    finishedjoblogfile = "%s/finished_job.log"%(path_log)
+    finished_job_dict = myfunc.ReadFinishedJobLog(finishedjoblogfile)
+    for jobid in finished_job_dict:
+        li = finished_job_dict[jobid]
+        try:
+            finish_date_str = li[8]
+        except IndexError:
+            finish_date_str = ""
+            pass
+        if finish_date_str != "":
+            isValidFinishDate = True
+            try:
+                finish_date = datetime_str_to_time(finish_date_str)
+            except ValueError:
+                isValidFinishDate = False
+
+            if isValidFinishDate:
+                current_time = datetime.now(timezone(TZ))
+                timeDiff = current_time - finish_date
+                if timeDiff.days > MAX_KEEP_DAYS:
+                    rstdir = "%s/%s"%(path_result, jobid)
+                    date_str = time.strftime(FORMAT_DATETIME)
+                    msg = "\tjobid = %s finished %d days ago (>%d days), delete."%(jobid, timeDiff.days, MAX_KEEP_DAYS)
+                    myfunc.WriteFile("[%s] "%(date_str)+ msg + "\n", logfile, "a", True)
+                    shutil.rmtree(rstdir)
+#}}}
+def CleanServerFile(logfile, errfile):#{{{
+    """Clean old files on the server"""
+# clean tmp files
+    msg = "CleanServerFile..."
+    date_str = time.strftime(FORMAT_DATETIME)
+    myfunc.WriteFile("[%s] %s\n"%(date_str, msg), logfile, "a", True)
+    cmd = ["bash", "%s/clean_server_file.sh"%(rundir)]
+    RunCmd(cmd, logfile, errfile)
+#}}}
+def CleanCachedResult(logfile, errfile):#{{{
+    """Clean outdated cahced results on the server"""
+# clean tmp files
+    msg = "Clean cached results..."
+    date_str = time.strftime(FORMAT_DATETIME)
+    myfunc.WriteFile("[%s] %s\n"%(date_str, msg), logfile, "a", True)
+    cmd = [python_exec, "%s/clean_cached_result.py"%(rundir), "-max-keep-day", "480"]
+    RunCmd(cmd, logfile, errfile)
 #}}}

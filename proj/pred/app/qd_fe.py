@@ -1473,317 +1473,20 @@ def RunStatistics(path_result, path_log):#{{{
     for i in xrange(len(flist)):
         outfile = flist[i]
 
-# get longest predicted seq
-# get query with most TM helics
-# get query takes the longest time
-    extreme_runtimelogfile = "%s/stat/extreme_jobruntime.log"%(path_log)
-
-    longestlength = -1
-    mostTM = -1
-    longestruntime = -1.0
-    line_mostTM = ""
-    line_longestruntime = ""
-    line_longestlength = ""
-    line_longestseq = ""
-
-#3. get running time vs sequence length
-    cntseq = 0
-    cnt_hasSP = 0
-    outfile_runtime = "%s/length_runtime.stat.txt"%(path_stat)
-    outfile_runtime_pfam = "%s/length_runtime.pfam.stat.txt"%(path_stat)
-    outfile_runtime_cdd = "%s/length_runtime.cdd.stat.txt"%(path_stat)
-    outfile_runtime_uniref = "%s/length_runtime.uniref.stat.txt"%(path_stat)
-    outfile_runtime_avg = "%s/length_runtime.stat.avg.txt"%(path_stat)
-    outfile_runtime_pfam_avg = "%s/length_runtime.pfam.stat.avg.txt"%(path_stat)
-    outfile_runtime_cdd_avg = "%s/length_runtime.cdd.stat.avg.txt"%(path_stat)
-    outfile_runtime_uniref_avg = "%s/length_runtime.uniref.stat.avg.txt"%(path_stat)
-    li_length_runtime = []
-    li_length_runtime_pfam = []
-    li_length_runtime_cdd = []
-    li_length_runtime_uniref = []
-    dict_length_runtime = {}
-    dict_length_runtime_pfam = {}
-    dict_length_runtime_cdd = {}
-    dict_length_runtime_uniref = {}
-    li_length_runtime_avg = []
-    li_length_runtime_pfam_avg = []
-    li_length_runtime_cdd_avg = []
-    li_length_runtime_uniref_avg = []
-    hdl = myfunc.ReadLineByBlock(runtimelogfile)
-    if not hdl.failure:
-        lines = hdl.readlines()
-        while lines != None:
-            for line in lines:
-                strs = line.split("\t")
-                if len(strs) < 8:
-                    continue
-                jobid = strs[0]
-                seqidx = strs[1]
-                runtime = -1.0
-                try:
-                    runtime = float(strs[3])
-                except:
-                    pass
-                mtd_profile = strs[4]
-                lengthseq = -1
-                try:
-                    lengthseq = int(strs[5])
-                except:
-                    pass
-
-                numTM = -1
-                try:
-                    numTM = int(strs[6])
-                except:
-                    pass
-                isHasSP = strs[7]
-
-                cntseq += 1
-                if isHasSP == "True":
-                    cnt_hasSP += 1
-
-                if runtime > longestruntime:
-                    line_longestruntime = line
-                    longestruntime = runtime
-                if lengthseq > longestlength:
-                    line_longestseq = line
-                    longestlength = lengthseq
-                if numTM > mostTM:
-                    mostTM = numTM
-                    line_mostTM = line
-
-                if lengthseq != -1:
-                    li_length_runtime.append([lengthseq, runtime])
-                    if lengthseq not in dict_length_runtime:
-                        dict_length_runtime[lengthseq] = []
-                    dict_length_runtime[lengthseq].append(runtime)
-                    if mtd_profile == "pfam":
-                        li_length_runtime_pfam.append([lengthseq, runtime])
-                        if lengthseq not in dict_length_runtime_pfam:
-                            dict_length_runtime_pfam[lengthseq] = []
-                        dict_length_runtime_pfam[lengthseq].append(runtime)
-                    elif mtd_profile == "cdd":
-                        li_length_runtime_cdd.append([lengthseq, runtime])
-                        if lengthseq not in dict_length_runtime_cdd:
-                            dict_length_runtime_cdd[lengthseq] = []
-                        dict_length_runtime_cdd[lengthseq].append(runtime)
-                    elif mtd_profile == "uniref":
-                        li_length_runtime_uniref.append([lengthseq, runtime])
-                        if lengthseq not in dict_length_runtime_uniref:
-                            dict_length_runtime_uniref[lengthseq] = []
-                        dict_length_runtime_uniref[lengthseq].append(runtime)
-            lines = hdl.readlines()
-        hdl.close()
-
-    li_content = []
-    for line in [line_mostTM, line_longestseq, line_longestruntime]:
-        li_content.append(line)
-    myfunc.WriteFile("\n".join(li_content)+"\n", extreme_runtimelogfile, "w", True)
-
-    # get lengthseq -vs- average_runtime
-    dict_list = [dict_length_runtime, dict_length_runtime_pfam, dict_length_runtime_cdd, dict_length_runtime_uniref]
-    li_list = [li_length_runtime_avg, li_length_runtime_pfam_avg, li_length_runtime_cdd_avg, li_length_runtime_uniref_avg]
-    li_sum_runtime = [0.0]*len(dict_list)
-    for i in xrange(len(dict_list)):
-        dt = dict_list[i]
-        li = li_list[i]
-        for lengthseq in dt:
-            avg_runtime = sum(dt[lengthseq])/float(len(dt[lengthseq]))
-            li.append([lengthseq, avg_runtime])
-            li_sum_runtime[i] += sum(dt[lengthseq])
-
-    avg_runtime = myfunc.FloatDivision(li_sum_runtime[0], len(li_length_runtime))
-    avg_runtime_pfam = myfunc.FloatDivision(li_sum_runtime[1], len(li_length_runtime_pfam))
-    avg_runtime_cdd = myfunc.FloatDivision(li_sum_runtime[2], len(li_length_runtime_cdd))
-    avg_runtime_uniref = myfunc.FloatDivision(li_sum_runtime[3], len(li_length_runtime_uniref))
-
-    li_list = [li_length_runtime, li_length_runtime_pfam,
-            li_length_runtime_cdd, li_length_runtime_uniref,
-            li_length_runtime_avg, li_length_runtime_pfam_avg,
-            li_length_runtime_cdd_avg, li_length_runtime_uniref_avg]
-    flist = [outfile_runtime, outfile_runtime_pfam, outfile_runtime_cdd,
-            outfile_runtime_uniref, outfile_runtime_avg,
-            outfile_runtime_pfam_avg, outfile_runtime_cdd_avg,
-            outfile_runtime_uniref_avg]
-    for i in xrange(len(flist)):
-        outfile = flist[i]
-        li = li_list[i]
-        sortedlist = sorted(li, key=lambda x:x[0])
-        try:
-            fpout = open(outfile,"w")
-            for j in xrange(len(sortedlist)):
-                lengthseq = sortedlist[j][0]
-                runtime = sortedlist[j][1]
-                fpout.write("%d\t%f\n"%(lengthseq,runtime))
-            fpout.close()
-        except IOError:
-            continue
-
-    outfile_avg_runtime = "%s/avg_runtime.stat.txt"%(path_stat)
-    try:
-        fpout = open(outfile_avg_runtime,"w")
-        fpout.write("%s\t%f\n"%("All",avg_runtime))
-        fpout.write("%s\t%f\n"%("Pfam",avg_runtime_pfam))
-        fpout.write("%s\t%f\n"%("CDD",avg_runtime_cdd))
-        fpout.write("%s\t%f\n"%("Uniref",avg_runtime_uniref))
-        fpout.close()
-    except IOError:
-        pass
-    if os.path.exists(outfile_avg_runtime):
-        cmd = ["%s/app/plot_avg_runtime.sh"%(basedir), outfile_avg_runtime]
-        webserver_common.RunCmd(cmd, gen_logfile, gen_errfile)
-
-    flist = [outfile_runtime, outfile_runtime_pfam, outfile_runtime_cdd,
-            outfile_runtime_uniref]
-    for outfile in flist:
-        if os.path.exists(outfile):
-            cmd = ["%s/app/plot_length_runtime.sh"%(basedir), outfile]
-            webserver_common.RunCmd(cmd, gen_logfile, gen_errfile)
-
-    cmd = ["%s/app/plot_length_runtime_mtp.sh"%(basedir), "-pfam",
-            outfile_runtime_pfam, "-cdd", outfile_runtime_cdd, "-uniref",
-            outfile_runtime_uniref, "-sep-avg"]
-    webserver_common.RunCmd(cmd, gen_logfile, gen_errfile)
-
-
-#5. output num-submission time series with different bins (day, week, month, year)
-    hdl = myfunc.ReadLineByBlock(submitjoblogfile)
-    dict_submit_day = {}  #["name" numjob, numseq, numjob_web, numseq_web,numjob_wsdl, numseq_wsdl]
-    dict_submit_week = {}
-    dict_submit_month = {}
-    dict_submit_year = {}
-    if not hdl.failure:
-        lines = hdl.readlines()
-        while lines != None:
-            for line in lines:
-                strs = line.split("\t")
-                if len(strs) < 8:
-                    continue
-                submit_date_str = strs[0]
-                numseq = 0
-                try:
-                    numseq = int(strs[3])
-                except:
-                    pass
-                method_submission = strs[7]
-                isValidSubmitDate = True
-                try:
-                    submit_date = webserver_common.datetime_str_to_time(submit_date_str)
-                except ValueError:
-                    isValidSubmitDate = False
-                if isValidSubmitDate:#{{{
-                    day_str = submit_date_str.split()[0]
-                    (beginning_of_week, end_of_week) = myfunc.week_beg_end(submit_date)
-                    week_str = beginning_of_week.strftime("%Y-%m-%d")
-                    month_str = submit_date.strftime("%Y-%b")
-                    year_str = submit_date.year
-                    day = int(day_str.replace("-", ""))
-                    week = int(submit_date.strftime("%Y%V"))
-                    month = int(submit_date.strftime("%Y%m"))
-                    year = int(year_str)
-                    if not day in dict_submit_day:
-                                                #all   web  wsdl
-                        dict_submit_day[day] = [day_str, 0,0,0,0,0,0]
-                    if not week in dict_submit_week:
-                        dict_submit_week[week] = [week_str, 0,0,0,0,0,0]
-                    if not month in dict_submit_month:
-                        dict_submit_month[month] = [month_str, 0,0,0,0,0,0]
-                    if not year in dict_submit_year:
-                        dict_submit_year[year] = [year_str, 0,0,0,0,0,0]
-                    dict_submit_day[day][1] += 1
-                    dict_submit_day[day][2] += numseq
-                    dict_submit_week[week][1] += 1
-                    dict_submit_week[week][2] += numseq
-                    dict_submit_month[month][1] += 1
-                    dict_submit_month[month][2] += numseq
-                    dict_submit_year[year][1] += 1
-                    dict_submit_year[year][2] += numseq
-                    if method_submission == "web":
-                        dict_submit_day[day][3] += 1
-                        dict_submit_day[day][4] += numseq
-                        dict_submit_week[week][3] += 1
-                        dict_submit_week[week][4] += numseq
-                        dict_submit_month[month][3] += 1
-                        dict_submit_month[month][4] += numseq
-                        dict_submit_year[year][3] += 1
-                        dict_submit_year[year][4] += numseq
-                    if method_submission == "wsdl":
-                        dict_submit_day[day][5] += 1
-                        dict_submit_day[day][6] += numseq
-                        dict_submit_week[week][5] += 1
-                        dict_submit_week[week][6] += numseq
-                        dict_submit_month[month][5] += 1
-                        dict_submit_month[month][6] += numseq
-                        dict_submit_year[year][5] += 1
-                        dict_submit_year[year][6] += numseq
-#}}}
-            lines = hdl.readlines()
-        hdl.close()
-
-    li_submit_day = []
-    li_submit_week = []
-    li_submit_month = []
-    li_submit_year = []
-    li_submit_day_web = []
-    li_submit_week_web = []
-    li_submit_month_web = []
-    li_submit_year_web = []
-    li_submit_day_wsdl = []
-    li_submit_week_wsdl = []
-    li_submit_month_wsdl = []
-    li_submit_year_wsdl = []
-    dict_list = [dict_submit_day, dict_submit_week, dict_submit_month, dict_submit_year]
-    li_list = [ li_submit_day, li_submit_week, li_submit_month, li_submit_year,
-            li_submit_day_web, li_submit_week_web, li_submit_month_web, li_submit_year_web,
-            li_submit_day_wsdl, li_submit_week_wsdl, li_submit_month_wsdl, li_submit_year_wsdl
-            ]
-
-    for i in xrange(len(dict_list)):
-        dt = dict_list[i]
-        sortedlist = sorted(dt.items(), key = lambda x:x[0])
-        for j in range(3):
-            li = li_list[j*4+i]
-            k1 = j*2 +1
-            k2 = j*2 +2
-            for kk in xrange(len(sortedlist)):
-                items = sortedlist[kk]
-                if items[1][k1] > 0 or items[1][k2] > 0:
-                    li.append([items[1][0], items[1][k1], items[1][k2]])
-
-    outfile_submit_day = "%s/submit_day.stat.txt"%(path_stat)
-    outfile_submit_week = "%s/submit_week.stat.txt"%(path_stat)
-    outfile_submit_month = "%s/submit_month.stat.txt"%(path_stat)
-    outfile_submit_year = "%s/submit_year.stat.txt"%(path_stat)
-    outfile_submit_day_web = "%s/submit_day_web.stat.txt"%(path_stat)
-    outfile_submit_week_web = "%s/submit_week_web.stat.txt"%(path_stat)
-    outfile_submit_month_web = "%s/submit_month_web.stat.txt"%(path_stat)
-    outfile_submit_year_web = "%s/submit_year_web.stat.txt"%(path_stat)
-    outfile_submit_day_wsdl = "%s/submit_day_wsdl.stat.txt"%(path_stat)
-    outfile_submit_week_wsdl = "%s/submit_week_wsdl.stat.txt"%(path_stat)
-    outfile_submit_month_wsdl = "%s/submit_month_wsdl.stat.txt"%(path_stat)
-    outfile_submit_year_wsdl = "%s/submit_year_wsdl.stat.txt"%(path_stat)
-    flist = [ 
-            outfile_submit_day , outfile_submit_week , outfile_submit_month , outfile_submit_year ,
-            outfile_submit_day_web , outfile_submit_week_web , outfile_submit_month_web , outfile_submit_year_web ,
-            outfile_submit_day_wsdl , outfile_submit_week_wsdl , outfile_submit_month_wsdl , outfile_submit_year_wsdl 
-            ]
-    for i in xrange(len(flist)):
-        outfile = flist[i]
-        li = li_list[i]
-        try:
-            fpout = open(outfile,"w")
-            for j in xrange(len(li)):     # name    njob   nseq
-                fpout.write("%s\t%d\t%d\n"%(li[j][0], li[j][1], li[j][2]))
-            fpout.close()
-        except IOError:
-            pass
-        #plot
-        if os.path.exists(outfile):
-            cmd = ["%s/app/plot_numsubmit.sh"%(basedir), outfile]
-            webserver_common.RunCmd(cmd, gen_logfile, gen_errfile)
-
 #}}}
 
+def ArchiveLogFile():# {{{
+    """Archive some of the log files if they are too big"""
+    flist = [gen_logfile, gen_errfile,
+            "%s/restart_qd_fe.cgi.log"%(path_log),
+            "%s/debug.log"%(path_log),
+            "%s/clean_cached_result.py.log"%(path_log)
+            ]
+
+    for f in flist:
+        if os.path.exists(f):
+            myfunc.ArchiveFile(f, threshold_logfilesize)
+# }}}
 def main(g_params):#{{{
 
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
@@ -1841,19 +1544,14 @@ def main(g_params):#{{{
                             remotequeueDict[node].append(remotejobid)
 
 
-        if loop % 10 == 1:
+        if loop % 500 == 10:
             RunStatistics(path_result, path_log)
             webserver_common.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
+            webserver_common.CleanServerFile(gen_logfile, gen_errfile)
+            webserver_common.CleanCachedResult(gen_logfile, gen_errfile)
 
-        # archive logfile
-        for ff in [gen_logfile, gen_errfile,
-                "%s/restart_qd_fe.cgi.log"%(path_log),
-                "%s/debug.log"%(path_log),
-                "%s/submit_job_to_queue.py.log"%(path_log)
-                ]:
-            if os.path.exists(ff):
-                myfunc.ArchiveFile(ff, threshold_logfilesize)
 
+        ArchiveLogFile()
         # For finished jobs, clean data not used for caching
 
         cntSubmitJobDict = {} # format of cntSubmitJobDict {'node_ip': INT, 'node_ip': INT}
