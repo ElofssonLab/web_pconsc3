@@ -10,6 +10,8 @@
 
 import os
 import sys
+rundir = os.path.dirname(os.path.realpath(__file__))
+webserver_rootdir = os.path.realpath("%s/../../../"%(rundir))
 import myfunc
 import re
 import tabulate
@@ -20,11 +22,11 @@ from pytz import timezone
 import time
 import shutil
 import subprocess
+python_exec = os.path.realpath("%s/env/bin/python"%(webserver_rootdir))
 
 TZ = "Europe/Stockholm"
 FORMAT_DATETIME = "%Y-%m-%d %H:%M:%S %Z"
 
-rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 path_log = "%s/static/log"%(basedir)
 path_stat = "%s/stat"%(path_log)
