@@ -473,19 +473,19 @@ def get_queue(request):#{{{
 
     status = "Queued"
     info['header'] = ["No.", "JobID","JobName", "NumSeq", "Email",
-            "QueueTime","RunTime", "Date", "Source"]
+            "QueueTime", "RunTime", "Date", "Source"]
     if info['isSuperUser']:
-        info['header'].insert(6, "Host")
+        info['header'].insert(5, "Host")
 
     hdl = myfunc.ReadLineByBlock(info['divided_logfile_query'])
     if hdl.failure:
         info['errmsg'] = ""
         pass
     else:
-        finished_jobid_list = []
+        finished_jobinfo_list = []
         if os.path.exists(info['divided_logfile_finished_jobid']):
-            finished_jobid_list = myfunc.ReadIDList2(info['divided_logfile_finished_jobid'], 0, None)
-        finished_jobid_set = set(finished_jobid_list)
+            finished_jobinfo_list = myfunc.ReadIDList2(info['divided_logfile_finished_jobid'], 0, None)
+        finished_jobid_set = set(finished_jobinfo_list)
         jobRecordList = []
         lines = hdl.readlines()
         current_time = datetime.now(timezone(TZ))
@@ -513,7 +513,7 @@ def get_queue(request):#{{{
             lines = hdl.readlines()
         hdl.close()
 
-        jobid_inqueue_list = []
+        jobinfo_list = []
         rank = 0
         for jobid in jobRecordList:
             rank += 1
@@ -551,17 +551,13 @@ def get_queue(request):#{{{
             if isValidSubmitDate:
                 queuetime = myfunc.date_diff(submit_date, current_time)
 
+            row_content =  [rank, jobid, jobname[:20], numseq, email,
+                    queuetime, runtime, submit_date_str, method_submission]
             if info['isSuperUser']:
-                jobid_inqueue_list.append([rank, jobid, jobname[:20],
-                    numseq, email, ip, queuetime, runtime,
-                    submit_date_str, method_submission])
-            else:
-                jobid_inqueue_list.append([rank, jobid, jobname[:20],
-                    numseq, email, queuetime, runtime,
-                    submit_date_str, method_submission])
+                row_content.insert(5, ip)
+            jobinfo_list.append(row_content)
 
-
-        info['content'] = jobid_inqueue_list
+        info['content'] = jobinfo_list
 
     info['jobcounter'] = webserver_common.GetJobCounter(info)
     return render(request, 'pred/queue.html', info)
@@ -572,10 +568,10 @@ def get_running(request):#{{{
     status = "Running"
     info = {}
     set_basic_config(request, info)
-    info['header'] = ["No.", "JobID","JobName", "NumSeq","NumFinish", "Email", "Method", 
-            "QueueTime","RunTime", "Date", "Source"]
+    info['header'] = ["No.", "JobID", "JobName", "NumSeq", "Email",
+            "QueueTime", "RunTime", "Date", "Source"]
     if info['isSuperUser']:
-        info['header'].insert(6, "Host")
+        info['header'].insert(5, "Host")
 
 
     hdl = myfunc.ReadLineByBlock(info['divided_logfile_query'])
@@ -583,10 +579,10 @@ def get_running(request):#{{{
         info['errmsg'] = ""
         pass
     else:
-        finished_jobid_list = []
+        finished_jobinfo_list = []
         if os.path.exists(info['divided_logfile_finished_jobid']):
-            finished_jobid_list = myfunc.ReadIDList2(info['divided_logfile_finished_jobid'], 0, None)
-        finished_jobid_set = set(finished_jobid_list)
+            finished_jobinfo_list = myfunc.ReadIDList2(info['divided_logfile_finished_jobid'], 0, None)
+        finished_jobid_set = set(finished_jobinfo_list)
         jobRecordList = []
         lines = hdl.readlines()
         current_time = datetime.now(timezone(TZ))
@@ -612,7 +608,7 @@ def get_running(request):#{{{
             lines = hdl.readlines()
         hdl.close()
 
-        jobid_inqueue_list = []
+        jobinfo_list = []
         rank = 0
         for jobid in jobRecordList:
             rank += 1
@@ -659,15 +655,12 @@ def get_running(request):#{{{
             if isValidStartDate and isValidSubmitDate:
                 queuetime = myfunc.date_diff(submit_date, start_date)
 
+            row_content =  [rank, jobid, jobname[:20], numseq, email,
+                    queuetime, runtime, submit_date_str, method_submission]
             if info['isSuperUser']:
-                jobid_inqueue_list.append([rank, jobid, jobname[:20],
-                    numseq, email, ip, queuetime, runtime,
-                    submit_date_str, method_submission])
-            else:
-                jobid_inqueue_list.append([rank, jobid, jobname[:20],
-                    numseq, email, queuetime, runtime,
-                    submit_date_str, method_submission])
-        info['content'] = jobid_inqueue_list
+                row_content.insert(5, ip)
+            jobinfo_list.append(row_content)
+        info['content'] = jobinfo_list
 
     info['jobcounter'] = webserver_common.GetJobCounter(info)
     return render(request, 'pred/running.html', info)
@@ -679,7 +672,7 @@ def get_finished_job(request):#{{{
     info['header'] = ["No.", "JobID","JobName", "NumSeq", "Email",
             "QueueTime","RunTime", "Date", "Source"]
     if info['isSuperUser']:
-        info['header'].insert(6, "Host")
+        info['header'].insert(5, "Host")
 
     hdl = myfunc.ReadLineByBlock(info['divided_logfile_query'])
     if hdl.failure:
@@ -726,7 +719,7 @@ def get_finished_job(request):#{{{
             lines = hdl.readlines()
         hdl.close()
 
-        finished_job_info_list = []
+        jobinfo_list = []
         rank = 0
         for jobid in jobRecordList:
             rank += 1
@@ -790,16 +783,13 @@ def get_finished_job(request):#{{{
             if isValidSubmitDate and isValidStartDate:
                 queuetime = myfunc.date_diff(submit_date, start_date)
 
+            row_content =  [rank, jobid, jobname[:20], numseq, email,
+                    queuetime, runtime, submit_date_str, method_submission]
             if info['isSuperUser']:
-                finished_job_info_list.append([rank, jobid, jobname[:20],
-                    str(numseq), email, ip, queuetime, runtime, submit_date_str,
-                    method_submission])
-            else:
-                finished_job_info_list.append([rank, jobid, jobname[:20],
-                    str(numseq), email, queuetime, runtime, submit_date_str,
-                    method_submission])
+                row_content.insert(5, ip)
+            jobinfo_list.append(row_content)
 
-        info['content'] = finished_job_info_list
+        info['content'] = jobinfo_list
 
     info['jobcounter'] = webserver_common.GetJobCounter(info)
     return render(request, 'pred/finished_job.html', info)
@@ -807,10 +797,10 @@ def get_finished_job(request):#{{{
 def get_failed_job(request):#{{{
     info = {}
     set_basic_config(request, info)
-    info['header'] = ["No.", "JobID","JobName", "NumSeq", "Email", "Method",
+    info['header'] = ["No.", "JobID","JobName", "NumSeq", "Email",
             "QueueTime","RunTime", "Date", "Source"]
     if info['isSuperUser']:
-        info['header'].insert(6, "Host")
+        info['header'].insert(5, "Host")
 
     hdl = myfunc.ReadLineByBlock(info['divided_logfile_query'])
     if hdl.failure:
@@ -850,7 +840,7 @@ def get_failed_job(request):#{{{
         hdl.close()
 
 
-        failed_job_info_list = []
+        jobinfo_list = []
         rank = 0
         for jobid in jobRecordList:
             rank += 1
@@ -916,16 +906,13 @@ def get_failed_job(request):#{{{
             if isValidSubmitDate and isValidStartDate:
                 queuetime = myfunc.date_diff(submit_date, start_date)
 
+            row_content =  [rank, jobid, jobname[:20], numseq, email,
+                    queuetime, runtime, submit_date_str, method_submission]
             if info['isSuperUser']:
-                failed_job_info_list.append([rank, jobid, jobname[:20],
-                    str(numseq), email, ip, queuetime, runtime, submit_date_str,
-                    method_submission])
-            else:
-                failed_job_info_list.append([rank, jobid, jobname[:20],
-                    str(numseq), email, queuetime, runtime, submit_date_str,
-                    method_submission])
+                row_content.insert(5, ip)
+            jobinfo_list.append(row_content)
 
-        info['content'] = failed_job_info_list
+        info['content'] = jobinfo_list
 
     info['jobcounter'] = webserver_common.GetJobCounter(info)
     return render(request, 'pred/failed_job.html', info)
