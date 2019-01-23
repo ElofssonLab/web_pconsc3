@@ -20,11 +20,10 @@ from pytz import timezone
 import time
 import shutil
 import subprocess
-# import variables from settings
-from django.conf import settings
 
-TZ = settings.TZ
-FORMAT_DATETIME = settings.FORMAT_DATETIME
+TZ = "Europe/Stockholm"
+FORMAT_DATETIME = "%Y-%m-%d %H:%M:%S %Z"
+
 rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 path_log = "%s/static/log"%(basedir)

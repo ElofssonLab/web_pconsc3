@@ -35,6 +35,8 @@ sys.path.append("/usr/local/lib/python2.7/dist-packages")
 
 import myfunc
 import webserver_common
+from datetime import datetime
+from pytz import timezone
 import time
 import requests
 import json
@@ -48,8 +50,8 @@ import json
 
 from django.conf import settings
 
-TZ = settings.TZ
-FORMAT_DATETIME = settings.FORMAT_DATETIME
+TZ = webserver_common.TZ
+FORMAT_DATETIME = webserver_common.FORMAT_DATETIME
 os.environ['TZ'] = TZ
 time.tzset()
 
