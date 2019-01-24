@@ -1134,7 +1134,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
         start_date_epoch = webcom.datetime_str_to_epoch(start_date_str)
         all_runtime_in_sec = float(date_str_epoch) - float(start_date_epoch)
 
-        myfunc.WritePconsC3TextResultFile(resultfile_text, outpath_result, maplist,
+        webcom.WritePconsC3TextResultFile(resultfile_text, outpath_result, maplist,
                 all_runtime_in_sec, base_www_url, statfile=statfile)
 
         # now making zip instead (for windows users)
