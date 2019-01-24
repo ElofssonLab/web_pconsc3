@@ -718,6 +718,8 @@ def GetResult(jobid):#{{{
     init_toRunIndexSet = set([])
     if os.path.exists(init_torun_idx_file):
         init_toRunIndexSet = set(myfunc.ReadIDList(init_torun_idx_file))
+    else: # if the init_torun_idx_file was not created by run_job.py, add the index of the first sequence to it.
+        myfunc.WriteFile("0\n", init_torun_idx_file, "w", True)
     if (len(init_toRunIndexSet) > 0 and 
             ((not os.path.exists(remotequeue_idx_file) or
                 os.path.getsize(remotequeue_idx_file)<1))):
