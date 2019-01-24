@@ -169,7 +169,7 @@ def WritePconsC3TextResultFile(outfile, outpath_result, maplist, runtime_in_sec,
             print >> fpout, "%-4s %4s %5s"%("Res1", "Res2", "Score")
 
             if os.path.exists(predfile):
-                content = ReadFile(predfile)
+                content = myfunc.ReadFile(predfile)
                 fpout.write("%s\n"%(content))
             else:
                 print >> fpout, "***Contact prediction failed***"
