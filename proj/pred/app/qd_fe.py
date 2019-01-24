@@ -34,7 +34,7 @@ sys.path.append("%s/env/lib/python2.7/site-packages/"%(webserver_root))
 sys.path.append("/usr/local/lib/python2.7/dist-packages")
 
 import myfunc
-import webserver_common
+import webserver_common as webcom
 from datetime import datetime
 from pytz import timezone
 import time
@@ -50,8 +50,8 @@ import json
 
 from django.conf import settings
 
-TZ = webserver_common.TZ
-FORMAT_DATETIME = webserver_common.FORMAT_DATETIME
+TZ = webcom.TZ
+FORMAT_DATETIME = webcom.FORMAT_DATETIME
 os.environ['TZ'] = TZ
 time.tzset()
 
@@ -280,7 +280,7 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
             UPPER_WAIT_TIME_IN_SEC = 60
             isValidSubmitDate = True
             try:
-                submit_date = webserver_common.datetime_str_to_time(submit_date_str)
+                submit_date = webcom.datetime_str_to_time(submit_date_str)
             except ValueError:
                 isValidSubmitDate = False
 
@@ -510,7 +510,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     failedtagfile = "%s/%s"%(rstdir, "runjob.failed")
     starttagfile = "%s/%s"%(rstdir, "runjob.start")
     fafile = "%s/query.fa"%(rstdir)
-    split_seq_dir = "%s/splitaa"%(rstdir)
+    split_seq_dir = "%s/splitaa"%(tmpdir)
     forceruntagfile = "%s/forcerun"%(rstdir)
 
     isforcerun = "True" # all jobs submitted to the remote server will run (no cache)
@@ -545,7 +545,8 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
 
     toRunIndexList = [] # index in str
     if not os.path.exists(torun_idx_file):
-        toRunIndexList = myfunc.ReadIDList(init_torun_idx_file)
+        if os.path.exists(init_torun_idx_file):
+            toRunIndexList = myfunc.ReadIDList(init_torun_idx_file)
     else:
         toRunIndexList = myfunc.ReadIDList(torun_idx_file)
     toRunIndexList = myfunc.uniquelist(toRunIndexList)
@@ -714,7 +715,9 @@ def GetResult(jobid):#{{{
 
     # in case of missing queries, if remotequeue_idx_file is empty  but the job
     # is still not finished, force re-creating torun_idx_file
-    init_toRunIndexSet = set(myfunc.ReadIDList(init_torun_idx_file))
+    init_toRunIndexSet = set([])
+    if os.path.exists(init_torun_idx_file):
+        init_toRunIndexSet = set(myfunc.ReadIDList(init_torun_idx_file))
     if (len(init_toRunIndexSet) > 0 and 
             ((not os.path.exists(remotequeue_idx_file) or
                 os.path.getsize(remotequeue_idx_file)<1))):
@@ -856,14 +859,8 @@ def GetResult(jobid):#{{{
                                     date_str, extracted_dir), gen_errfile, "a", True)
                                 pass
                         cmd = ["unzip", outfile_zip, "-d", tmpdir]
-                        cmdline = " ".join(cmd)
-                        try:
-                            rmsg = subprocess.check_output(cmd)
-                        except subprocess.CalledProcessError, e:
-                            date_str = time.strftime(FORMAT_DATETIME)
-                            myfunc.WriteFile("[%s] cmdline=%s\nerrmsg=%s\n"%(
-                                    date_str, cmdline, str(e)), gen_errfile, "a", True)
-                            pass
+                        webcom.RunCmd(cmd, gen_logfile, gen_errfile)
+
                         rst_this_seq = "%s/%s"%(tmpdir, remote_jobid)
                         if os.path.exists(outpath_this_seq) and not os.path.islink(outpath_this_seq):
                             shutil.rmtree(outpath_this_seq)
@@ -1063,10 +1060,10 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
     myfunc.WriteFile("[%s] CheckIfJobFinished for %s.\n" %(date_str, jobid), gen_logfile, "a", True)
     rstdir = "%s/%s"%(path_result, jobid)
     tmpdir = "%s/tmpdir"%(rstdir)
-    split_seq_dir = "%s/splitaa"%(rstdir)
+    split_seq_dir = "%s/splitaa"%(tmpdir)
     outpath_result = "%s/%s"%(rstdir, jobid)
-    errfile = "%s/%s"%(rstdir, "runjob.err")
-    logfile = "%s/%s"%(rstdir, "runjob.log")
+    runjob_errfile = "%s/%s"%(rstdir, "runjob.err")
+    runjob_logfile = "%s/%s"%(rstdir, "runjob.log")
     finished_idx_file = "%s/finished_seqindex.txt"%(rstdir)
     failed_idx_file = "%s/failed_seqindex.txt"%(rstdir)
     seqfile = "%s/query.fa"%(rstdir)
@@ -1132,7 +1129,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
             date_str = time.strftime(FORMAT_DATETIME)
             start_date_str = date_str
 
-        start_date_epoch = webserver_common.datetime_str_to_epoch(start_date_str)
+        start_date_epoch = webcom.datetime_str_to_epoch(start_date_str)
         all_runtime_in_sec = float(date_str_epoch) - float(start_date_epoch)
 
         myfunc.WritePconsC3TextResultFile(resultfile_text, outpath_result, maplist,
@@ -1144,12 +1141,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
         zipfile_fullpath = "%s/%s"%(rstdir, zipfile)
         os.chdir(rstdir)
         cmd = ["zip", "-rq", zipfile, jobid]
-        try:
-            subprocess.check_output(cmd)
-        except subprocess.CalledProcessError, e:
-            date_str = time.strftime(FORMAT_DATETIME)
-            myfunc.WriteFile("[%s]"%(datestr) + str(e)+"\n", errfile, "a", True)
-            pass
+        webcom.RunCmd(cmd, runjob_logfile, runjob_errfile)
 
         if len(failed_idx_list)>0:
             myfunc.WriteFile(date_str, failedtagfile, "w", True)
@@ -1161,63 +1153,15 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
                 except:
                     date_str = time.strftime(FORMAT_DATETIME)
                     myfunc.WriteFile("[%s] Failed to delete folder %s"%(
-                        date_str, tmpdir)+"\n", errfile, "a", True)
+                        date_str, tmpdir)+"\n", runjob_errfile, "a", True)
+
+        if webcom.IsFrontEndNode(base_www_url) and myfunc.IsValidEmailAddress(email):
+            webcom.SendEmail_on_finish(jobid, base_www_url,
+                    finish_status, name_server="PconsC3", from_email="PconsC3@pconsc3.bioinfo.se",
+                    to_email=email, contact_email=contact_email,
+                    logfile=runjob_logfile, errfile=runjob_errfile)
 
 
-            if os.path.exists(split_seq_dir):
-                try:
-                    shutil.rmtree(split_seq_dir)
-                except:
-                    date_str = time.strftime(FORMAT_DATETIME)
-                    myfunc.WriteFile("[%s] Failed to delete folder %s"%(
-                        date_str, split_seq_dir)+"\n", errfile, "a", True)
-
-        # send the result to email
-        if myfunc.IsValidEmailAddress(email):#{{{
-
-            if os.path.exists(errfile):
-                err_msg = myfunc.ReadFile(errfile)
-
-            from_email = "info@pconsc3.bioinfo.se"
-            to_email = email
-            subject = "Your result for PconsC3 JOBID=%s"%(jobid)
-            if finish_status == "success":
-                bodytext = """
-    Your result is ready at %s/pred/result/%s
-
-    Thanks for using PconsC3
-
-            """%(base_www_url, jobid)
-            elif finish_status == "failed":
-                bodytext="""
-    We are sorry that your job with jobid %s is failed.
-
-    Please contact %s if you have any questions.
-
-    Attached below is the error message:
-    %s
-                """%(jobid, contact_email, err_msg)
-            else:
-                bodytext="""
-    Your result is ready at %s/pred/result/%s
-
-    We are sorry that PconsC3 failed to predict some sequences of your job.
-
-    Please re-submit the queries that have been failed.
-
-    If you have any further questions, please contact %s.
-
-    Attached below is the error message:
-    %s
-                """%(base_www_url, jobid, contact_email, err_msg)
-
-            myfunc.WriteFile("Sendmail %s -> %s, %s"% (from_email, to_email, subject), logfile, "a", True)
-            rtValue = myfunc.Sendmail(from_email, to_email, subject, bodytext)
-            if rtValue != 0:
-                myfunc.WriteFile("Sendmail to {} failed with status {}".format(to_email,
-                    rtValue), errfile, "a", True)
-
-#}}}
 #}}}
 def RunStatistics(path_result, path_log):#{{{
 # 1. calculate average running time, only for those sequences with time.txt
@@ -1329,15 +1273,15 @@ def RunStatistics(path_result, path_log):#{{{
             isValidStartDate = True
             isValidFinishDate = True
             try:
-                submit_date = webserver_common.datetime_str_to_time(submit_date_str)
+                submit_date = webcom.datetime_str_to_time(submit_date_str)
             except ValueError:
                 isValidSubmitDate = False
             try:
-                start_date = webserver_common.datetime_str_to_time(start_date_str)
+                start_date = webcom.datetime_str_to_time(start_date_str)
             except ValueError:
                 isValidStartDate = False
             try:
-                finish_date = webserver_common.datetime_str_to_time(finish_date_str)
+                finish_date = webcom.datetime_str_to_time(finish_date_str)
             except ValueError:
                 isValidFinishDate = False
 
@@ -1546,9 +1490,9 @@ def main(g_params):#{{{
 
         if loop % 500 == 10:
             RunStatistics(path_result, path_log)
-            webserver_common.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
-            webserver_common.CleanServerFile(gen_logfile, gen_errfile)
-            webserver_common.CleanCachedResult(gen_logfile, gen_errfile)
+            webcom.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
+            webcom.CleanServerFile(gen_logfile, gen_errfile)
+            webcom.CleanCachedResult(gen_logfile, gen_errfile)
 
 
         ArchiveLogFile()
