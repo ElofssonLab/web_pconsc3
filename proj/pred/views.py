@@ -1025,8 +1025,6 @@ def oldserver(request):#{{{
 def help_wsdl_api(request):#{{{
     info = {}
     set_basic_config(request, info)
-    info['jobcounter'] = webserver_common.GetJobCounter(info)
-
     api_script_rtname =  "topcons2_wsdl"
     extlist = [".py"]
     api_script_lang_list = ["Python"]
