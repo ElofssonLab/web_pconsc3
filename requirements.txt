@@ -10,7 +10,7 @@ biopython==1.72
 
 
 matplotlib==2.2.3
-numpy==1.15.4
+numpy==1.17.3
 scipy==1.1.0
 
 python-geoip==1.2
