@@ -1,0 +1,2 @@
+localhost
+dev.pconsc3.bioinfo.se
