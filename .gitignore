@@ -15,3 +15,5 @@ tmp/
 log/
 md5/
 env/
+
+*.bak
