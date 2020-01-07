@@ -55,9 +55,9 @@ Examples:
 """%(progname)
 
 def PrintHelp(fpout=sys.stdout):#{{{
-    print >> fpout, usage_short
-    print >> fpout, usage_ext
-    print >> fpout, usage_exp#}}}
+    print(usage_short, file=fpout)
+    print(usage_ext, file=fpout)
+    print(usage_exp, file=fpout)#}}}
 
 def WriteTextResultFile(outfile, outpath_result, maplist, runtime_in_sec, statfile=""):#{{{
     try:
@@ -88,7 +88,7 @@ def WriteTextResultFile(outfile, outpath_result, maplist, runtime_in_sec, statfi
         if fpstat:
             fpstat.close()
     except IOError:
-        print "Failed to write to file %s"%(outfile)
+        print("Failed to write to file %s"%(outfile))
 #}}}
 def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     all_begin_time = time.time()
@@ -115,7 +115,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     g_params['runjob_log'].append(" ".join(cmd))
     cmdline = " ".join(cmd)
     begin_time = time.time()
-    print "app cmdline: %s"%(cmdline)
+    print("app cmdline: %s"%(cmdline))
 
     # change the current folder to tmpdir, so that in case the application will
     # write temp files under the current folder, such as PconsC3
@@ -124,7 +124,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     try:
         rmsg = subprocess.check_output(cmd)
         g_params['runjob_log'].append("workflow:\n"+rmsg+"\n")
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         g_params['runjob_err'].append(str(e)+"\n")
         g_params['runjob_err'].append(rmsg + "\n")
         pass
@@ -141,7 +141,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
         try:
             subprocess.check_output(cmd)
             isCmdSuccess = True
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             g_params['runjob_err'].append(str(e)+"\n")
             pass
 
@@ -152,7 +152,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     cmd = ["zip", "-rq", zipfile, resultpathname]
     try:
         subprocess.check_output(cmd)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         g_params['runjob_err'].append(str(e))
         pass
 
@@ -218,35 +218,35 @@ def main(g_params):#{{{
                 g_params['isForceRun'] = True
                 i += 1
             else:
-                print >> sys.stderr, "Error! Wrong argument:", argv[i]
+                print("Error! Wrong argument:", argv[i], file=sys.stderr)
                 return 1
         else:
             infile = argv[i]
             i += 1
 
     if jobid == "":
-        print >> sys.stderr, "%s: jobid not set. exit"%(sys.argv[0])
+        print("%s: jobid not set. exit"%(sys.argv[0]), file=sys.stderr)
         return 1
 
     if myfunc.checkfile(infile, "infile") != 0:
         return 1
     if outpath == "":
-        print >> sys.stderr, "outpath not set. exit"
+        print("outpath not set. exit", file=sys.stderr)
         return 1
     elif not os.path.exists(outpath):
         try:
             subprocess.check_output(["mkdir", "-p", outpath])
-        except subprocess.CalledProcessError, e:
-            print >> sys.stderr, e
+        except subprocess.CalledProcessError as e:
+            print(e, file=sys.stderr)
             return 1
     if tmpdir == "":
-        print >> sys.stderr, "tmpdir not set. exit"
+        print("tmpdir not set. exit", file=sys.stderr)
         return 1
     elif not os.path.exists(tmpdir):
         try:
             subprocess.check_output(["mkdir", "-p", tmpdir])
-        except subprocess.CalledProcessError, e:
-            print >> sys.stderr, e
+        except subprocess.CalledProcessError as e:
+            print(e, file=sys.stderr)
             return 1
 
     numseq = myfunc.CountFastaSeq(infile)

@@ -20,7 +20,7 @@ Options:
 Created 2010-08-19, updated 2010-08-25, Nanjiang
 """
 def PrintHelp():
-    print usage
+    print(usage)
 
 
 def ReadSingleFasta_modhmm(inFile):
@@ -41,7 +41,7 @@ def ReadSingleFasta_modhmm(inFile):
             line = fpin.readline()
         fpin.close()
     except:
-        print >> sys.stderr, "Except for the input file ", inFile, "in the function ReadSingleFasta"
+        print("Except for the input file ", inFile, "in the function ReadSingleFasta", file=sys.stderr)
     return (seqID, annotation, aaSeq)
 
 def SCAMPI_formattxtfile(inFile, aaPath, fpout):
@@ -108,22 +108,22 @@ def SCAMPI_formattxtfile(inFile, aaPath, fpout):
                     aaSeq="-"*length
 
                 #print out#{{{
-                print >> fpout, "SeqID:%s" % seqID
-                print >> fpout, "SeqLength:%s" % length
+                print("SeqID:%s" % seqID, file=fpout)
+                print("SeqLength:%s" % length, file=fpout)
                 if normalizedLogLikelihood:
-                    print >> fpout, "NormalizedLogLikelihood:%s" % normalizedLogLikelihood
+                    print("NormalizedLogLikelihood:%s" % normalizedLogLikelihood, file=fpout)
                 if logodds:
-                    print >> fpout, "Logodds:%s" % logodds
+                    print("Logodds:%s" % logodds, file=fpout)
                 if reversi:
-                    print >> fpout, "Reversi:%s" % reversi
+                    print("Reversi:%s" % reversi, file=fpout)
                 if isTMProtein:
-                    print >> fpout, "IsTMProtein:%s" % isTMProtein
+                    print("IsTMProtein:%s" % isTMProtein, file=fpout)
                 if annotation:
-                    print >> fpout, ">%s" %annotation
+                    print(">%s" %annotation, file=fpout)
                 if aaSeq:
-                    print >> fpout,"Sequence:%s" % aaSeq
+                    print("Sequence:%s" % aaSeq, file=fpout)
                 if topology:
-                    print >> fpout,"Topology:%s" % topology
+                    print("Topology:%s" % topology, file=fpout)
                 if topoalphabet:
                     fpout.write("%2s %2s" %("AA", "TP"))
                     for i in range(0,len(topoalphabet)):
@@ -177,18 +177,18 @@ if __name__ == '__main__' :
             elif sys.argv[i] == "-m" or sys.argv[i] == "--method" :
                 method=int(sys.argv[i+1])
                 if method < 1 or method >2:
-                    print >> sys.stderr,("Error! method should be 1 or 2")
+                    print(("Error! method should be 1 or 2"), file=sys.stderr)
                     sys.exit(1)
                 i = i + 2
             else:
-                print >> sys.stderr,("Error! Wrong argument:%s" % sys.argv[i])
+                print(("Error! Wrong argument:%s" % sys.argv[i]), file=sys.stderr)
                 sys.exit(1)
         else:
             inFile=sys.argv[i]
             i +=1
 
     if inFile == "":
-        print >> sys.stderr,"Error! Input file not set."
+        print("Error! Input file not set.", file=sys.stderr)
 
     fpout = sys.stdout
     if outFile != "":
@@ -207,5 +207,5 @@ if __name__ == '__main__' :
         if fpout != sys.stdout:
             fpout.close()
     except :
-        print >>sys.stderr, "except for the input file: %s" % inFile
+        print("except for the input file: %s" % inFile, file=sys.stderr)
         raise 

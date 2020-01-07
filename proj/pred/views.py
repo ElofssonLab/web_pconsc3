@@ -161,11 +161,11 @@ def index(request):#{{{
     path_tmp = "%s/static/tmp"%(SITE_ROOT)
     path_md5 = "%s/static/md5"%(SITE_ROOT)
     if not os.path.exists(path_result):
-        os.mkdir(path_result, 0755)
+        os.mkdir(path_result, 0o755)
     if not os.path.exists(path_result):
-        os.mkdir(path_tmp, 0755)
+        os.mkdir(path_tmp, 0o755)
     if not os.path.exists(path_md5):
-        os.mkdir(path_md5, 0755)
+        os.mkdir(path_md5, 0o755)
     base_www_url_file = "%s/static/log/base_www_url.txt"%(SITE_ROOT)
     if not os.path.exists(base_www_url_file):
         base_www_url = "http://" + request.META['HTTP_HOST']
@@ -214,7 +214,7 @@ def submit_seq(request):#{{{
 
             try:
                 seqfile = request.FILES['seqfile']
-            except KeyError, MultiValueDictKeyError:
+            except KeyError as MultiValueDictKeyError:
                 seqfile = ""
             date_str = time.strftime(FORMAT_DATETIME)
             query = {}
@@ -297,7 +297,7 @@ def GetNumSameUserInQueue(rstdir, host_ip, email):#{{{
     myfunc.WriteFile("cmdline: " + cmdline +"\n", logfile, "a")
     try:
         suq_ls_content =  myfunc.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         myfunc.WriteFile(str(e) +"\n", logfile, "a")
         return numseq_this_user
 
@@ -315,8 +315,8 @@ def RunQuery(request, query):#{{{
     errmsg = []
     tmpdir = tempfile.mkdtemp(prefix="%s/static/tmp/tmp_"%(SITE_ROOT))
     rstdir = tempfile.mkdtemp(prefix="%s/static/result/rst_"%(SITE_ROOT))
-    os.chmod(tmpdir, 0755)
-    os.chmod(rstdir, 0755)
+    os.chmod(tmpdir, 0o755)
+    os.chmod(rstdir, 0o755)
     jobid = os.path.basename(rstdir)
     query['jobid'] = jobid
 
@@ -358,8 +358,8 @@ def RunQuery_wsdl(rawseq, filtered_seq, seqinfo):#{{{
     errmsg = []
     tmpdir = tempfile.mkdtemp(prefix="%s/static/tmp/tmp_"%(SITE_ROOT))
     rstdir = tempfile.mkdtemp(prefix="%s/static/result/rst_"%(SITE_ROOT))
-    os.chmod(tmpdir, 0755)
-    os.chmod(rstdir, 0755)
+    os.chmod(tmpdir, 0o755)
+    os.chmod(rstdir, 0o755)
     jobid = os.path.basename(rstdir)
     seqinfo['jobid'] = jobid
     numseq = seqinfo['numseq']
@@ -398,8 +398,8 @@ def RunQuery_wsdl_local(rawseq, filtered_seq, seqinfo):#{{{
     errmsg = []
     tmpdir = tempfile.mkdtemp(prefix="%s/static/tmp/tmp_"%(SITE_ROOT))
     rstdir = tempfile.mkdtemp(prefix="%s/static/result/rst_"%(SITE_ROOT))
-    os.chmod(tmpdir, 0755)
-    os.chmod(rstdir, 0755)
+    os.chmod(tmpdir, 0o755)
+    os.chmod(rstdir, 0o755)
     jobid = os.path.basename(rstdir)
     seqinfo['jobid'] = jobid
     numseq = seqinfo['numseq']
@@ -974,7 +974,7 @@ def get_serverstatus(request):#{{{
             if line.find("runjob") != -1:
                 cntjob += 1
         num_seq_in_local_queue = cntjob
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         datetime = time.strftime(FORMAT_DATETIME)
         myfunc.WriteFile("[%s] %s\n"%(datetime, str(e)), gen_errfile, "a")
 
@@ -1030,7 +1030,7 @@ def help_wsdl_api(request):#{{{
     api_script_lang_list = ["Python"]
     api_script_info_list = []
 
-    for i in xrange(len(extlist)):
+    for i in range(len(extlist)):
         ext = extlist[i]
         api_script_file = "%s/%s/%s"%(SITE_ROOT,
                 "static/download/script", "%s%s"%(api_script_rtname,
@@ -1041,7 +1041,7 @@ def help_wsdl_api(request):#{{{
         cmd = [api_script_file, "-h"]
         try:
             usage = myfunc.check_output(cmd)
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             usage = ""
         api_script_info_list.append([api_script_lang_list[i], api_script_basename, usage])
 

@@ -18,7 +18,7 @@ Created 2010-08-23, updated 2010-08-23, Nanjiang
 """
 
 def PrintHelp():
-    print usage;
+    print(usage);
 
 def Modhmmxml2txt(inFile,fpout):#{{{
     cntSeq=0;
@@ -32,15 +32,15 @@ def Modhmmxml2txt(inFile,fpout):#{{{
             strs=r.split(line);
             if strs[0] == "hmm_name":
                 hmmname=strs[1];
-                print >>fpout,"# Scores for HMM: '%s'"%hmmname;
+                print("# Scores for HMM: '%s'"%hmmname, file=fpout);
             elif strs[0] == "pure_seq_name_a":# a new record, ID
                 cntSeq+=1;
                 seqID=strs[1];
-                print >> fpout;
-                print >> fpout, "Seq ID: %s" % seqID;
+                print(file=fpout);
+                print("Seq ID: %s" % seqID, file=fpout);
             elif strs[0] == "seqlength":
                 length=int(strs[1]);
-                print >> fpout,"Seq length: %d"%length;
+                print("Seq length: %d"%length, file=fpout);
                 fpout.write("Labeling: ");
                 for i in range(length):
                     line=fpin.readline().rstrip("\n").lstrip("<").rstrip(">");
@@ -86,15 +86,15 @@ def Modhmmxml2txt2(inFile,fpout):#{{{
             strs=r.split(line);
             if strs[1] == "hmm_name":
                 hmmname=strs[2];
-                print >>fpout,"# Scores for HMM: '%s'"%hmmname;
+                print("# Scores for HMM: '%s'"%hmmname, file=fpout);
             elif strs[1] == "pure_seq_name_a":# a new record, ID
                 cntSeq+=1;
                 seqID=strs[2];
-                print >> fpout;
-                print >> fpout, "Seq ID: %s" % seqID;
+                print(file=fpout);
+                print("Seq ID: %s" % seqID, file=fpout);
             elif strs[1] == "seqlength":
                 length=int(strs[2]);
-                print >> fpout,"Seq length: %d"%length;
+                print("Seq length: %d"%length, file=fpout);
                 fpout.write("Labeling: ");
                 for i in range(length):
                     line=fpin.readline();
@@ -141,15 +141,15 @@ def Modhmmxml2txt3(inFile,fpout):#{{{
             strs=r.split(line);
             if strs[1] == "hmm_name":
                 hmmname=strs[2];
-                print >>fpout,"# Scores for HMM: '%s'"%hmmname;
+                print("# Scores for HMM: '%s'"%hmmname, file=fpout);
             elif strs[1] == "pure_seq_name_a":# a new record, ID
                 cntSeq+=1;
                 seqID=strs[2];
-                print >> fpout;
-                print >> fpout, "Seq ID: %s" % seqID;
+                print(file=fpout);
+                print("Seq ID: %s" % seqID, file=fpout);
             elif strs[1] == "seqlength":
                 length=int(strs[2]);
-                print >> fpout,"Seq length: %d"%length;
+                print("Seq length: %d"%length, file=fpout);
                 fpout.write("Labeling: ");
                 for i in range(length):
                     line=fpin.readline();
@@ -214,18 +214,18 @@ if __name__ == '__main__' :
             elif sys.argv[i] == "-m" or sys.argv[i] == "--method" or sys.argv[i] == "-method":
                 method=int(sys.argv[i+1]);
                 if method < 1 or method > 3:
-                    print >> sys.stderr,"Error! method should be 1, 2 or 3";
+                    print("Error! method should be 1, 2 or 3", file=sys.stderr);
                     sys.exit(1);
                 i = i + 2;
             else:
-                print >> sys.stderr,("Error! Wrong argument:%s" % sys.argv[i]);
+                print(("Error! Wrong argument:%s" % sys.argv[i]), file=sys.stderr);
                 sys.exit(1);
         else:
             inFile=sys.argv[i];
             i+=1;
            
     if inFile == "":
-        print >> sys.stderr,"Error! Input file not set.";
+        print("Error! Input file not set.", file=sys.stderr);
 
     fpout = sys.stdout;
     if outFile != "":
@@ -243,5 +243,5 @@ if __name__ == '__main__' :
             fpout.close();
 
     except :
-        print >>sys.stderr, "except for the input file: %s" % inFile;
+        print("except for the input file: %s" % inFile, file=sys.stderr);
         raise ;

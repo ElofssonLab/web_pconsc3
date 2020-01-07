@@ -25,7 +25,7 @@ fp = open(lock_file, 'w')
 try:
     fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except IOError:
-    print >> sys.stderr, "Another instance of %s is running"%(progname)
+    print("Another instance of %s is running"%(progname), file=sys.stderr)
     sys.exit(1)
 
 
@@ -164,7 +164,7 @@ Examples:
     MAX_KEEP_DAYS = args.max_keep_days
     verbose=args.verbose
 
-    print ("MAX_KEEP_DAYS = %d\n"%MAX_KEEP_DAYS)
+    print(("MAX_KEEP_DAYS = %d\n"%MAX_KEEP_DAYS))
     rtvalue = CleanCachedResult(MAX_KEEP_DAYS)
     sys.exit(rtvalue)
 

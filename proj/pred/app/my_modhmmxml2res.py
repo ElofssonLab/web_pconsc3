@@ -15,7 +15,7 @@ Created 2010-08-23, updated 2010-08-23, Nanjiang
 """
 
 def PrintHelp():
-    print usage;
+    print(usage);
 
 def Modhmmxml2res(inFile,fpout):#{{{
 #much faster version
@@ -29,15 +29,15 @@ def Modhmmxml2res(inFile,fpout):#{{{
             strs=r.split(line);
             if strs[1] == "hmm_name":
                 hmmname=strs[2];
-                print >>fpout,"# Scores for HMM: '%s'"%hmmname;
+                print("# Scores for HMM: '%s'"%hmmname, file=fpout);
             elif strs[1] == "pure_seq_name_a":# a new record, ID
                 cntSeq+=1;
                 seqID=strs[2];
-                print >> fpout;
-                print >> fpout, "%s" % seqID;
+                print(file=fpout);
+                print("%s" % seqID, file=fpout);
             elif strs[1] == "seqlength":
                 length=int(strs[2]);
-                print >> fpout,"Seq length: %d"%length;
+                print("Seq length: %d"%length, file=fpout);
                 fpout.write("Labeling:\n");
                 for i in range(length):
                     line=fpin.readline();
@@ -93,14 +93,14 @@ if __name__ == '__main__' :
                 outFile=sys.argv[i+1];
                 i = i + 2;
             else:
-                print >> sys.stderr,("Error! Wrong argument:%s" % sys.argv[i]);
+                print(("Error! Wrong argument:%s" % sys.argv[i]), file=sys.stderr);
                 sys.exit(1);
         else:
             inFile=sys.argv[i];
             i+=1;
            
     if inFile == "":
-        print >> sys.stderr,"Error! Input file not set.";
+        print("Error! Input file not set.", file=sys.stderr);
 
     fpout = sys.stdout;
     if outFile != "":
@@ -113,5 +113,5 @@ if __name__ == '__main__' :
             fpout.close();
 
     except :
-        print >>sys.stderr, "except for the input file: %s" % inFile;
+        print("except for the input file: %s" % inFile, file=sys.stderr);
         raise ;

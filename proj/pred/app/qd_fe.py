@@ -27,7 +27,7 @@ rundir = os.path.dirname(os.path.realpath(__file__))
 webserver_root = os.path.realpath("%s/../../../"%(rundir))
 
 activate_env="%s/env/bin/activate_this.py"%(webserver_root)
-execfile(activate_env, dict(__file__=activate_env))
+exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), dict(__file__=activate_env))
 #Add the site-packages of the virtualenv
 site.addsitedir("%s/env/lib/python2.7/site-packages/"%(webserver_root))
 sys.path.append("%s/env/lib/python2.7/site-packages/"%(webserver_root))
@@ -40,7 +40,7 @@ from pytz import timezone
 import time
 import requests
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import shutil
 import hashlib
 import subprocess
@@ -70,7 +70,7 @@ fp = open(lock_file, 'w')
 try:
     fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except IOError:
-    print >> sys.stderr, "Another instance of %s is running"%(progname)
+    print("Another instance of %s is running"%(progname), file=sys.stderr)
     sys.exit(1)
 
 contact_email = "nanjiang.shu@scilifelab.se"
@@ -112,9 +112,9 @@ black_iplist_file = "%s/black_iplist.txt"%(basedir)
 
 
 def PrintHelp(fpout=sys.stdout):#{{{
-    print >> fpout, usage_short
-    print >> fpout, usage_ext
-    print >> fpout, usage_exp#}}}
+    print(usage_short, file=fpout)
+    print(usage_ext, file=fpout)
+    print(usage_exp, file=fpout)#}}}
 
 def get_job_status(jobid):#{{{
     status = "";
@@ -175,7 +175,7 @@ def GetNumSeqSameUserDict(joblist):#{{{
 # calculate the number of sequences for each user in the queue or running
 # Fixed error for getting numseq at 2015-04-11
     numseq_user_dict = {}
-    for i in xrange(len(joblist)):
+    for i in range(len(joblist)):
         li1 = joblist[i]
         jobid1 = li1[0]
         ip1 = li1[3]
@@ -191,7 +191,7 @@ def GetNumSeqSameUserDict(joblist):#{{{
         if ip1 == "" and email1 == "":
             continue
 
-        for j in xrange(len(joblist)):
+        for j in range(len(joblist)):
             li2 = joblist[j]
             if i == j:
                 continue
@@ -739,7 +739,7 @@ def GetResult(jobid):#{{{
             numseq = int(jobinfolist[3])
 
         if len(completed_idx_set) < numseq:
-            all_idx_list = [str(x) for x in xrange(numseq)]
+            all_idx_list = [str(x) for x in range(numseq)]
             torun_idx_str_list = list(set(all_idx_list)-completed_idx_set)
             torun_idx_str_list = list(set(torun_idx_str_list) & init_toRunIndexSet)
             for idx in torun_idx_str_list:
@@ -765,7 +765,7 @@ def GetResult(jobid):#{{{
     original_queueline_list = lines
 
     nodeSet = set([])
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
         line = lines[i]
         if not line or line[0] == "#":
             continue
@@ -787,7 +787,7 @@ def GetResult(jobid):#{{{
             pass
 
 
-    for i in xrange(len(lines)):#{{{
+    for i in range(len(lines)):#{{{
         line = lines[i]
 
         if g_params['DEBUG']:
@@ -844,7 +844,7 @@ def GetResult(jobid):#{{{
                             gen_logfile, "a", True)
                     if myfunc.IsURLExist(result_url,timeout=5):
                         try:
-                            urllib.urlretrieve (result_url, outfile_zip)
+                            urllib.request.urlretrieve (result_url, outfile_zip)
                             isRetrieveSuccess = True
                             myfunc.WriteFile(" succeeded\n", gen_logfile, "a", True)
                         except:
@@ -886,7 +886,7 @@ def GetResult(jobid):#{{{
                             myfunc.WriteFile("\t[%s] %s"%(date_str, cmdline), gen_logfile, "a", True)
                             try:
                                 rmsg = subprocess.check_output(cmd)
-                            except subprocess.CalledProcessError, e:
+                            except subprocess.CalledProcessError as e:
                                 date_str = time.strftime(FORMAT_DATETIME)
                                 myfunc.WriteFile("[%s] cmdline=%s\nerrmsg=%s\n"%(
                                         date_str, cmdline, str(e)), gen_errfile, "a", True)
@@ -1031,11 +1031,11 @@ def GetResult(jobid):#{{{
         myfunc.WriteFile("\n".join(resubmit_idx_list)+"\n", torun_idx_file, "a", True)
 
 
-    for i in xrange(len(original_queueline_list)):
+    for i in range(len(original_queueline_list)):
         if not i in idxset_queueline_to_remove and original_queueline_list[i] != "":
             keep_queueline_list.append(original_queueline_list[i])
 
-    keep_queueline_list = filter(None, keep_queueline_list)
+    keep_queueline_list = [_f for _f in keep_queueline_list if _f]
     if len(keep_queueline_list)>0:
         myfunc.WriteFile("\n".join(keep_queueline_list)+"\n", remotequeue_idx_file, "w", True);
     else:
@@ -1116,7 +1116,7 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
         resultfile_text = "%s/%s"%(outpath_result, "query.pconsc3.txt")
         (seqIDList, seqAnnoList, seqList) = myfunc.ReadFasta(seqfile)
         maplist = []
-        for i in xrange(len(seqIDList)):
+        for i in range(len(seqIDList)):
             maplist.append("%s\t%d\t%s\t%s"%("seq_%d"%i, len(seqList[i]),
                 seqAnnoList[i], seqList[i]))
 
@@ -1319,13 +1319,13 @@ def RunStatistics(path_result, path_log):#{{{
 
     flist = [outfile_numseqjob, outfile_numseqjob_web, outfile_numseqjob_wsdl  ]
     dictlist = [countjob_numseq_dict, countjob_numseq_dict_web, countjob_numseq_dict_wsdl]
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         dt = dictlist[i]
         outfile = flist[i]
-        sortedlist = sorted(dt.items(), key = lambda x:x[0])
+        sortedlist = sorted(list(dt.items()), key = lambda x:x[0])
         try:
             fpout = open(outfile,"w")
-            for j in xrange(len(sortedlist)):
+            for j in range(len(sortedlist)):
                 nseq = sortedlist[j][0]
                 count = sortedlist[j][1]
                 fpout.write("%d\t%d\n"%(nseq,count))
@@ -1374,25 +1374,25 @@ def RunStatistics(path_result, path_log):#{{{
             waittime_numseq_dict , waittime_numseq_dict_web , waittime_numseq_dict_wsdl , finishtime_numseq_dict , finishtime_numseq_dict_web , finishtime_numseq_dict_wsdl
             ]
 
-    for i in xrange(len(flist1)):
+    for i in range(len(flist1)):
         dt = dict_list[i]
         outfile1 = flist1[i]
         outfile2 = flist2[i]
         outfile3 = flist3[i]
-        sortedlist = sorted(dt.items(), key = lambda x:x[0])
+        sortedlist = sorted(list(dt.items()), key = lambda x:x[0])
         try:
             fpout = open(outfile1,"w")
-            for j in xrange(len(sortedlist)):
+            for j in range(len(sortedlist)):
                 nseq = sortedlist[j][0]
                 li_time = sortedlist[j][1]
-                for k in xrange(len(li_time)):
+                for k in range(len(li_time)):
                     fpout.write("%d\t%f\n"%(nseq,li_time[k]))
             fpout.close()
         except IOError:
             pass
         try:
             fpout = open(outfile2,"w")
-            for j in xrange(len(sortedlist)):
+            for j in range(len(sortedlist)):
                 nseq = sortedlist[j][0]
                 li_time = sortedlist[j][1]
                 avg_time = myfunc.FloatDivision(sum(li_time), len(li_time))
@@ -1402,7 +1402,7 @@ def RunStatistics(path_result, path_log):#{{{
             pass
         try:
             fpout = open(outfile3,"w")
-            for j in xrange(len(sortedlist)):
+            for j in range(len(sortedlist)):
                 nseq = sortedlist[j][0]
                 li_time = sortedlist[j][1]
                 median_time = numpy.median(li_time)
@@ -1413,10 +1413,10 @@ def RunStatistics(path_result, path_log):#{{{
 
     # plotting 
     flist = flist1
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         outfile = flist[i]
     flist = flist2+flist3
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         outfile = flist[i]
 
 #}}}
@@ -1569,7 +1569,7 @@ if __name__ == '__main__' :
     g_params = InitGlobalParameter()
 
     date_str = time.strftime(FORMAT_DATETIME)
-    print >> sys.stderr, "\n\n[Date: %s]\n"%(date_str)
+    print("\n\n[Date: %s]\n"%(date_str), file=sys.stderr)
     status = main(g_params)
 
     sys.exit(status)

@@ -30,9 +30,9 @@ Examples:
 """
 
 def PrintHelp(fpout=sys.stdout):#{{{
-    print >> fpout, usage_short
-    print >> fpout, usage_ext
-    print >> fpout, usage_exp#}}}
+    print(usage_short, file=fpout)
+    print(usage_ext, file=fpout)
+    print(usage_exp, file=fpout)#}}}
 
 def get_job_status(jobdir):#{{{
     status = "";
@@ -77,7 +77,7 @@ def main(g_params):#{{{
     isNonOptionArg=False
     while i < numArgv:
         if isNonOptionArg == True:
-            print >> sys.stderr, "Error! Wrong argument:", argv[i]
+            print("Error! Wrong argument:", argv[i], file=sys.stderr)
             return 1
             isNonOptionArg = False
             i += 1
@@ -98,16 +98,16 @@ def main(g_params):#{{{
                 g_params['isQuiet'] = True
                 i += 1
             else:
-                print >> sys.stderr, "Error! Wrong argument:", argv[i]
+                print("Error! Wrong argument:", argv[i], file=sys.stderr)
                 return 1
         else:
-            print >> sys.stderr, "Error! Wrong argument:", argv[i]
+            print("Error! Wrong argument:", argv[i], file=sys.stderr)
             return 1
     if resultdir == "":
-        print >> sys.stderr , "%s: resultdir not set. exit"%(sys.argv[0])
+        print("%s: resultdir not set. exit"%(sys.argv[0]), file=sys.stderr)
         return 1
     elif not os.path.exists(resultdir):
-        print >> sys.stderr, "%s: resultdir %s does not exist. exit"%(sys.argv[0], resultdir)
+        print("%s: resultdir %s does not exist. exit"%(sys.argv[0], resultdir), file=sys.stderr)
         return 1
 
     CalculateQueue(resultdir, outfile)
@@ -159,8 +159,8 @@ def CalculateQueue(resultdir, outfile):#{{{
             try:
                 date_submitted = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                print >> sys.stderr, "datefile = '%s'. date = '%s'"%("%s/date"%(workdir), date_str)
-                print >> sys.stderr, "Ignore %s"%folder
+                print("datefile = '%s'. date = '%s'"%("%s/date"%(workdir), date_str), file=sys.stderr)
+                print("Ignore %s"%folder, file=sys.stderr)
                 continue
             date_now = datetime.datetime.now()
             queue_time = date_now - date_submitted
@@ -217,9 +217,9 @@ def CalculateQueue(resultdir, outfile):#{{{
                 sub_table[folder] = job_table_in_queue[folder]
 
         # in descending order by queue_time_in_sec
-        sorted_sub_table = sorted(sub_table.items(), key=lambda x:x[1][2], reverse=True)
+        sorted_sub_table = sorted(list(sub_table.items()), key=lambda x:x[1][2], reverse=True)
 
-        for i in xrange(len(sorted_sub_table)):
+        for i in range(len(sorted_sub_table)):
             folder_nr = sorted_sub_table[i][0]
             queue_time_in_sec = sorted_sub_table[i][1][2]
             length_seq = sorted_sub_table[i][1][3]
@@ -238,13 +238,13 @@ def CalculateQueue(resultdir, outfile):#{{{
         other_job_table[folder].append(0)
 
 # now rank the job_table_in_queue again
-    sorted_job_table_in_queue = sorted(job_table_in_queue.items(), key=lambda x:x[1][6], reverse=True)
+    sorted_job_table_in_queue = sorted(list(job_table_in_queue.items()), key=lambda x:x[1][6], reverse=True)
 
 # write the result
     fpout = myfunc.myopen(outfile,sys.stdout, "w", False)
-    print >> fpout, "#%-5s %8s %4s %-30s %10s %10s %6s %6s"%("ID","Status",
-            "Rank","User","PD_time(s)","Score","Count_PD","Count_R")
-    for i in xrange(len(sorted_job_table_in_queue)):
+    print("#%-5s %8s %4s %-30s %10s %10s %6s %6s"%("ID","Status",
+            "Rank","User","PD_time(s)","Score","Count_PD","Count_R"), file=fpout)
+    for i in range(len(sorted_job_table_in_queue)):
         folder = sorted_job_table_in_queue[i][0]
         rank = i + 1
         status = sorted_job_table_in_queue[i][1][0]
@@ -253,13 +253,13 @@ def CalculateQueue(resultdir, outfile):#{{{
         freq_in_queue = sorted_job_table_in_queue[i][1][4]
         freq_running = sorted_job_table_in_queue[i][1][5]
         score = sorted_job_table_in_queue[i][1][6]
-        print >> fpout , "%-6s %8s %4d %-30s %10.1f %10.1f %6d %6d"%(folder,
+        print("%-6s %8s %4d %-30s %10.1f %10.1f %6d %6d"%(folder,
                 status, rank, user, queue_time_in_sec, score, freq_in_queue,
-                freq_running)
+                freq_running), file=fpout)
 
 # now rank the job_table_in_queue again
-    sorted_other_job_table = sorted(other_job_table.items(), key=lambda x:x[1][0])# sorted by status
-    for i in xrange(len(sorted_other_job_table)):
+    sorted_other_job_table = sorted(list(other_job_table.items()), key=lambda x:x[1][0])# sorted by status
+    for i in range(len(sorted_other_job_table)):
         folder = sorted_other_job_table[i][0]
         rank = 0
         status = sorted_other_job_table[i][1][0]
@@ -268,9 +268,9 @@ def CalculateQueue(resultdir, outfile):#{{{
         freq_in_queue = sorted_other_job_table[i][1][4]
         freq_running = sorted_other_job_table[i][1][5]
         score = sorted_other_job_table[i][1][6]
-        print >> fpout , "%-6s %8s %4d %-30s %10.1f %10.1f %6d %6d"%(folder,
+        print("%-6s %8s %4d %-30s %10.1f %10.1f %6d %6d"%(folder,
                 status, rank, user, queue_time_in_sec, score, freq_in_queue,
-                freq_running)
+                freq_running), file=fpout)
 
 
     myfunc.myclose(fpout)

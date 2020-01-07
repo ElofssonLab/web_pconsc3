@@ -22,7 +22,7 @@ usage:
 try:
     finishedfile=sys.argv[1]
 except:
-    print usage
+    print(usage)
     sys.exit(1)
 
 content=open(finishedfile,"r").read()
@@ -53,7 +53,7 @@ for line in lines:
         if md5_key in dt_finished:
             (remoteid, seqanno) = dt_finished[md5_key]
             txt = "%d\t%s\t%s\t%s\t%s\t%f"%(origIndex, node, remoteid, seqanno, seq, epochtime)
-            print remotequeueidx_file, txt
+            print(remotequeueidx_file, txt)
             myfunc.WriteFile(txt, remotequeueidx_file, "w", True)
             os.system("chown apache:apache %s"%(remotequeueidx_file))
 
