@@ -17,3 +17,16 @@ md5/
 env/
 
 *.bak
+
+
+env_py2/
+proj/cgi-bin/test_runjob.cgi
+proj/pred/app/soft/pconsc3-demo/
+proj/pred/app/soft/run_pconsc3_nj.sh
+proj/pred/config.json
+proj/pred/config/computenode.txt
+proj/pred/config/config.json
+proj/pred/static/download/PconsFold2_testdataset.tar.gz
+proj/pred/static/download/PconsFold2_union.tar.gz
+proj/pred/static/download/pconsc3-finished-2.txt
+proj/settings.py
