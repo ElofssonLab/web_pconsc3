@@ -31,11 +31,6 @@ progname =  os.path.basename(sys.argv[0])
 wspace = ''.join([" "]*len(progname))
 rundir = os.path.dirname(os.path.realpath(__file__))
 suq_basedir = "/tmp"
-if os.path.exists("/scratch"):
-    suq_basedir = "/scratch"
-elif os.path.exists("/tmp"):
-    suq_basedir = "/tmp"
-
 runscript = "%s/%s"%(rundir, "soft/pconsc3/run_pconsc3.sh")
 #script_scampi = "%s/%s"%(rundir, "mySCAMPI_run.pl")
 

@@ -17,10 +17,6 @@ rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/../"%(rundir))
 python_exec = os.path.realpath("%s/../../env/bin/python"%(basedir))
 suq_basedir = "/tmp"
-if os.path.exists("/scratch"):
-    suq_basedir = "/scratch"
-elif os.path.exists("/tmp"):
-    suq_basedir = "/tmp"
 suq_exec = "/usr/bin/suq";
 gen_errfile = "%s/static/log/%s.log"%(basedir, progname)
 
