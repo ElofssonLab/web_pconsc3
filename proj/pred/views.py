@@ -456,7 +456,7 @@ def oldserver(request):#{{{
 #}}}
 def download(request):#{{{
     info = {}
-    webcom.set_basic_config(request, info)
+    webcom.set_basic_config(request, info, g_params)
     info['jobcounter'] = webcom.GetJobCounter(info)
     return render(request, 'pred/download.html', info)
 #}}}
