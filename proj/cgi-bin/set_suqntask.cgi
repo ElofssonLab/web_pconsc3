@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# get set suq ntask
+# set suq ntask
 #Created 2015-03-20, updated 2015-03-20, Nanjiang Shu
 use CGI qw(:standard);
 use CGI qw(:cgi-lib);
@@ -9,8 +9,9 @@ use Cwd 'abs_path';
 use File::Basename;
 my $rundir = dirname(abs_path(__FILE__));
 # at proj
-my $basedir = "$rundir/../";
-my $auth_ip_file = "$basedir/auth_iplist.txt";#ip address which allows to run cgi script
+my $basedir = "$rundir/../pred";
+my $auth_ip_file = "$basedir/config/auth_iplist.txt";#ip address which allows to run cgi script
+my $suq = "/usr/bin/suq";
 
 print header();
 print start_html(-title => "set suq ntask",
@@ -38,18 +39,18 @@ while(<IN>) {
 close IN;
 
 if (grep { $_ eq $remote_host } @auth_iplist) {
-    $suqlist = `suq -b $suqbase ls`;
-    $current_ntask =`suq -b $suqbase ls | grep "max tasks" | awk '{print \$NF}'`;
+    $suqlist = `$suq -b $suqbase ls`;
+    $current_ntask =`$suq -b $suqbase ls | grep "max tasks" | awk '{print \$NF}'`;
     chomp($current_ntask);
 
     print "<pre>";
     print "Host IP: $remote_host\n\n";
     print "ntask before re-setting: $current_ntask\n\n";
 # set ntask
-    `suq -b $suqbase ntask $ntask`;
-    print "suq -b $suqbase ntask $ntask\n\n";
+    `$suq -b $suqbase ntask $ntask`;
+    print "$suq -b $suqbase ntask $ntask\n\n";
 
-    $after_ntask =`suq -b $suqbase ls | grep "max tasks" | awk '{print \$NF}'`;
+    $after_ntask =`$suq -b $suqbase ls | grep "max tasks" | awk '{print \$NF}'`;
 
     print "ntask after re-setting: $after_ntask\n\n";
 
