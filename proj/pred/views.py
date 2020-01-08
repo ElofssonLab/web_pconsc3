@@ -579,7 +579,7 @@ def get_results(request, jobid="1"):#{{{
                 if isValidSubmitDate:
                     queuetime = myfunc.date_diff(submit_date, current_time)
 
-    color_status = SetColorStatus(status)
+    color_status = webcom.SetColorStatus(status)
 
     file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
     seqwarninfo = ""
