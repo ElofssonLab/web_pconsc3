@@ -38,16 +38,18 @@ from django.contrib.auth import authenticate, login, logout
 # import variables from settings
 from django.conf import settings
 
-# global parameters
-TZ = settings.TZ
-os.environ['TZ'] = TZ
-time.tzset()
-
-
-
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 progname =  os.path.basename(__file__)
 rootname_progname = os.path.splitext(progname)[0]
+
+from libpredweb import myfunc
+from libpredweb import webserver_common as webcom
+
+# global parameters
+TZ = webcom.TZ
+os.environ['TZ'] = TZ
+time.tzset()
+
 path_app = "%s/app"%(SITE_ROOT)
 sys.path.append(path_app)
 path_log = "%s/static/log"%(SITE_ROOT)
@@ -87,8 +89,6 @@ g_params['suq_basedir'] = "/tmp"
 g_params['suq_exec'] = "/usr/bin/suq";
 
 
-from libpredweb import myfunc
-from libpredweb import webserver_common as webcom
 
 rundir = SITE_ROOT
 

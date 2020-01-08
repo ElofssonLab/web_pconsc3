@@ -29,13 +29,14 @@ webserver_root = os.path.realpath("%s/../../../"%(rundir))
 activate_env="%s/env/bin/activate_this.py"%(webserver_root)
 exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), dict(__file__=activate_env))
 #Add the site-packages of the virtualenv
-site.addsitedir("%s/env/lib/python2.7/site-packages/"%(webserver_root))
-sys.path.append("%s/env/lib/python2.7/site-packages/"%(webserver_root))
-sys.path.append("/usr/local/lib/python2.7/dist-packages")
+site.addsitedir("%s/env/lib/python3.7/site-packages/"%(webserver_root))
+sys.path.append("%s/env/lib/python3.7/site-packages/"%(webserver_root))
 
-import myfunc
-import webserver_common as webcom
+from libpredweb import myfunc
+from libpredweb import dataprocess
+from libpredweb import webserver_common as webcom
 from datetime import datetime
+from dateutil import parser as dtparser
 from pytz import timezone
 import time
 import requests
@@ -1159,280 +1160,13 @@ def CheckIfJobFinished(jobid, numseq, email):#{{{
 
         if webcom.IsFrontEndNode(base_www_url) and myfunc.IsValidEmailAddress(email):
             webcom.SendEmail_on_finish(jobid, base_www_url,
-                    finish_status, name_server="PconsC3", from_email="PconsC3@pconsc3.bioinfo.se",
+                    finish_status, name_server="PconsC3", from_email="no-reply.PconsC3@bioinfo.se",
                     to_email=email, contact_email=contact_email,
                     logfile=runjob_logfile, errfile=runjob_errfile)
 
 
 #}}}
-def RunStatistics(path_result, path_log):#{{{
-# 1. calculate average running time, only for those sequences with time.txt
-# show also runtime of type and runtime -vs- seqlength
-    date_str = time.strftime(FORMAT_DATETIME)
-    myfunc.WriteFile("[%s] RunStatistics...\n"%(date_str), gen_logfile, "a", True)
-    allfinishedjoblogfile = "%s/all_finished_job.log"%(path_log)
-    runtimelogfile = "%s/jobruntime.log"%(path_log)
-    runtimelogfile_finishedjobid = "%s/jobruntime_finishedjobid.log"%(path_log)
-    submitjoblogfile = "%s/submitted_seq.log"%(path_log)
-    if not os.path.exists(path_stat):
-        os.mkdir(path_stat)
 
-    allfinishedjobidlist = []
-    runtime_finishedjobidlist = []
-    if os.path.exists(allfinishedjoblogfile):
-        allfinishedjobidlist = myfunc.ReadIDList2(allfinishedjoblogfile, col=0, delim="\t")
-    if os.path.exists(runtimelogfile_finishedjobid):
-        runtime_finishedjobidlist = myfunc.ReadIDList(runtimelogfile_finishedjobid)
-    toana_jobidlist = list(set(allfinishedjobidlist)-set(runtime_finishedjobidlist))
-
-    for jobid in toana_jobidlist:
-        runtimeloginfolist = []
-        rstdir = "%s/%s"%(path_result, jobid)
-        outpath_result = "%s/%s"%(rstdir, jobid)
-        finished_seq_file = "%s/finished_seqs.txt"%(outpath_result)
-        lines = []
-        if os.path.exists(finished_seq_file):
-            lines = myfunc.ReadFile(finished_seq_file).split("\n")
-        for line in lines:
-            strs = line.split("\t")
-            if len(strs)>=7:
-                str_seqlen = strs[1]
-                str_numTM = strs[2]
-                str_isHasSP = strs[3]
-                source = strs[4]
-                if source == "newrun":
-                    subfolder = strs[0]
-                    timefile = "%s/%s/%s"%(outpath_result, subfolder, "time.txt")
-                    if os.path.exists(timefile) and os.path.getsize(timefile)>0:
-                        txt = myfunc.ReadFile(timefile).strip()
-                        try:
-                            ss2 = txt.split(";")
-                            runtime_str = ss2[1]
-                            database_mode = ss2[2]
-                            runtimeloginfolist.append("\t".join([jobid, subfolder,
-                                source, runtime_str, database_mode, str_seqlen,
-                                str_numTM, str_isHasSP]))
-                        except:
-                            sys.stderr.write("bad timefile %s\n"%(timefile))
-
-        if len(runtimeloginfolist)>0:
-            # items 
-            # jobid, seq_no, newrun_or_cached, runtime, mtd_profile, seqlen, numTM, iShasSP
-            myfunc.WriteFile("\n".join(runtimeloginfolist)+"\n",runtimelogfile, "a", True)
-        myfunc.WriteFile(jobid+"\n", runtimelogfile_finishedjobid, "a", True)
-
-#2. get numseq_in_job vs count_of_jobs, logscale in x-axis
-#   get numseq_in_job vs waiting time (time_start - time_submit)
-#   get numseq_in_job vs finish time  (time_finish - time_submit)
-
-    allfinished_job_dict = myfunc.ReadFinishedJobLog(allfinishedjoblogfile)
-    outfile_numseqjob = "%s/numseq_of_job.stat.txt"%(path_stat)
-    outfile_numseqjob_web = "%s/numseq_of_job.web.stat.txt"%(path_stat)
-    outfile_numseqjob_wsdl = "%s/numseq_of_job.wsdl.stat.txt"%(path_stat)
-    countjob_numseq_dict = {} # count the number jobs for each numseq
-    countjob_numseq_dict_web = {} # count the number jobs for each numseq submitted via web
-    countjob_numseq_dict_wsdl = {} # count the number jobs for each numseq submitted via wsdl
-
-    waittime_numseq_dict = {}
-    waittime_numseq_dict_web = {}
-    waittime_numseq_dict_wsdl = {}
-
-    finishtime_numseq_dict = {}
-    finishtime_numseq_dict_web = {}
-    finishtime_numseq_dict_wsdl = {}
-
-    for jobid in allfinished_job_dict: #{{{
-        li = allfinished_job_dict[jobid]
-        numseq = -1
-        try:
-            numseq = int(li[4])
-        except:
-            pass
-        try:
-            method_submission = li[5]
-        except:
-            method_submission = ""
-
-        submit_date_str = li[6]
-        start_date_str = li[7]
-        finish_date_str = li[8]
-
-        if numseq != -1:
-            if not numseq in  countjob_numseq_dict:
-                countjob_numseq_dict[numseq] = 0
-            countjob_numseq_dict[numseq] += 1
-            if method_submission == "web":
-                if not numseq in  countjob_numseq_dict_web:
-                    countjob_numseq_dict_web[numseq] = 0
-                countjob_numseq_dict_web[numseq] += 1
-            if method_submission == "wsdl":
-                if not numseq in  countjob_numseq_dict_wsdl:
-                    countjob_numseq_dict_wsdl[numseq] = 0
-                countjob_numseq_dict_wsdl[numseq] += 1
-
-#           # calculate waittime and finishtime
-            isValidSubmitDate = True
-            isValidStartDate = True
-            isValidFinishDate = True
-            try:
-                submit_date = webcom.datetime_str_to_time(submit_date_str)
-            except ValueError:
-                isValidSubmitDate = False
-            try:
-                start_date = webcom.datetime_str_to_time(start_date_str)
-            except ValueError:
-                isValidStartDate = False
-            try:
-                finish_date = webcom.datetime_str_to_time(finish_date_str)
-            except ValueError:
-                isValidFinishDate = False
-
-            if isValidSubmitDate and isValidStartDate:
-                waittime_sec = (start_date - submit_date).total_seconds()
-                if not numseq in waittime_numseq_dict:
-                    waittime_numseq_dict[numseq] = []
-                waittime_numseq_dict[numseq].append(waittime_sec)
-                if method_submission == "web":
-                    if not numseq in waittime_numseq_dict_web:
-                        waittime_numseq_dict_web[numseq] = []
-                    waittime_numseq_dict_web[numseq].append(waittime_sec)
-                if method_submission == "wsdl":
-                    if not numseq in waittime_numseq_dict_wsdl:
-                        waittime_numseq_dict_wsdl[numseq] = []
-                    waittime_numseq_dict_wsdl[numseq].append(waittime_sec)
-            if isValidSubmitDate and isValidFinishDate:
-                finishtime_sec = (finish_date - submit_date).total_seconds()
-                if not numseq in finishtime_numseq_dict:
-                    finishtime_numseq_dict[numseq] = []
-                finishtime_numseq_dict[numseq].append(finishtime_sec)
-                if method_submission == "web":
-                    if not numseq in finishtime_numseq_dict_web:
-                        finishtime_numseq_dict_web[numseq] = []
-                    finishtime_numseq_dict_web[numseq].append(finishtime_sec)
-                if method_submission == "wsdl":
-                    if not numseq in finishtime_numseq_dict_wsdl:
-                        finishtime_numseq_dict_wsdl[numseq] = []
-                    finishtime_numseq_dict_wsdl[numseq].append(finishtime_sec)
-
-
-    #}}}
-
-    flist = [outfile_numseqjob, outfile_numseqjob_web, outfile_numseqjob_wsdl  ]
-    dictlist = [countjob_numseq_dict, countjob_numseq_dict_web, countjob_numseq_dict_wsdl]
-    for i in range(len(flist)):
-        dt = dictlist[i]
-        outfile = flist[i]
-        sortedlist = sorted(list(dt.items()), key = lambda x:x[0])
-        try:
-            fpout = open(outfile,"w")
-            for j in range(len(sortedlist)):
-                nseq = sortedlist[j][0]
-                count = sortedlist[j][1]
-                fpout.write("%d\t%d\n"%(nseq,count))
-            fpout.close()
-        except IOError:
-            continue
-
-# output waittime vs numseq_of_job
-# output finishtime vs numseq_of_job
-    outfile_waittime_nseq = "%s/waittime_nseq.stat.txt"%(path_stat)
-    outfile_waittime_nseq_web = "%s/waittime_nseq_web.stat.txt"%(path_stat)
-    outfile_waittime_nseq_wsdl = "%s/waittime_nseq_wsdl.stat.txt"%(path_stat)
-    outfile_finishtime_nseq = "%s/finishtime_nseq.stat.txt"%(path_stat)
-    outfile_finishtime_nseq_web = "%s/finishtime_nseq_web.stat.txt"%(path_stat)
-    outfile_finishtime_nseq_wsdl = "%s/finishtime_nseq_wsdl.stat.txt"%(path_stat)
-
-    outfile_avg_waittime_nseq = "%s/avg_waittime_nseq.stat.txt"%(path_stat)
-    outfile_avg_waittime_nseq_web = "%s/avg_waittime_nseq_web.stat.txt"%(path_stat)
-    outfile_avg_waittime_nseq_wsdl = "%s/avg_waittime_nseq_wsdl.stat.txt"%(path_stat)
-    outfile_avg_finishtime_nseq = "%s/avg_finishtime_nseq.stat.txt"%(path_stat)
-    outfile_avg_finishtime_nseq_web = "%s/avg_finishtime_nseq_web.stat.txt"%(path_stat)
-    outfile_avg_finishtime_nseq_wsdl = "%s/avg_finishtime_nseq_wsdl.stat.txt"%(path_stat)
-
-    outfile_median_waittime_nseq = "%s/median_waittime_nseq.stat.txt"%(path_stat)
-    outfile_median_waittime_nseq_web = "%s/median_waittime_nseq_web.stat.txt"%(path_stat)
-    outfile_median_waittime_nseq_wsdl = "%s/median_waittime_nseq_wsdl.stat.txt"%(path_stat)
-    outfile_median_finishtime_nseq = "%s/median_finishtime_nseq.stat.txt"%(path_stat)
-    outfile_median_finishtime_nseq_web = "%s/median_finishtime_nseq_web.stat.txt"%(path_stat)
-    outfile_median_finishtime_nseq_wsdl = "%s/median_finishtime_nseq_wsdl.stat.txt"%(path_stat)
-
-    flist1 = [ outfile_waittime_nseq , outfile_waittime_nseq_web ,
-            outfile_waittime_nseq_wsdl , outfile_finishtime_nseq ,
-            outfile_finishtime_nseq_web , outfile_finishtime_nseq_wsdl
-            ]
-
-    flist2 = [ outfile_avg_waittime_nseq , outfile_avg_waittime_nseq_web ,
-            outfile_avg_waittime_nseq_wsdl , outfile_avg_finishtime_nseq ,
-            outfile_avg_finishtime_nseq_web , outfile_avg_finishtime_nseq_wsdl
-            ]
-    flist3 = [ outfile_median_waittime_nseq , outfile_median_waittime_nseq_web ,
-            outfile_median_waittime_nseq_wsdl , outfile_median_finishtime_nseq ,
-            outfile_median_finishtime_nseq_web , outfile_median_finishtime_nseq_wsdl
-            ]
-
-    dict_list = [
-            waittime_numseq_dict , waittime_numseq_dict_web , waittime_numseq_dict_wsdl , finishtime_numseq_dict , finishtime_numseq_dict_web , finishtime_numseq_dict_wsdl
-            ]
-
-    for i in range(len(flist1)):
-        dt = dict_list[i]
-        outfile1 = flist1[i]
-        outfile2 = flist2[i]
-        outfile3 = flist3[i]
-        sortedlist = sorted(list(dt.items()), key = lambda x:x[0])
-        try:
-            fpout = open(outfile1,"w")
-            for j in range(len(sortedlist)):
-                nseq = sortedlist[j][0]
-                li_time = sortedlist[j][1]
-                for k in range(len(li_time)):
-                    fpout.write("%d\t%f\n"%(nseq,li_time[k]))
-            fpout.close()
-        except IOError:
-            pass
-        try:
-            fpout = open(outfile2,"w")
-            for j in range(len(sortedlist)):
-                nseq = sortedlist[j][0]
-                li_time = sortedlist[j][1]
-                avg_time = myfunc.FloatDivision(sum(li_time), len(li_time))
-                fpout.write("%d\t%f\n"%(nseq,avg_time))
-            fpout.close()
-        except IOError:
-            pass
-        try:
-            fpout = open(outfile3,"w")
-            for j in range(len(sortedlist)):
-                nseq = sortedlist[j][0]
-                li_time = sortedlist[j][1]
-                median_time = numpy.median(li_time)
-                fpout.write("%d\t%f\n"%(nseq,median_time))
-            fpout.close()
-        except IOError:
-            pass
-
-    # plotting 
-    flist = flist1
-    for i in range(len(flist)):
-        outfile = flist[i]
-    flist = flist2+flist3
-    for i in range(len(flist)):
-        outfile = flist[i]
-
-#}}}
-
-def ArchiveLogFile():# {{{
-    """Archive some of the log files if they are too big"""
-    flist = [gen_logfile, gen_errfile,
-            "%s/restart_qd_fe.cgi.log"%(path_log),
-            "%s/debug.log"%(path_log),
-            "%s/clean_cached_result.py.log"%(path_log)
-            ]
-
-    for f in flist:
-        if os.path.exists(f):
-            myfunc.ArchiveFile(f, threshold_logfilesize)
-# }}}
 def main(g_params):#{{{
 
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
@@ -1490,8 +1224,8 @@ def main(g_params):#{{{
                             remotequeueDict[node].append(remotejobid)
 
 
-        if loop % 500 == 10:
-            RunStatistics(path_result, path_log)
+        if loop % g_params['STATUS_UPDATE_FREQUENCY'][0] == g_params['STATUS_UPDATE_FREQUENCY'][1]:
+            qdcom.RunStatistics_basic(webserver_root, gen_logfile, gen_errfile)
             webcom.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
             webcom.CleanServerFile(gen_logfile, gen_errfile)
             webcom.CleanCachedResult(gen_logfile, gen_errfile)
@@ -1567,9 +1301,7 @@ def InitGlobalParameter():#{{{
 #}}}
 if __name__ == '__main__' :
     g_params = InitGlobalParameter()
-
-    date_str = time.strftime(FORMAT_DATETIME)
-    print("\n\n[Date: %s]\n"%(date_str), file=sys.stderr)
-    status = main(g_params)
-
-    sys.exit(status)
+    date_str = time.strftime(g_params['FORMAT_DATETIME'])
+    print("\n#%s#\n[Date: %s] qd_fe.py restarted"%('='*80,date_str))
+    sys.stdout.flush()
+    sys.exit(main(g_params))
