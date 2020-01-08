@@ -52,7 +52,6 @@ import json
 from django.conf import settings
 
 TZ = webcom.TZ
-FORMAT_DATETIME = webcom.FORMAT_DATETIME
 os.environ['TZ'] = TZ
 time.tzset()
 
@@ -157,12 +156,10 @@ def GetNumSuqJob(node):#{{{
                         cnt_queue_job += 1
             return cnt_queue_job
         else:
-            return -1
+            return 1
     except:
-        date_str = time.strftime(FORMAT_DATETIME)
-        myfunc.WriteFile("[Date: %s] requests.get(%s) failed\n"%(date_str,
-            url), gen_errfile, "a", True)
-        return -1
+        webcom.loginfo("requests.get(%s) failed\n"%(url), gen_errfile)
+        return 1
 
 #}}}
 def IsHaveAvailNode(cntSubmitJobDict):#{{{
@@ -212,8 +209,7 @@ def GetNumSeqSameUserDict(joblist):#{{{
 #}}}
 def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
         finishedjoblogfile, loop):
-    date_str = time.strftime(FORMAT_DATETIME)
-    myfunc.WriteFile("[%s] CreateRunJoblog...\n"%(date_str), gen_logfile, "a", True)
+    webcom.loginfo("CreateRunJoblog...", gen_logfile)
     # Read entries from submitjoblogfile, checking in the result folder and
     # generate two logfiles: 
     #   1. runjoblogfile 
@@ -252,8 +248,7 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
             try:
                 numseq = int(numseq_str)
             except:
-                date_str = time.strftime(FORMAT_DATETIME)
-                myfunc.WriteFile("[%s] field numseq_str(%s) not a number for jobid %s\n"%(date_str, numseq_str, jobid), gen_errfile, "a", True)
+                webcom.loginfo("Field numseq_str(%s) not a number for jobid %s"%(numseq_str, jobid), gen_errfile)
                 pass
 
             if jobid in finished_job_dict:
@@ -408,9 +403,8 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
                             info_finish = [ "seq_%d"%origIndex, str(len(seq)), "newrun", str(runtime), description]
                             finished_info_list.append("\t".join(info_finish))
                             finished_idx_set.add(str(origIndex))
-                except:
-                    date_str = time.strftime(FORMAT_DATETIME)
-                    myfunc.WriteFile("[%s] Failed to os.listdir(%s)\n"%(date_str, outpath_result), gen_errfile, "a", True)
+                except Exception as e:
+                    webcom.loginfo("jobid = %s, initial processing failed to with error message: %s"%(jobid, str(e)), gen_errfile)
                     raise
                 if len(finished_info_list)>0:
                     myfunc.WriteFile("\n".join(finished_info_list)+"\n", finished_seq_file, "a", True)
@@ -440,8 +434,7 @@ def CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,#{{{
             if email in vip_user_list:
                 numseq_this_user = 1
                 priority = 999999999.0
-                date_str = time.strftime(FORMAT_DATETIME)
-                myfunc.WriteFile("[%s] email %s in vip_user_list\n"%(date_str, email), gen_logfile, "a", True)
+                webcom.loginfo("email %s in vip_user_list\n"%(email), gen_logfile)
 
             li.append(numseq_this_user)
             li.append(priority)
@@ -477,18 +470,16 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
 
     rstdir = "%s/%s"%(path_result, jobid)
 
-    date_str = time.strftime(FORMAT_DATETIME)
-    msg = "[%s] SubmitJob for %s, numseq_this_user=%d\n"%(date_str, jobid, numseq_this_user)
-    myfunc.WriteFile(msg, gen_logfile, "a", True)
+    msg = "SubmitJob for %s, numseq_this_user=%d\n"%(jobid, numseq_this_user)
+    webcom.loginfo(msg, gen_logfile)
 
     init_torun_idx_file = "%s/init_torun_seqindex.txt"%(rstdir) #index of seqs that are not cached when submitted to the front end 
     init_toRunIndexList = []
     if os.path.exists(init_torun_idx_file):
         init_toRunIndexList = myfunc.ReadIDList(init_torun_idx_file)
     if len(init_toRunIndexList) <= 0:
-        date_str = time.strftime(FORMAT_DATETIME)
-        msg = "[%s] %s : %s is empty, ignore job submission\n"%(date_str, jobid, init_torun_idx_file)
-        myfunc.WriteFile(msg, gen_logfile, "a", True)
+        msg = "%s : %s is empty, ignore job submission\n"%(jobid, init_torun_idx_file)
+        webcom.loginfo(msg, gen_logfile)
         return 0
 
     init_toRunIndexSet = set(init_toRunIndexList)
@@ -514,13 +505,15 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
     split_seq_dir = "%s/splitaa"%(tmpdir)
     forceruntagfile = "%s/forcerun"%(rstdir)
 
+    runjob_logfile = "%s/%s"%(rstdir, "runjob.log")
+    runjob_errfile = "%s/%s"%(rstdir, "runjob.err")
+
     isforcerun = "True" # all jobs submitted to the remote server will run (no cache)
 
     if not os.path.exists(qdinittagfile): #initialization
         if not os.path.exists(tmpdir):
             os.mkdir(tmpdir)
-    date_str = time.strftime(FORMAT_DATETIME)
-    myfunc.WriteFile(date_str, qdinittagfile, "w", True)
+    myfunc.WriteDateTimeTagFile(qdinittagfile, runjob_logfile, runjob_errfile)
 
 
     finished_idx_list = []
@@ -564,12 +557,10 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
             try:
                 myclient = Client(wsdl_url, cache=None, timeout=30)
             except:
-                date_str = time.strftime(FORMAT_DATETIME)
-                myfunc.WriteFile("[Date: %s] Failed to access %s\n"%(date_str,
-                    wsdl_url), gen_errfile, "a", True)
+                webcom.loginfo("Failed to access %s\n"%( wsdl_url), gen_errfile)
                 break
 
-            [cnt, maxnum] = cntSubmitJobDict[node]
+            [cnt, maxnum, queue_method] = cntSubmitJobDict[node]
             MAX_SUBMIT_TRY = 3
             cnttry = 0
             while cnt < maxnum and iToRun < numToRun:
@@ -617,8 +608,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
                         rtValue = myclient.service.submitjob_remote(fastaseq, fixtop,
                                 jobname, useemail, str(numseq_this_user), isforcerun)
                     except:
-                        date_str = time.strftime(FORMAT_DATETIME)
-                        myfunc.WriteFile("[%s] Failed to run myclient.service.submitjob_remote\n"%(date_str), gen_errfile, "a", True)
+                        webcom.loginfo("Failed to run myclient.service.submitjob_remote", gen_errfile)
                         rtValue = []
                         pass
 
@@ -641,8 +631,8 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
                                 submitted_loginfo_list.append(txt)
                                 cnttry = 0  #reset cnttry to zero
                         else:
-                            date_str = time.strftime(FORMAT_DATETIME)
-                            myfunc.WriteFile("[%s] bad wsdl return value\n"%(date_str), gen_errfile, "a", True)
+                            webcom.loginfo("bad wsdl return value"%, gen_errfile)
+
                 if isSubmitSuccess:
                     cnt += 1
                     myfunc.WriteFile(" succeeded\n", gen_logfile, "a", True)
@@ -655,7 +645,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
                     if g_params['DEBUG']:
                         myfunc.WriteFile("DEBUG: jobid %s processedIndexSet.add(str(%d))\n"%(jobid, origIndex), gen_logfile, "a", True)
             # update cntSubmitJobDict for this node
-            cntSubmitJobDict[node] = [cnt, maxnum]
+            cntSubmitJobDict[node][0] = cnt
 
     # finally, append submitted_loginfo_list to remotequeue_idx_file 
     if len(submitted_loginfo_list)>0:
@@ -677,8 +667,7 @@ def SubmitJob(jobid,cntSubmitJobDict, numseq_this_user):#{{{
 #}}}
 def GetResult(jobid):#{{{
     # retrieving result from the remote server for this job
-    date_str = time.strftime(FORMAT_DATETIME)
-    myfunc.WriteFile("[%s] GetResult for %s.\n" %(date_str, jobid), gen_logfile, "a", True)
+    webcom.loginfo("GetResult for %s" %(jobid), gen_logfile)
     MAX_RESUBMIT = 2
     rstdir = "%s/%s"%(path_result, jobid)
     outpath_result = "%s/%s"%(rstdir, jobid)
@@ -752,8 +741,7 @@ def GetResult(jobid):#{{{
             myfunc.WriteFile("\n".join(torun_idx_str_list)+"\n", torun_idx_file, "w", True)
 
             if g_params['DEBUG']:
-                date_str = time.strftime(FORMAT_DATETIME)
-                myfunc.WriteFile("[%s] recreate torun_idx_file: jobid = %s, numseq=%d, len(completed_idx_set)=%d, len(torun_idx_str_list)=%d\n"%(date_str, jobid, numseq, len(completed_idx_set), len(torun_idx_str_list)), gen_logfile, "a", True)
+                webcom.loginfo("recreate torun_idx_file: jobid = %s, numseq=%d, len(completed_idx_set)=%d, len(torun_idx_str_list)=%d\n"%(jobid, numseq, len(completed_idx_set), len(torun_idx_str_list)), gen_logfile)
         else:
             myfunc.WriteFile("", torun_idx_file, "w", True)
 
@@ -1175,6 +1163,9 @@ def main(g_params):#{{{
     loop = 0
     while 1:
 
+        if os.path.exists("%s/CACHE_CLEANING_IN_PROGRESS"%(path_result)):#pause when cache cleaning is in progress
+            continue
+
         # load the config file if exists
         configfile = "%s/config.json"%(basedir)
         config = {}
@@ -1227,11 +1218,10 @@ def main(g_params):#{{{
         if loop % g_params['STATUS_UPDATE_FREQUENCY'][0] == g_params['STATUS_UPDATE_FREQUENCY'][1]:
             qdcom.RunStatistics_basic(webserver_root, gen_logfile, gen_errfile)
             webcom.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
-            webcom.CleanServerFile(gen_logfile, gen_errfile)
+            webcom.CleanServerFile(path_static, gen_logfile, gen_errfile)
             webcom.CleanCachedResult(gen_logfile, gen_errfile)
 
-
-        ArchiveLogFile()
+        webcom.ArchiveLogFile(path_log, threshold_logfilesize=threshold_logfilesize) 
         # For finished jobs, clean data not used for caching
 
         cntSubmitJobDict = {} # format of cntSubmitJobDict {'node_ip': INT, 'node_ip': INT}
@@ -1297,6 +1287,8 @@ def InitGlobalParameter():#{{{
     g_params['SLEEP_INTERVAL'] = 20    # sleep interval in seconds
     g_params['MAX_SUBMIT_JOB_PER_NODE'] = 10
     g_params['MAX_KEEP_DAYS'] = 90
+    g_params['STATUS_UPDATE_FREQUENCY'] = [500, 50]  # updated by if loop%$1 == $2
+    g_params['FORMAT_DATETIME'] = webcom.FORMAT_DATETIME
     return g_params
 #}}}
 if __name__ == '__main__' :
