@@ -251,6 +251,7 @@ def InitGlobalParameter():#{{{
     g_params['MAX_KEEP_DAYS'] = 90
     g_params['STATUS_UPDATE_FREQUENCY'] = [500, 50]  # updated by if loop%$1 == $2
     g_params['FORMAT_DATETIME'] = webcom.FORMAT_DATETIME
+    g_params['MAX_TIME_IN_REMOTE_QUEUE'] = 3600*24*30 # one month in seconds
     g_params['UPPER_WAIT_TIME_IN_SEC'] = 60
     g_params['name_server'] = "PconsC3"
     g_params['path_static'] = path_static
