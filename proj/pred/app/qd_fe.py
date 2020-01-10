@@ -35,6 +35,7 @@ sys.path.append("%s/env/lib/python3.7/site-packages/"%(webserver_root))
 from libpredweb import myfunc
 from libpredweb import dataprocess
 from libpredweb import webserver_common as webcom
+from libpredweb import qd_fe_common as qdcom
 from datetime import datetime
 from dateutil import parser as dtparser
 from pytz import timezone
