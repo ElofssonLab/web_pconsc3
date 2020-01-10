@@ -168,7 +168,7 @@ def submit_seq(request):#{{{
                 seqfile = request.FILES['seqfile']
             except KeyError as MultiValueDictKeyError:
                 seqfile = ""
-            date_str = time.strftime(FORMAT_DATETIME)
+            date_str = time.strftime(g_params['FORMAT_DATETIME'])
             query = {}
             query['rawseq'] = rawseq
             query['seqfile'] = seqfile
