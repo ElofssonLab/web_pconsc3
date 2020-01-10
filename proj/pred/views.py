@@ -273,7 +273,7 @@ def RunQuery(request, query):#{{{
     query['base_www_url'] = base_www_url
 
 
-    if query['numseq'] <= g_params['MAX_ALLOWD_NUMSEQ']:
+    if query['numseq'] <= 0: # no jobs are submitted to the front-end server
         query['numseq_this_user'] = query['numseq']
         SubmitQueryToLocalQueue(query, tmpdir, rstdir, isRunLocal=False)
 
@@ -312,7 +312,7 @@ def RunQuery_wsdl(rawseq, filtered_seq, seqinfo):#{{{
     base_www_url = "http://" + seqinfo['hostname']
     seqinfo['base_www_url'] = base_www_url
 
-    if seqinfo['numseq'] <= g_params['MAX_ALLOWD_NUMSEQ']:
+    if seqinfo['numseq'] <= 0: #no jobs are submitted directly to the front-end server
         seqinfo['numseq_this_user'] = seqinfo['numseq']
         SubmitQueryToLocalQueue(seqinfo, tmpdir, rstdir, isRunLocal=False)
 
