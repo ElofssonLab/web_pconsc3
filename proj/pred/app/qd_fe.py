@@ -96,6 +96,7 @@ usage_exp="""
 """
 
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
+path_static = "%s/static"%(basedir)
 path_log = "%s/static/log"%(basedir)
 path_stat = "%s/stat"%(path_log)
 path_result = "%s/static/result"%(basedir)
@@ -1171,9 +1172,9 @@ def main(g_params):#{{{
 
                         if webcom.IsHaveAvailNode(cntSubmitJobDict):
                             if not g_params['DEBUG_NO_SUBMIT']:
-                                SubmitJob(jobid, cntSubmitJobDict, numseq_this_user)
-                        GetResult(jobid) # the start tagfile is written when got the first result
-                        CheckIfJobFinished(jobid, numseq, email)
+                                qdcom.SubmitJob(jobid, cntSubmitJobDict, numseq_this_user, g_params)
+                        qdcom.GetResult(jobid, g_params) # the start tagfile is written when got the first result
+                        qdcom.CheckIfJobFinished(jobid, numseq, email, g_params)
 
                 lines = hdl.readlines()
             hdl.close()
@@ -1197,6 +1198,17 @@ def InitGlobalParameter():#{{{
     g_params['MAX_KEEP_DAYS'] = 90
     g_params['STATUS_UPDATE_FREQUENCY'] = [500, 50]  # updated by if loop%$1 == $2
     g_params['FORMAT_DATETIME'] = webcom.FORMAT_DATETIME
+    g_params['UPPER_WAIT_TIME_IN_SEC'] = 60
+    g_params['name_server'] = "PconsC3"
+    g_params['path_static'] = path_static
+    g_params['path_result'] = path_result
+    g_params['path_log'] = path_log
+    g_params['path_cache'] = path_cache
+    g_params['vip_email_file'] = vip_email_file
+    g_params['gen_logfile'] = gen_logfile
+    g_params['finished_date_db'] = finished_date_db
+    g_params['gen_errfile'] = gen_errfile
+    g_params['contact_email'] = contact_email
     return g_params
 #}}}
 if __name__ == '__main__' :
