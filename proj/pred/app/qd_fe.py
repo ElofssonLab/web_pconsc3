@@ -103,6 +103,7 @@ path_result = "%s/static/result"%(basedir)
 path_md5cache = "%s/static/md5"%(basedir)
 path_cache = "%s/static/result/cache"%(basedir)
 computenodefile = "%s/config/computenode.txt"%(basedir)
+name_cachedir = 'cache'
 # it takes quite long time to run for a single PconsC3 job, set the max queued
 # number to a small value
 gen_errfile = "%s/static/log/%s.err"%(basedir, progname)
@@ -146,8 +147,17 @@ def main(g_params):#{{{
 
         webcom.loginfo("loop %d"%(loop), gen_logfile)
 
-        CreateRunJoblog(path_result, submitjoblogfile, runjoblogfile,
-                finishedjoblogfile, loop)
+        isOldRstdirDeleted = False
+        if loop % g_params['STATUS_UPDATE_FREQUENCY'][0] == g_params['STATUS_UPDATE_FREQUENCY'][1]:
+            qdcom.RunStatistics_basic(webserver_root, gen_logfile, gen_errfile)
+            isOldRstdirDeleted = webcom.DeleteOldResult(path_result, path_log,
+                    gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
+            webcom.CleanServerFile(path_static, gen_logfile, gen_errfile)
+            webcom.CleanCachedResult(path_static, name_cachedir,  gen_logfile, gen_errfile)
+
+        webcom.ArchiveLogFile(path_log, threshold_logfilesize=threshold_logfilesize) 
+
+        qdcom.CreateRunJoblog(loop, isOldRstdirDeleted, g_params)
 
         # Get number of jobs submitted to the remote server based on the
         # runjoblogfile
@@ -169,16 +179,6 @@ def main(g_params):#{{{
                         remotejobid = strs[2]
                         if node in remotequeueDict:
                             remotequeueDict[node].append(remotejobid)
-
-
-        if loop % g_params['STATUS_UPDATE_FREQUENCY'][0] == g_params['STATUS_UPDATE_FREQUENCY'][1]:
-            qdcom.RunStatistics_basic(webserver_root, gen_logfile, gen_errfile)
-            webcom.DeleteOldResult(path_result, path_log, gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
-            webcom.CleanServerFile(path_static, gen_logfile, gen_errfile)
-            webcom.CleanCachedResult(gen_logfile, gen_errfile)
-
-        webcom.ArchiveLogFile(path_log, threshold_logfilesize=threshold_logfilesize) 
-        # For finished jobs, clean data not used for caching
 
         cntSubmitJobDict = {} # format of cntSubmitJobDict {'node_ip': INT, 'node_ip': INT}
         for node in avail_computenode:
@@ -261,6 +261,7 @@ def InitGlobalParameter():#{{{
     g_params['finished_date_db'] = finished_date_db
     g_params['gen_errfile'] = gen_errfile
     g_params['contact_email'] = contact_email
+    g_params['name_cachedir'] = name_cachedir
     return g_params
 #}}}
 if __name__ == '__main__' :
