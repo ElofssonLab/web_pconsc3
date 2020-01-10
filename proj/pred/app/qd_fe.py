@@ -263,6 +263,7 @@ def InitGlobalParameter():#{{{
     g_params['gen_errfile'] = gen_errfile
     g_params['contact_email'] = contact_email
     g_params['name_cachedir'] = name_cachedir
+    g_params['TZ'] = TZ
     return g_params
 #}}}
 if __name__ == '__main__' :
