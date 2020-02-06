@@ -1,4 +1,4 @@
-from django.conf.urls import  url
+from django.conf.urls import url
 
 #import modules for spyne (wsdl interface)
 from spyne.protocol.soap import Soap11
