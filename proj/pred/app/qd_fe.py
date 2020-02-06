@@ -254,6 +254,7 @@ def InitGlobalParameter():#{{{
     g_params['MAX_TIME_IN_REMOTE_QUEUE'] = 3600*24*30 # one month in seconds
     g_params['UPPER_WAIT_TIME_IN_SEC'] = 60
     g_params['MAX_CACHE_PROCESS'] = 200 # process at the maximum this cached sequences in one loop
+    g_params['MAX_RESUBMIT'] = 3
     g_params['name_server'] = "PconsC3"
     g_params['path_static'] = path_static
     g_params['path_result'] = path_result
