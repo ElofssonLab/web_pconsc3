@@ -408,7 +408,7 @@ def get_finished_job(request):# {{{
     return render(request, 'pred/finished_job.html', info)
 # }}}
 def get_failed_job(request):# {{{
-    info = webcom.get_finished_job(request, g_params)
+    info = webcom.get_failed_job(request, g_params)
     return render(request, 'pred/failed_job.html', info)
 # }}}
 
