@@ -584,7 +584,7 @@ def get_results(request, jobid="1"):#{{{
     file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
     seqwarninfo = ""
     if os.path.exists(file_seq_warning):
-        seqwarninfo = myfunc.ReadFile(file_seq_warning)
+        seqwarninfo = myfunc.ReadFile(file_seq_warning).strip()
 
     subdirname = ""
     if numseq == 1:
