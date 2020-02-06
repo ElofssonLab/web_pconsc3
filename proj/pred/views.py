@@ -206,7 +206,7 @@ def submit_seq(request):#{{{
 
                 file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
                 query['file_seq_warning'] = os.path.basename(file_seq_warning)
-                if query['warninfo'] != "":
+                if query['warninfo'].strip() != "":
                     myfunc.WriteFile(query['warninfo'], file_seq_warning, "a")
 
                 query['jobid'] = jobid
@@ -825,7 +825,7 @@ class Service_submitseq(ServiceBase):
                 url = "http://" + hostname + BASEURL + "result/%s"%(jobid)
 
                 file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
-                if seqinfo['warninfo'] != "":
+                if seqinfo['warninfo'].strip() != "":
                     myfunc.WriteFile(seqinfo['warninfo'], file_seq_warning, "a")
                 errinfo = seqinfo['errinfo']
 
@@ -900,7 +900,7 @@ class Service_submitseq(ServiceBase):
                 url = "http://" + hostname + BASEURL + "result/%s"%(jobid)
 
                 file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
-                if seqinfo['warninfo'] != "":
+                if seqinfo['warninfo'].strip() != "":
                     myfunc.WriteFile(seqinfo['warninfo'], file_seq_warning, "a")
                 errinfo = seqinfo['errinfo']
 
