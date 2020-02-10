@@ -124,6 +124,10 @@ def main(g_params):#{{{
     submitjoblogfile = "%s/submitted_seq.log"%(path_log)
     runjoblogfile = "%s/runjob_log.log"%(path_log)
     finishedjoblogfile = "%s/finished_job.log"%(path_log)
+
+    if not os.path.exists(path_cache):
+        os.mkdir(path_cache)
+
     loop = 0
     while 1:
 
