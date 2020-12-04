@@ -16,8 +16,6 @@ vip_user_list = [
 rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/../"%(rundir))
 python_exec = os.path.realpath("%s/../../env/bin/python"%(basedir))
-suq_basedir = "/tmp"
-suq_exec = "/usr/bin/suq";
 gen_errfile = "%s/static/log/%s.log"%(basedir, progname)
 
 usage_short="""
@@ -51,28 +49,6 @@ def PrintHelp(fpout=sys.stdout):#{{{
     print(usage_short, file=fpout)
     print(usage_ext, file=fpout)
     print(usage_exp, file=fpout)#}}}
-def GetNumSameUserInQueue(suq_ls_content, basename_scriptfile, email, host_ip):#{{{
-    myfunc.WriteFile("Entering GetNumSameUserInQueue()\n", g_params['debugfile'], "a")
-    num_same_user_in_queue = 0
-    if email == "" and host_ip == "":
-        num_same_user_in_queue = 0
-    else:
-        lines = suq_ls_content.split("\n")
-        if email != "" and host_ip != "":
-            for line in lines:
-                if line.find(email) != -1 or line.find(host_ip) != -1:
-                    num_same_user_in_queue += 1
-        elif email != "":
-            for line in lines:
-                if line.find(email) != -1:
-                    num_same_user_in_queue += 1
-        elif host_ip != "":
-            for line in lines:
-                if line.find(host_ip) != -1:
-                    num_same_user_in_queue += 1
-
-    return num_same_user_in_queue
-#}}}
 
 
 def SubmitJobToQueue(jobid, datapath, outpath, numseq, numseq_this_user, email, #{{{
@@ -121,39 +97,9 @@ def SubmitJobToQueue(jobid, datapath, outpath, numseq, numseq_this_user, email, 
 
     myfunc.WriteFile("priority=%d\n"%(priority), g_params['debugfile'], "a")
 
-    st1 = SubmitSuqJob(suq_basedir, datapath, priority, scriptfile)
+    st1 = webcom.SubmitSlurmJob(datapath, outpath, scriptfile, g_params['debugfile'])
 
     return st1
-#}}}
-def SubmitSuqJob(suq_basedir, datapath, priority, scriptfile):#{{{
-    myfunc.WriteFile("Entering SubmitSuqJob()\n", g_params['debugfile'], "a")
-    rmsg = ""
-    cmd = [suq_exec,"-b", suq_basedir, "run", "-d", datapath, "-p", "%d"%(priority), scriptfile]
-    cmdline = " ".join(cmd)
-    myfunc.WriteFile("cmdline: %s\n\n"%(cmdline), g_params['debugfile'], "a")
-    MAX_TRY = 5
-    cnttry = 0
-    isSubmitSuccess = False
-    while cnttry < MAX_TRY:
-        try:
-            myfunc.WriteFile("run cmd: cnttry = %d, MAX_TRY=%d\n"%(cnttry,
-                MAX_TRY), g_params['debugfile'], "a")
-            rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            isSubmitSuccess = True
-            break
-        except subprocess.CalledProcessError as e:
-            print(e)
-            print(rmsg)
-            myfunc.WriteFile(str(e)+"\n"+rmsg+"\n", g_params['debugfile'], "a")
-            pass
-        cnttry += 1
-        time.sleep(0.05+cnttry*0.03)
-    if isSubmitSuccess:
-        myfunc.WriteFile("Leaving SubmitSuqJob() with success\n\n", g_params['debugfile'], "a")
-        return 0
-    else:
-        myfunc.WriteFile("Leaving SubmitSuqJob() with error\n\n", g_params['debugfile'], "a")
-        return 1
 #}}}
 def main(g_params):#{{{
     argv = sys.argv
