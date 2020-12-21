@@ -16,7 +16,6 @@ vip_user_list = [
 
 rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/../"%(rundir))
-python_exec = os.path.realpath("%s/../../env/bin/python"%(basedir))
 virt_env_path = os.path.realpath("%s/../../env"%(basedir))
 gen_errfile = "%s/static/log/%s.log"%(basedir, progname)
 
@@ -66,9 +65,9 @@ def SubmitJobToQueue(jobid, datapath, outpath, numseq, numseq_this_user, email, 
 
     name_software = "pconsc3"
     if not g_params['isRunLocal']:
-        runjob = "%s %s/run_job.py"%(python_exec, rundir)
+        runjob = "%s %s/run_job.py"%("python", rundir)
     else:
-        runjob = "%s %s/run_job_local.py"%(python_exec, rundir)  
+        runjob = "%s %s/run_job_local.py"%("python", rundir)
     scriptfile = "%s/runjob;%s;%s;%s;%s;%d.sh"%(outpath, name_software, jobid, host_ip, email, numseq)
 
     code_str_list = []
