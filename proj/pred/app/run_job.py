@@ -30,9 +30,7 @@ DEBUG = True
 progname =  os.path.basename(sys.argv[0])
 wspace = ''.join([" "]*len(progname))
 rundir = os.path.dirname(os.path.realpath(__file__))
-suq_basedir = "/tmp"
 runscript = "%s/%s"%(rundir, "soft/pconsc3/run_pconsc3.sh")
-#script_scampi = "%s/%s"%(rundir, "mySCAMPI_run.pl")
 
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 path_cache = "%s/static/result/cache"%(basedir)
