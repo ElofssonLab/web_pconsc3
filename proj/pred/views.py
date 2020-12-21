@@ -64,7 +64,6 @@ gen_logfile = "%s/static/log/%s.log"%(SITE_ROOT, progname)
 suq_basedir = "/tmp"
 suq_exec = "/usr/bin/suq";
 
-python_exec = os.path.realpath("%s/../../env/bin/python"%(SITE_ROOT))
 
 g_params = {}
 g_params['BASEURL'] = "/pred/";
@@ -367,7 +366,7 @@ def SubmitQueryToLocalQueue(query, tmpdir, rstdir, isRunLocal=False):#{{{
     failedtagfile = "%s/%s"%(rstdir, "runjob.failed")
     rmsg = ""
 
-    cmd = [python_exec, scriptfile, "-nseq", "%d"%query['numseq'], "-nseq-this-user",
+    cmd = ["python", scriptfile, "-nseq", "%d"%query['numseq'], "-nseq-this-user",
             "%d"%query['numseq_this_user'], "-jobid", query['jobid'],
             "-outpath", rstdir, "-datapath", tmpdir, "-baseurl",
             query['base_www_url'] ]
