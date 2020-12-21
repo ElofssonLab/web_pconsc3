@@ -2,8 +2,8 @@
 # install virtualenv if not installed
 # first install dependencies
 # make sure virtualenv is installed with Python3
-python3 -m pip install --upgrade pip
-pip3 install virtualenv
+#python3 -m pip install --upgrade pip
+#pip3 install virtualenv
 # then install programs in the virtual environment
 mkdir -p ~/.virtualenvs
 rundir=`dirname $0`
