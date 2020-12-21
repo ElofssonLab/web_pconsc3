@@ -19,11 +19,11 @@ import os
 import sys
 import subprocess
 import time
-import myfunc
+from libpredweb import myfunc
+from libpredweb import webserver_common as webcom
 import glob
 import hashlib
 import shutil
-import webserver_common
 
 DEBUG = True
 
@@ -130,7 +130,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
         if hdl.failure:
             isOK = False
         else:
-            webserver_common.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
+            webcom.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
 
             recordList = hdl.readseq()
             cnt = 0
@@ -235,7 +235,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             isFinished = True
 
         if isFinished:
-            webserver_common.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
+            webcom.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
 
 # now write the text output to a single file
             statfile = "%s/%s"%(outpath_result, "stat.txt")
@@ -260,11 +260,11 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             else:
                 isSuccess = False
                 failtagfile = "%s/runjob.failed"%(outpath)
-                webserver_common.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
+                webcom.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
 
 # send the result to email
 # do not sendmail at the cloud VM
-            if (webserver_common.IsFrontEndNode(['base_www_url']) and
+            if (webcom.IsFrontEndNode(['base_www_url']) and
                     myfunc.IsValidEmailAddress(email)):
                 from_email = "info@pconsc3.bioinfo.se"
                 to_email = email

@@ -7,7 +7,8 @@ import os
 import sys
 import subprocess
 import time
-import myfunc
+from libpredweb import myfunc
+from libpredweb import webserver_common as webcom
 import glob
 import hashlib
 import shutil
@@ -105,7 +106,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     zipfile_fullpath = "%s.zip"%(outpath_result)
     seqlength = myfunc.GetSingleFastaLength(infile)
 
-    webserver_common.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
+    webcom.WriteDateTimeTagFile(starttagfile, runjob_logfile, runjob_errfile)
 
     cmd = [runscript, infile, tmp_outpath_result]
     g_params['runjob_log'].append(" ".join(cmd))
@@ -142,7 +143,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
             pass
 
 
-    webserver_common.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
+    webcom.WriteDateTimeTagFile(finishtagfile, runjob_logfile, runjob_errfile)
 
     os.chdir(outpath)
     cmd = ["zip", "-rq", zipfile, resultpathname]
@@ -160,7 +161,7 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
     else:
         isSuccess = False
         failtagfile = "%s/runjob.failed"%(outpath)
-        webserver_common.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
+        webcom.WriteDateTimeTagFile(failtagfile, runjob_logfile, runjob_errfile)
 
     if len(g_params['runjob_log']) > 0:
         rt_msg = myfunc.WriteFile("\n".join(g_params['runjob_log'])+"\n", runjob_logfile, "w")
