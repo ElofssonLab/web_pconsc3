@@ -2,10 +2,11 @@
 # Description: submit job to queue
 import os
 import sys
-import myfunc
 import subprocess
 import time
 import math
+from libpredweb import myfunc
+from libpredweb import webserver_common as webcom
 progname =  os.path.basename(__file__)
 wspace = ''.join([" "]*len(progname))
 
@@ -16,16 +17,17 @@ vip_user_list = [
 rundir = os.path.dirname(os.path.realpath(__file__))
 basedir = os.path.realpath("%s/../"%(rundir))
 python_exec = os.path.realpath("%s/../../env/bin/python"%(basedir))
+virt_env_path = os.path.realpath("%s/../../env"%(basedir))
 gen_errfile = "%s/static/log/%s.log"%(basedir, progname)
 
 usage_short="""
 Usage: %s -nseq INT -jobid STR -outpath DIR -datapath DIR
        %s -email EMAIL -host IP -baseurl BASE_WWW_URL
        %s -nseq-this-user INT
-       %s [-force]
+       %s -only-get-cache [-force]
 
 Description: 
-    BASE_WWW_URL e.g. topcons.net
+    BASE_WWW_URL e.g. pconsc3.bioinfo.se
 """%(progname, wspace, wspace, wspace)
 
 usage_ext="""
@@ -38,7 +40,7 @@ OPTIONS:
   -nseq-this-user   Number of sequences in the queue submitted by this user
   -h, --help    Print this help message and exit
 
-Created 2015-01-20, updated 2016-05-04, Nanjiang Shu
+Created 2015-01-20, updated 2020-12-21, Nanjiang Shu
 """
 usage_exp="""
 Examples:
@@ -61,28 +63,32 @@ def SubmitJobToQueue(jobid, datapath, outpath, numseq, numseq_this_user, email, 
     if numseq_this_user == -1:
         numseq_this_user = numseq
 
-    code_str_list = []
-    code_str_list.append("#!/bin/bash")
 
+    name_software = "pconsc3"
     if not g_params['isRunLocal']:
         runjob = "%s %s/run_job.py"%(python_exec, rundir)
-        cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
-        if g_params['isForceRun']:
-            cmdline += "-force "
     else:
         runjob = "%s %s/run_job_local.py"%(python_exec, rundir)  
-        cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
-        # the local job submitted to remote server is always run, never use cache
+    scriptfile = "%s/runjob;%s;%s;%s;%s;%d.sh"%(outpath, name_software, jobid, host_ip, email, numseq)
+
+    code_str_list = []
+    code_str_list.append("#!/bin/bash")
+    code_str_list.append("source %s/bin/activate"%(virt_env_path))
+    cmdline = "%s %s -outpath %s -tmpdir %s -jobid %s "%(runjob, fafile, outpath, datapath, jobid)
 
     if email != "":
         cmdline += "-email \"%s\" "%(email)
     if base_www_url != "":
         cmdline += "-baseurl \"%s\" "%(base_www_url)
+    if g_params['isForceRun']:
+        cmdline += "-force "
+    if g_params['isOnlyGetCache']:
+        cmdline += "-only-get-cache "
 
     code_str_list.append(cmdline)
     code = "\n".join(code_str_list)
 
-    scriptfile = "%s/runjobSPLIT%sSPLIT%sSPLIT%sSPLIT%d.sh"%(datapath, jobid, host_ip, email, numseq)
+
     msg = "Write scriptfile %s"%(scriptfile)
     myfunc.WriteFile(msg+"\n", g_params['debugfile'], "a")
 
@@ -121,7 +127,7 @@ def main(g_params):#{{{
     isNonOptionArg=False
     while i < numArgv:
         if isNonOptionArg == True:
-            print("Error! Wrong argument:", argv[i], file=g_params['fperr'])
+            webcom.loginfo("Error! Wrong argument: %s"% (argv[i]), gen_errfile)
             return 1
             isNonOptionArg = False
             i += 1
@@ -151,6 +157,9 @@ def main(g_params):#{{{
             elif argv[i] in ["-force", "--force"]:
                 g_params['isForceRun'] = True
                 i += 1
+            elif argv[i] in ["-only-get-cache", "--only-get-cache"]:
+                g_params['isOnlyGetCache'] = True
+                i += 1
             elif argv[i] in ["-runlocal", "--runlocal"]:
                 g_params['isRunLocal'] = True
                 i += 1
@@ -158,14 +167,14 @@ def main(g_params):#{{{
                 g_params['isQuiet'] = True
                 i += 1
             else:
-                print("Error! Wrong argument:", argv[i], file=g_params['fperr'])
+                webcom.loginfo("Error! Wrong argument: %s"% (argv[i]), gen_errfile)
                 return 1
         else:
-            print("Error! Wrong argument:", argv[i], file=g_params['fperr'])
+            webcom.loginfo("Error! Wrong argument: %s"% (argv[i]), gen_errfile)
             return 1
 
     if outpath == "":
-        print("outpath not set. exit", file=g_params['fperr'])
+        webcom.loginfo("outpath not set. exit", gen_errfile)
         return 1
     elif not os.path.exists(outpath):
         cmd =  ["mkdir", "-p", outpath]
@@ -177,17 +186,17 @@ def main(g_params):#{{{
             return 1
 
     if jobid == "":
-        print("%s: jobid not set. exit"%(sys.argv[0]), file=g_params['fperr'])
+        webcom.loginfo("%s: jobid not set. exit"%(sys.argv[0]), gen_errfile)
         return 1
 
     if datapath == "":
-        print("%s: datapath not set. exit"%(sys.argv[0]), file=g_params['fperr'])
+        webcom.loginfo("%s: datapath not set. exit"%(sys.argv[0]), gen_errfile)
         return 1
     elif not os.path.exists(datapath):
-        print("%s: datapath does not exist. exit"%(sys.argv[0]), file=g_params['fperr'])
+        webcom.loginfo("%s: datapath does not exist. exit"%(sys.argv[0]), gen_errfile)
         return 1
     elif not os.path.exists("%s/query.fa"%(datapath)):
-        print("%s: file %s/query.fa does not exist. exit"%(sys.argv[0], datapath), file=g_params['fperr'])
+        webcom.loginfo("%s: file %s/query.fa does not exist. exit"%(sys.argv[0], datapath), gen_errfile)
         return 1
 
     g_params['debugfile'] = "%s/debug.log"%(outpath)
@@ -202,19 +211,10 @@ def InitGlobalParameter():#{{{
     g_params['isQuiet'] = True
     g_params['isForceRun'] = False
     g_params['isRunLocal'] = False
-    g_params['fperr'] = None
+    g_params['isOnlyGetCache'] = False
     return g_params
 #}}}
 if __name__ == '__main__' :
     g_params = InitGlobalParameter()
-    try:
-        g_params['fperr'] = open(gen_errfile, "a")
-    except IOError:
-        g_params['fperr'] = sys.stderr
-        pass
-    g_params = InitGlobalParameter()
-    status = main(g_params)
-    if g_params['fperr'] and g_params['fperr'] != sys.stderr:
-        g_params['fperr'].close()
-    sys.exit(status)
+    sys.exit(main(g_params))
 
