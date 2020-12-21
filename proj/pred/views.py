@@ -62,7 +62,6 @@ os.environ['PYTHON_EGG_CACHE'] = path_tmp
 gen_logfile = "%s/static/log/%s.log"%(SITE_ROOT, progname)
 
 suq_basedir = "/tmp"
-suq_exec = "/usr/bin/suq";
 
 
 g_params = {}
@@ -85,9 +84,6 @@ g_params['SITE_ROOT'] = SITE_ROOT
 g_params['path_result'] = path_result
 g_params['MAX_ACTIVE_USER'] = 10
 g_params['suq_basedir'] = "/tmp"
-g_params['suq_exec'] = "/usr/bin/suq";
-
-
 
 rundir = SITE_ROOT
 
@@ -821,7 +817,7 @@ class Service_submitseq(ServiceBase):
                 if seqinfo['client_ip'] != "":
                     myfunc.WriteFile(log_record, divided_logfile_query, "a")
 
-                url = "https://" + hostname + BASEURL + "result/%s"%(jobid)
+                url = "https://" + hostname + g_params['BASEURL'] + "result/%s"%(jobid)
 
                 file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
                 if seqinfo['warninfo'].strip() != "":
