@@ -22,6 +22,7 @@ os.system("echo which python; which python >> %s/debug.log" %( path_log) )
 
 #Add the site-packages of the virtualenv
 site.addsitedir("%s/env/lib/python3.7/site-packages/"%(basedir))
+site.addsitedir("%s/env/lib/python3.6/site-packages/"%(basedir))
 
 # Add the directory for the project
 sys.path.append(basedir)
