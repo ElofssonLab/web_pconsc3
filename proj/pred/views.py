@@ -892,7 +892,7 @@ class Service_submitseq(ServiceBase):
                 if seqinfo['client_ip'] != "":
                     myfunc.WriteFile(log_record, divided_logfile_query, "a")
 
-                url = "https://" + hostname + BASEURL + "result/%s"%(jobid)
+                url = "https://" + hostname + g_params['BASEURL'] + "result/%s"%(jobid)
 
                 file_seq_warning = "%s/%s/%s/%s"%(SITE_ROOT, "static/result", jobid, "query.warn.txt")
                 if seqinfo['warninfo'].strip() != "":
