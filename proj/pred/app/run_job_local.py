@@ -119,10 +119,10 @@ def RunJob(infile, outpath, tmpdir, email, jobid, g_params):#{{{
 
     try:
         rmsg = subprocess.check_output(cmd)
-        g_params['runjob_log'].append("workflow:\n"+rmsg+"\n")
+        g_params['runjob_log'].append("workflow:\n"+str(rmsg)+"\n")
     except subprocess.CalledProcessError as e:
         g_params['runjob_err'].append(str(e)+"\n")
-        g_params['runjob_err'].append(rmsg + "\n")
+        g_params['runjob_err'].append(str(rmsg) + "\n")
         pass
 
     end_time = time.time()

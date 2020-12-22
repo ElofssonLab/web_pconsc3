@@ -180,8 +180,8 @@ def main(g_params):#{{{
         try:
             rmsg = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            print(e)
-            print(rmsg)
+            print(str(e))
+            print(str(rmsg))
             return 1
 
     if jobid == "":
