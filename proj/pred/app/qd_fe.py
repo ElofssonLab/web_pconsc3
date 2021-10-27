@@ -42,7 +42,6 @@ from pytz import timezone
 import time
 import requests
 import json
-import urllib.request, urllib.parse, urllib.error
 import shutil
 import hashlib
 import subprocess
