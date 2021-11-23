@@ -8,7 +8,6 @@ biopython==1.72
 
 matplotlib==2.2.3
 numpy==1.16.5
-scipy==1.1.0
 pandas==0.25.3
 
 pytz==2018.5
