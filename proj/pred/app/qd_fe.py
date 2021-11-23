@@ -28,9 +28,6 @@ webserver_root = os.path.realpath("%s/../../../"%(rundir))
 
 activate_env="%s/env/bin/activate_this.py"%(webserver_root)
 exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), dict(__file__=activate_env))
-#Add the site-packages of the virtualenv
-site.addsitedir("%s/env/lib/python3.7/site-packages/"%(webserver_root))
-sys.path.append("%s/env/lib/python3.7/site-packages/"%(webserver_root))
 
 from libpredweb import myfunc
 from libpredweb import dataprocess
@@ -45,7 +42,6 @@ import json
 import shutil
 import hashlib
 import subprocess
-from suds.client import Client
 import numpy
 import json
 
@@ -241,7 +237,6 @@ def main(g_params):#{{{
 
     return 0
 #}}}
-
 
 def InitGlobalParameter():#{{{
     g_params = {}
