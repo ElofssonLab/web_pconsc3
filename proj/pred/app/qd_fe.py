@@ -257,6 +257,7 @@ def InitGlobalParameter():#{{{
     g_params['path_static'] = path_static
     g_params['path_result'] = path_result
     g_params['path_log'] = path_log
+    g_params['MAX_SUBMIT_TRY'] = 3
     g_params['path_cache'] = path_cache
     g_params['vip_email_file'] = vip_email_file
     g_params['gen_logfile'] = gen_logfile
