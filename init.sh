@@ -71,6 +71,7 @@ if [ ! -f $rundir/proj/settings.py -a ! -L $rundir/proj/settings.py ];then
     pushd $rundir/proj; ln -s pro_settings.py settings.py; popd;
 fi
 
+
 # create allowed host
 conf_file_list="
 $rundir/proj/allowed_host_dev.txt
@@ -84,8 +85,7 @@ done
 
 # create example result
 example_folder_list="
-example_oneseq
-example_multiseq
+example
 "
 pushd $rundir/proj/pred/static/result
 
