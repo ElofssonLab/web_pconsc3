@@ -23,7 +23,7 @@ $rundir/proj/pred/static/log/divided
 "
 
 echo "setting up file permissions"
-platform_info=`python -mplatform |  tr '[:upper:]' '[:lower:]'`
+platform_info=`python3 -mplatform |  tr '[:upper:]' '[:lower:]'`
 platform=
 case $platform_info in 
     *centos*)platform=centos;;
@@ -71,23 +71,21 @@ if [ ! -f $rundir/proj/settings.py -a ! -L $rundir/proj/settings.py ];then
     pushd $rundir/proj; ln -s pro_settings.py settings.py; popd;
 fi
 
-path_config=$rundir/proj/pred/config
-configfilelist="
-$path_config/alert_email.txt
-$path_config/black_iplist.txt
-$path_config/computenode.txt
-$path_config/vip_email.txt
-$path_config/forward_email.txt
-$path_config/auth_iplist.txt
+# create allowed host
+conf_file_list="
+$rundir/proj/allowed_host_dev.txt
+$rundir/proj/allowed_host_pro.txt
 "
-for f in $configfilelist; do 
-    touch $f
+for file in $conf_file_list; do
+    if [ ! -f $file ];then
+        cp ${file}.example ${file}
+    fi
 done
-
 
 # create example result
 example_folder_list="
-example
+example_oneseq
+example_multiseq
 "
 pushd $rundir/proj/pred/static/result
 
