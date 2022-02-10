@@ -32,3 +32,4 @@ proj/pred/static/download/PconsFold2_testdataset.tar.gz
 proj/pred/static/download/PconsFold2_union.tar.gz
 proj/pred/static/download/pconsc3-finished-2.txt
 proj/settings.py
+proj/allowed*txt
