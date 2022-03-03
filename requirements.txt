@@ -1,10 +1,11 @@
+# spyne 2.13.2-alpha is compatible with lxml 4.2.5
 spyne==2.13.2-alpha
+lxml==4.2.5
 requests>=2.20.1
 mod-wsgi==4.6.8
 Django>=2.2.27
 
 
-lxml>=4.6.5
 urllib3>=1.26.5
 suds-py3>=1.3.4.0
 biopython==1.72
