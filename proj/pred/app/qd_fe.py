@@ -1,32 +1,18 @@
 #!/usr/bin/env python
-# Description: daemon to submit jobs and retrieve results to/from remote
-#              servers
-# 
-# submit job, 
-# get finished jobids 
-# try to retrieve jobs with in finished jobids
-
-# ChangeLog 2015-08-17
-#   The number of jobs submitted to remote servers is calculated based on the
-#   queries in remotequeue_index.txt files instead of using get_suqlist.cgi
-# ChangeLog 2015-08-23 
-#   Fixed the bug for re-creating the torun_idx_file, the code should be before
-#   the return 1
-# ChangeLog 2015-09-07
-#   the torun_idx_file is re-created if remotequeue_idx_file is empty but the
-#   job is not finished
-# ChangeLog 2016-03-04 
-#   fix the bug in re-creation of the torun_idx_file, completed_idx_set is
-#   strings but range(numseq) is list of integer numbers
+"""
+Description:
+    Daemon to submit jobs and retrieve results to/from remote servers
+    run periodically
+    At the end of each run generate a runlog file with the status of all jobs
+"""
 
 import os
 import sys
-import site
 
 rundir = os.path.dirname(os.path.realpath(__file__))
 webserver_root = os.path.realpath("%s/../../../"%(rundir))
 
-activate_env="%s/env/bin/activate_this.py"%(webserver_root)
+activate_env = "%s/env/bin/activate_this.py"%(webserver_root)
 exec(compile(open(activate_env, "rb").read(), activate_env, 'exec'), dict(__file__=activate_env))
 
 from libpredweb import myfunc
@@ -73,24 +59,6 @@ contact_email = "nanjiang.shu@scilifelab.se"
 
 threshold_logfilesize = 20*1024*1024 #20M
 
-usage_short="""
-Usage: %s
-"""%(sys.argv[0])
-
-usage_ext="""
-Description:
-    Daemon to submit jobs and retrieve results to/from remote servers
-    run periodically
-    At the end of each run generate a runlog file with the status of all jobs
-
-OPTIONS:
-  -h, --help    Print this help message and exit
-
-Created 2016-04-25, updated 2016-05-19, Nanjiang Shu
-"""
-usage_exp="""
-"""
-
 basedir = os.path.realpath("%s/.."%(rundir)) # path of the application, i.e. pred/
 path_static = "%s/static"%(basedir)
 path_log = "%s/static/log"%(basedir)
@@ -108,11 +76,6 @@ black_iplist_file = "%s/config/black_iplist.txt"%(basedir)
 finished_date_db = "%s/cached_job_finished_date.sqlite3"%(path_log)
 vip_email_file = "%s/config/vip_email.txt"%(basedir)
 
-
-def PrintHelp(fpout=sys.stdout):#{{{
-    print(usage_short, file=fpout)
-    print(usage_ext, file=fpout)
-    print(usage_exp, file=fpout)#}}}
 
 def main(g_params):#{{{
 
@@ -153,7 +116,7 @@ def main(g_params):#{{{
             isOldRstdirDeleted = webcom.DeleteOldResult(path_result, path_log,
                     gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
             webcom.CleanServerFile(path_static, gen_logfile, gen_errfile)
-            webcom.CleanCachedResult(path_static, name_cachedir,  gen_logfile, gen_errfile)
+            qdcom.CleanCachedResult(g_params)
 
         webcom.ArchiveLogFile(path_log, threshold_logfilesize=threshold_logfilesize) 
 
@@ -247,6 +210,7 @@ def InitGlobalParameter():#{{{
     g_params['SLEEP_INTERVAL'] = 20    # sleep interval in seconds
     g_params['MAX_SUBMIT_JOB_PER_NODE'] = 10
     g_params['MAX_KEEP_DAYS'] = 90
+    g_params['MAX_KEEP_DAYS_CACHE'] = 480
     g_params['STATUS_UPDATE_FREQUENCY'] = [500, 50]  # updated by if loop%$1 == $2
     g_params['FORMAT_DATETIME'] = webcom.FORMAT_DATETIME
     g_params['MAX_TIME_IN_REMOTE_QUEUE'] = 3600*24*30 # one month in seconds
@@ -257,6 +221,7 @@ def InitGlobalParameter():#{{{
     g_params['path_static'] = path_static
     g_params['path_result'] = path_result
     g_params['path_log'] = path_log
+    g_params['path_stat'] = path_stat
     g_params['MAX_SUBMIT_TRY'] = 3
     g_params['path_cache'] = path_cache
     g_params['webserver_root'] = webserver_root
