@@ -112,7 +112,7 @@ def main(g_params):#{{{
 
         isOldRstdirDeleted = False
         if loop % g_params['STATUS_UPDATE_FREQUENCY'][0] == g_params['STATUS_UPDATE_FREQUENCY'][1]:
-            qdcom.RunStatistics_basic(webserver_root, gen_logfile, gen_errfile)
+            qdcom.RunStatistics(g_params)
             isOldRstdirDeleted = webcom.DeleteOldResult(path_result, path_log,
                     gen_logfile, MAX_KEEP_DAYS=g_params['MAX_KEEP_DAYS'])
             webcom.CleanServerFile(path_static, gen_logfile, gen_errfile)
