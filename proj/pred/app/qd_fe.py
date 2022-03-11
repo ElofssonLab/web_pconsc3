@@ -93,7 +93,7 @@ def main(g_params):#{{{
             continue
 
         # load the config file if exists
-        configfile = "%s/config.json"%(basedir)
+        configfile = "%s/config/config.json"%(basedir)
         config = {}
         if os.path.exists(configfile):
             text = myfunc.ReadFile(configfile)
