@@ -2,7 +2,7 @@
 spyne==2.13.2-alpha
 lxml==4.2.5
 requests>=2.20.1
-mod-wsgi==4.6.8
+mod-wsgi==4.9.3
 Django>=2.2.27
 
 
